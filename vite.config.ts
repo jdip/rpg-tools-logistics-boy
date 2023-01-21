@@ -26,6 +26,7 @@ function updateModuleManifestPlugin(): Plugin {
         name: "update-module-manifest",
         async writeBundle(): Promise<void> {
             const moduleVersion = process.env.MODULE_VERSION;
+            const moduleFile = process.env.MODULE_FILE;
             const githubProject = process.env.GH_PROJECT;
             const githubTag = process.env.GH_TAG;
             const manifestContents: string = await fsPromises.readFile(
@@ -43,10 +44,10 @@ function updateModuleManifestPlugin(): Plugin {
             if (githubProject) {
                 const baseUrl = `https://github.com/${githubProject}/releases`;
                 manifestJson["manifest"] = `${baseUrl}/latest/download/module.json`;
-                if (githubTag) {
+                if (githubTag && moduleFile) {
                     manifestJson[
                         "download"
-                        ] = `${baseUrl}/download/${githubTag}/${githubProject}-${githubTag}.zip`;
+                        ] = `${baseUrl}/download/${githubTag}/${moduleFile}.zip`;
                 }
             }
 
