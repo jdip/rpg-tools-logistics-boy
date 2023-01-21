@@ -11,7 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Write release version
+      - name: Write tag
+        run: |
+          VERSION_TAG=${GITHUB_REF_NAME}
+          echo Version Tag: $VERSION_TAG
+          echo "VERSION_TAG=$VERSION_TAG" >> $GITHUB_ENV
+
+      - name: Write module version
         run: |
           MODULE_VERSION=${GITHUB_REF_NAME#v}
           echo Version: $MODULE_VERSION
@@ -25,11 +31,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Vite build
+      - name: Run vite build
         env:
           MODULE_VERSION: ${{ env.MODULE_VERSION }}
           GH_PROJECT: ${{ github.repository }}
-          GH_TAG: ${{ GITHUB_REF_NAME }}
+          GH_TAG: ${{ env.VERSION_TAG }}
         run: npm run build
 
       - name: Zip Files
@@ -41,7 +47,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          name: Release ${{ env.MODULE_VERSION }}
+          name: Release ${{ env.VERSION_TAG }}
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
