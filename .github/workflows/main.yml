@@ -57,5 +57,4 @@ jobs:
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
-          bodyFile: './dist/changelog.md'
           artifacts: './dist/${{ env.MODULE_FILE }}.zip, ./dist/module.json'
