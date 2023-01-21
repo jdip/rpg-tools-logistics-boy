@@ -1,5 +1,9 @@
 
 package-lock.json
+coverage
+.nyc_output
+cypress/videos
+
 
 # Logs
 logs
