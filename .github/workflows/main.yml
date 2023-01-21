@@ -1,0 +1,48 @@
+name: Module Builder
+
+on:
+  push:
+    branches:
+      - master
+      - experimental
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Get Version
+        shell: bash
+        id: get-version
+        run: echo "::set-output name=version::$(node ./.github/workflows/get-version.js)
+
+      - name: Run Vite build
+        env:
+          MODULE_VERSION: ${{ steps.get-version-outputs.version }}
+          GH_PROJECT: ${{ github.repository }}
+          GH_TAG: ${{ github.event.release.tag_name }}
+        run: npm run build
+
+      - name: Zip Files
+        working-directory: ./dist
+        run: zip -r ./module.zip ./*
+
+      - name: Create Release
+        id: create-release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          name: Release ${{ steps.get-version-outputs.version }}
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: './dist/module.zip, ./dist/module.json'
