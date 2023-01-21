@@ -25,7 +25,7 @@ jobs:
 
       - name: Write ZIP file
         run: |
-          ZIP_FILE="${ github.event.repository.name }-${ env.VERSION_TAG }"
+          ZIP_FILE="${ format('{0}-{1}', github.event.repository.name, env.VERSION_TAG }"
           echo ZIP File: $ZIP_FILE
           echo "ZIP_FILE=$ZIP_FILE" >> $GITHUB_ENV
 
