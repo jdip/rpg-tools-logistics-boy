@@ -25,7 +25,7 @@ jobs:
 
       - name: Write module file
         run: |
-          MODULE_FILE=${{ github.repository#jdip/ }}
+          MODULE_FILE=${{ github.event.repository.name }}
           echo MODULE_FILE: $MODULE_FILE
           echo "MODULE_FILE=$MODULE_FILE" >> $GITHUB_ENV
 
