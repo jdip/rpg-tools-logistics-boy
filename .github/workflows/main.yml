@@ -40,7 +40,7 @@ jobs:
 
       - name: Zip Files
         working-directory: ./dist
-        run: zip -r ./module.zip ./*
+        run: zip -r ./${{ github.repository }}-${{ env.VERSION_TAG }}.zip ./*
 
       - name: Create Release
         id: create-release
@@ -51,4 +51,5 @@ jobs:
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
+          bodyFile: './dist/changelog.md'
           artifacts: './dist/module.zip, ./dist/module.json'

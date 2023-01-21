@@ -8,11 +8,15 @@
       "email": "jdipaolo@gmail.com"
     }
   ],
+  "readme": "README.md",
+  "url": "https://github.com/jdip/rpg-tools-logistics-boy",
+  "bugs": "https://github.com/jdip/rpg-tools-logistics-boy/issues",
   "version": "0.0.0",
   "compatibility": {
     "minimum": "10",
     "verified": "10"
   },
+  "system": ["pf2e"],
   "esmodules": ["logistics-boy.mjs"],
   "styles": ["style.css"]
 }

@@ -46,7 +46,7 @@ function updateModuleManifestPlugin(): Plugin {
                 if (githubTag) {
                     manifestJson[
                         "download"
-                        ] = `${baseUrl}/download/${githubTag}/module.zip`;
+                        ] = `${baseUrl}/download/${githubTag}/${githubProject}-${githubTag}.zip`;
                 }
             }
 
