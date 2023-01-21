@@ -23,6 +23,12 @@ jobs:
           echo Version: $MODULE_VERSION
           echo "MODULE_VERSION=$MODULE_VERSION" >> $GITHUB_ENV
 
+      - name: Write ZIP file
+        run: |
+          ZIP_FILE=${ github.repository#jdip/ }-${ env.VERSION_TAG }
+          echo ZIP File: $ZIP_FILE
+          echo "ZIP_FILE=$ZIP_FILE" >> $GITHUB_ENV
+
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -40,7 +46,7 @@ jobs:
 
       - name: Zip Files
         working-directory: ./dist
-        run: zip -r ./${{ github.repository }}-${{ env.VERSION_TAG }}.zip ./*
+        run: zip -r ./${{ env.ZIP_FILE }}.zip ./*
 
       - name: Create Release
         id: create-release
