@@ -22,11 +22,11 @@ jobs:
       - name: Get Version
         shell: bash
         id: get-version
-        run: echo "release-version=$(node ./.github/workflows/get-version.js)" >> $GITHUB_ENV
+        run: echo "MODULE_VERSION=$(node ./.github/workflows/get-version.js)" >> $GITHUB_ENV
 
       - name: Run Vite build
         env:
-          MODULE_VERSION: ${{ env.release-version }}
+          MODULE_VERSION: ${{ env.MODULE_VERSION }}
           GH_PROJECT: ${{ github.repository }}
           GH_TAG: ${{ github.event.release.tag_name }}
         run: npm run build
