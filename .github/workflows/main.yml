@@ -29,7 +29,7 @@ jobs:
         env:
           MODULE_VERSION: ${{ env.MODULE_VERSION }}
           GH_PROJECT: ${{ github.repository }}
-          GH_TAG: ${{ github.event.release.tag_name }}
+          GH_TAG: ${{ GITHUB_REF_NAME }}
         run: npm run build
 
       - name: Zip Files
