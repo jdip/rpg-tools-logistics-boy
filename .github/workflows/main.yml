@@ -11,6 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Write release version
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo Version: $VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Extract tag version number
         id: get_version
         uses: battila7/get-version-action@v2
@@ -25,7 +31,7 @@ jobs:
 
       - name: Run Vite build
         env:
-          MODULE_VERSION: ${{ GITHUB_REF:10 }}
+          MODULE_VERSION: ${{ GITHUB_REF#refs/*/ }}
           GH_PROJECT: ${{ github.repository }}
           GH_TAG: ${{ github.event.release.tag_name }}
         run: npm run build
@@ -35,7 +41,7 @@ jobs:
         with:
           file: ./dist/module.json
           field: version
-          value: ${{ GITHUB_REF:10 }}
+          value: ${{ GITHUB_REF#refs/*/ }}
 
       - name: Zip Files
         working-directory: ./dist
