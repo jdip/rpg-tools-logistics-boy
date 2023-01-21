@@ -11,12 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: Test
-        run: |
-          echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}
+      - name: Extract tag version number
+        id: get_version
+        uses: battila7/get-version-action@v2
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -38,7 +35,7 @@ jobs:
         with:
           file: ./dist/module.json
           field: version
-          value: ${{ env.RELEASE_VERSION }}
+          value: ${{ steps.get_version.outputs.version-without-v }}
 
       - name: Zip Files
         working-directory: ./dist
