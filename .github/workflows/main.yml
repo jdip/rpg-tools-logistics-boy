@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Vite build
         env:
-          MODULE_VERSION: ${{ GITHUB_REF#refs/*/ }}
+          MODULE_VERSION: ${{ env.VERSION }}
           GH_PROJECT: ${{ github.repository }}
           GH_TAG: ${{ github.event.release.tag_name }}
         run: npm run build
@@ -41,7 +41,7 @@ jobs:
         with:
           file: ./dist/module.json
           field: version
-          value: ${{ GITHUB_REF#refs/*/ }}
+          value: ${{ env.VERSION }}
 
       - name: Zip Files
         working-directory: ./dist
@@ -52,7 +52,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          name: Release ${{ GITHUB_REF#refs/*/ }}
+          name: Release ${{ env.VERSION }}
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
