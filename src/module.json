@@ -13,6 +13,6 @@
     "minimum": "10",
     "verified": "10"
   },
-  "esmodules": ["logistics-boy.js"],
+  "esmodules": ["logistics-boy.mjs"],
   "styles": ["style.css"]
 }

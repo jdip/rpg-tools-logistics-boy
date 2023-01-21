@@ -3,7 +3,7 @@
 import type { ModuleData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/packages.mjs";
 import { name as moduleId } from "./module.json";
 import DogBrowser from "./dogBrowser";
-import "./styles/style.scss";
+import "./styles/dogs.css";
 
 interface MyModule extends Game.ModuleData<ModuleData> {
     dogBrowser: DogBrowser;
@@ -18,9 +18,12 @@ Hooks.once("init", () => {
     module.dogBrowser = new DogBrowser();
 });
 
-Hooks.on("renderActorDirectory", (_: Application, html: JQuery) => {
+Hooks.on("renderRollTableDirectory", (_: Application, html: JQuery) => {
     const button = $(
-        `<button class="cc-sidebar-button" type="button">🐶</button>`
+        `<button class="cc-sidebar-button" type="button">
+            <i class="fas fa-random fa-fw"></i>
+            Build LogisticsBoy Loot Tables
+            </button>`
     );
     button.on("click", () => {
         module.dogBrowser.render(true);

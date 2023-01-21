@@ -1,20 +1,61 @@
-import type { UserConfig, ViteDevServer } from 'vite';
+import * as fsPromises from "fs/promises";
+import type { UserConfig , ViteDevServer, Plugin } from 'vite';
 import copy from "rollup-plugin-copy";
-import scss from "rollup-plugin-scss";
+import nested from 'postcss-nested';
 import istanbul from "vite-plugin-istanbul";
 
-const FixURLPlugin = {
-    name: 'FixURLPlugin',
-    configureServer(server: ViteDevServer) {
-        server.middlewares.use('/modules/rpg-tools-logistics-boy/logistics-boy.js', (_req, res, next) => {
-            res.writeHead(301, { Location: '/modules/rpg-tools-logistics-boy/src/logistics-boy.ts'})
-            next()
-        })
-        server.middlewares.use('/modules/rpg-tools-logistics-boy/templates/dogs.hbs', (_req, res, next) => {
-            res.writeHead(301, { Location: '/modules/rpg-tools-logistics-boy/src/templates/dogs.hbs'})
-            next()
-        })
+const FixURLPlugin = (): Plugin => {
+    return {
+        name: 'FixURLPlugin',
+        configureServer(server: ViteDevServer) {
+            [
+                ['logistics-boy.mjs','src/logistics-boy.ts'],
+                ['templates/dogs.hbs','src/templates/dogs.hbs'],
+            ].forEach(([original, redirect]) => {
+                server.middlewares.use(`/modules/rpg-tools-logistics-boy/${original}`, (_req, res, next) => {
+                    res.writeHead(301, {Location: `/modules/rpg-tools-logistics-boy/${redirect}`})
+                    next()
+                })
+            })
+        }
     }
+}
+
+function updateModuleManifestPlugin(): Plugin {
+    return {
+        name: "update-module-manifest",
+        async writeBundle(): Promise<void> {
+            const moduleVersion = process.env.MODULE_VERSION;
+            const githubProject = process.env.GH_PROJECT;
+            const githubTag = process.env.GH_TAG;
+            const manifestContents: string = await fsPromises.readFile(
+                "src/module.json",
+                "utf-8"
+            );
+            const manifestJson = JSON.parse(manifestContents) as Record<
+                string,
+                unknown
+            >;
+
+            if (moduleVersion) {
+                manifestJson["version"] = moduleVersion;
+            }
+            if (githubProject) {
+                const baseUrl = `https://github.com/${githubProject}/releases`;
+                manifestJson["manifest"] = `${baseUrl}/latest/download/module.json`;
+                if (githubTag) {
+                    manifestJson[
+                        "download"
+                        ] = `${baseUrl}/download/${githubTag}/module.zip`;
+                }
+            }
+
+            await fsPromises.writeFile(
+                "dist/module.json",
+                JSON.stringify(manifestJson, null, 4)
+            );
+        },
+    };
 }
 
 const config: UserConfig = {
@@ -48,16 +89,19 @@ const config: UserConfig = {
             fileName: 'logistics-boy'
         }
     },
+    css: {
+        postcss: {
+            plugins: [
+                nested
+            ],
+        },
+        devSourcemap: true,
+    },
     plugins: [
-        FixURLPlugin,
-        scss({
-            output: "dist/style.css",
-            sourceMap: true,
-            watch: ["src/styles/*.scss"],
-        }),
+        FixURLPlugin(),
+        updateModuleManifestPlugin(),
         copy({
             targets: [
-                { src: "src/module.json", dest: "dist" },
                 { src: "src/templates", dest: "dist" },
             ],
             hook: "writeBundle",
