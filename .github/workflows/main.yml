@@ -14,8 +14,8 @@ jobs:
       - name: Write release version
         run: |
           MODULE_VERSION=${GITHUB_REF_NAME#v}
-          echo Version: MODULE_VERSION
-          echo "MODULE_VERSION=MODULE_VERSION" >> $GITHUB_ENV
+          echo Version: $MODULE_VERSION
+          echo "MODULE_VERSION=$MODULE_VERSION" >> $GITHUB_ENV
 
       - name: Setup node
         uses: actions/setup-node@v3
