@@ -2,9 +2,8 @@ name: Module Builder
 
 on:
   push:
-    branches:
-      - master
-      - experimental
+    tags:
+      - 'v*.*.*'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,11 +22,11 @@ jobs:
       - name: Get Version
         shell: bash
         id: get-version
-        run: echo "::set-output name=version::$(node ./.github/workflows/get-version.js)"
+        run: echo "release-version=$(node ./.github/workflows/get-version.js)" >> $GITHUB_ENV
 
       - name: Run Vite build
         env:
-          MODULE_VERSION: ${{ steps.get-version-outputs.version }}
+          MODULE_VERSION: ${{ env.release-version }}
           GH_PROJECT: ${{ github.repository }}
           GH_TAG: ${{ github.event.release.tag_name }}
         run: npm run build
@@ -41,7 +40,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          name: Release ${{ steps.get-version-outputs.version }}
+          name: Release ${{ env.release-version }}
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
