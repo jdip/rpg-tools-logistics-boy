@@ -13,13 +13,9 @@ jobs:
 
       - name: Write release version
         run: |
-          VERSION=${GITHUB_REF_NAME#v}
-          echo Version: $VERSION
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      - name: Extract tag version number
-        id: get_version
-        uses: battila7/get-version-action@v2
+          MODULE_VERSION=${GITHUB_REF_NAME#v}
+          echo Version: MODULE_VERSION
+          echo "MODULE_VERSION=MODULE_VERSION" >> $GITHUB_ENV
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -31,17 +27,10 @@ jobs:
 
       - name: Run Vite build
         env:
-          MODULE_VERSION: ${{ env.VERSION }}
+          MODULE_VERSION: ${{ env.MODULE_VERSION }}
           GH_PROJECT: ${{ github.repository }}
           GH_TAG: ${{ github.event.release.tag_name }}
         run: npm run build
-
-      - name: Update module.json description
-        uses: jossef/action-set-json-field@v2.1
-        with:
-          file: ./dist/module.json
-          field: version
-          value: ${{ env.VERSION }}
 
       - name: Zip Files
         working-directory: ./dist
@@ -52,7 +41,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          name: Release ${{ env.VERSION }}
+          name: Release ${{ env.MODULE_VERSION }}
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
