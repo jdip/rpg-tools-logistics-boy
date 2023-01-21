@@ -1,0 +1,17 @@
+{
+  "name": "rpg-tools-logistics-boy",
+  "title": "RPG.Tools: Logistics Boy",
+  "description": "Automatically create a default set of item roll tables for use with StockBoy and LootBoy",
+  "authors": [
+    {
+      "name": "Joseph DiPaolo",
+      "email": "jdipaolo@gmail.com"
+    }
+  ],
+  "version": "0.0.0",
+  "compatibility": {
+    "minimum": "10",
+    "verified": "10"
+  },
+  "esmodules": ["logistics-boy.js"]
+}
