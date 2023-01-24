@@ -3,6 +3,9 @@
 # LogisticsBoy
 A Foundry VTT Module to automatically create a default set of item roll tables for use with StockBoy and LootBoy
 
+## Compatible Game Systems
+- Pathfinder 2e
+
 ## Installation
 
 - Go to your foundry instance's ***Configuration and Setup*** page
@@ -38,4 +41,8 @@ A Foundry VTT Module to automatically create a default set of item roll tables f
 - You can edit the tables to your heart's content after generation, but re-generating will wipe out any custom changes.
 - Both [StockBoy](https://github.com/jdip/rpg-tools-stock-boy) and [LootBoy](https://github.com/jdip/rpg-tools-loot-boy) will recognize these tables and make them available to use when generating loot.
 
-Hand Truck icon (<img alt="hand truck icon" src="public/hand-truck.svg" width="22" height="14">) courtesy of [Delapouite](https://delapouite.com/) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)
+
+
+
+### Credits
+- Hand Truck icon (<img alt="hand truck icon" src="public/hand-truck.svg" width="22" height="14">) courtesy of [Delapouite](https://delapouite.com/) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)
