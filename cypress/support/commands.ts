@@ -11,13 +11,14 @@
 //
 //
 
-// @ts-ignore
-import type { Chainable } from "Cypress"
+// @ts-expect-error: it actually is used
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { Chainable } from 'Cypress'
 
 // -- This is a parent command --
 
 Cypress.Commands.add('console', (message: string) => {
-    console.log(message)
+  console.log(message)
 })
 //
 //
@@ -33,12 +34,14 @@ Cypress.Commands.add('console', (message: string) => {
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
-    interface Chainable {
-        console(message: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
+    export interface Chainable {
+      // eslint-disable-next-line @typescript-eslint/method-signature-style
+      console(message: string): Chainable<void>
+      //       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
+      //       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
+      //       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
     }
   }
 }

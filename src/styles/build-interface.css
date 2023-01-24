@@ -1,0 +1,73 @@
+#open-logistics-boy-app {
+    position: relative;
+    .logistics-boy-icon {
+        position: absolute;
+        height: 24px;
+        width: 24px;
+        border: 0;
+    }
+    span {
+        padding-left: 24px;
+    }
+}
+
+#rpg-tools-logistics-boy-build-form {
+    --header-height: 75px;
+    --icon-size: 40px;
+    height: 100%;
+    display: grid;
+    grid-template-rows: var(--header-height) auto 150px;
+    header {
+        position: relative;
+        padding-left: 8px;
+        padding-right: 16px;
+        background-color: black;
+        img.rpg-tools-logo {
+            height: var(--header-height);
+        }
+        img.logistics-boy-icon {
+            height: var(--icon-size);
+            position: absolute;
+            top: calc(((var(--header-height) - var(--icon-size))/2) - 2px);
+            right: 16px;
+        }
+        h1 {
+            float: right;
+            color: white;
+            height: var(--header-height);
+            line-height: var(--header-height);
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 0;
+            margin-right: calc(var(--icon-size));
+        }
+    }
+    main {
+        padding-top: 16px;
+        ul.rpg-tools-checkbox-list {
+            list-style-type: none;
+            label {
+                display: inline-block;
+                padding-right: 10px;
+                white-space: nowrap;
+            }
+            input {
+                vertical-align: middle;
+            }
+            label span {
+                vertical-align: middle;
+            }
+        }
+    }
+    footer {
+        align-self: center;
+        justify-self: center;
+        button {
+            max-width: 250px;
+        }
+    }
+}
+
+
+
+

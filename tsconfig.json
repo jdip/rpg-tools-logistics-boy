@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -17,6 +18,9 @@
     "types": ["cypress", "node", "@league-of-foundry-developers/foundry-vtt-types"]
   },
   "include": [
-    "src"
+    "src",
+    "./*.ts",
+    "./*.js",
+    "./cypress/**/*.ts"
   ]
 }

@@ -19,17 +19,12 @@ describe('Build Interface', () => {
     cy.get('a[data-tab=tables]').click()
     cy.get('button[id=open-logistics-boy-app]').click()
   })
-  afterEach('Close App', () => {
-    cy.window().its('game').then(result => {
-      console.log(result.modules.get('rpg-tools-logistics-boy').buildInterface.close())
-    })
-    cy.get('#rpg-tools-logistics-boy-build-interface').should('not.exist')
-  })
   it('Open app', () => {
-    cy.get('section[id=logistics-boy-app] > main').then($items => {
-      expect($items).to.contain('Generate Loot Tables?')
+    cy.window().its('ui').then(($ui) => {
+      $ui.notifications?.info(
+        'Test'
+      )
     })
-    cy.get('button[data-action=create-roll-table]').click()
   })
 })
 

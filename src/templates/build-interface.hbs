@@ -1,0 +1,52 @@
+<section id="rpg-tools-logistics-boy-app">
+    <form id="rpg-tools-logistics-boy-build-form">
+        <header>
+            <img class="rpg-tools-logo" alt="RPG.Tools Logo" src="/modules/rpg-tools-logistics-boy/rpg-tools-logo-letters-combined.svg">
+            <h1><img class="logistics-boy-icon" alt="Logistics Boy Icon" src="/modules/rpg-tools-logistics-boy/hand-truck.svg"> LogisticsBoy</h1>
+        </header>
+        <main>
+            {{#if (eq this.status "running")}}
+                <ul>
+                {{#each this.processes}}
+                    <li><i class="fas {{this.icon}} fa-fw {{this.iconAnimation}}"></i> {{this.name}}</li>
+                {{/each}}
+                </ul>
+            {{else if (eq this.status "canceling")}}
+                <h2>Cancelling ...</h2>
+            {{else if (eq this.status "aborted")}}
+                <h2>Table generation aborted.</h2>
+            {{else if (eq this.status "complete")}}
+                <h2>Roll Tables Generated</h2>
+                {{#each this.processes}}
+                    <li><i class="fas fa-check fa-fw"></i> {{this.name}}</li>
+                {{/each}}
+            {{else}}
+                <h2>Generate Loot Tables?</h2>
+                <p>LogisticsBoy will create a standard set of roll tables full of loot items for use with StockBoy/LootBoy.</p>
+                <p></p>
+                <p>This will <b>RESET</b> the existing LogisticsBoy roll tables!</p>
+                    <ul class="rpg-tools-checkbox-list">
+                        {{#each this.availableTables}}
+                            <li>
+                                <label>
+                                    <input type="checkbox" id="logistics-boy-build-form-{{slugify this}}" name="{{slugify this}}" value="{{this}}" checked/>
+                                    <span>{{this}}</span>
+                                </label>
+                            </li>
+                        {{/each}}
+                    </ul>
+            {{/if}}
+        </main>
+        <footer>
+            <button
+                    id="rpg-tools-logistics-boy-button"
+                    type="button"
+                    class="module-control"
+                    title="{{button.title}}"
+                    data-action="{{button.action}}"
+            >
+                <i class="fas fa-fw {{button.icon}} {{button.iconAnimation}}"></i> {{button.title}}
+            </button>
+        </footer>
+    </form>
+</section>
