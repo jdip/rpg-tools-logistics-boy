@@ -17,7 +17,7 @@ beforeEach('Login to Game World', () => {
 describe('Build Interface', () => {
   beforeEach('Open App', () => {
     cy.get('a[data-tab=tables]').click()
-    cy.get('button[id=open-logistics-boy-app]').click()
+    cy.get('button[id=rt-log-boy-open-app]').click()
   })
   afterEach('Close App', () => {
     cy.window().its('game').then(result => {
@@ -26,10 +26,10 @@ describe('Build Interface', () => {
     cy.get('#rpg-tools-logistics-boy-build-interface').should('not.exist')
   })
   it('Open app', () => {
-    cy.get('section[id=logistics-boy-app] > main').then($items => {
-      expect($items).to.contain('Generate Loot Tables?')
+    cy.get('section[id=rt-log-boy-app] > main').then($items => {
+      expect($items).to.contain('Creating Loot Rollable Tables')
     })
-    cy.get('button[data-action=create-roll-table]').click()
+    cy.get('button[data-action=create-rollable-tables]').click()
   })
 })
 

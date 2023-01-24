@@ -1,6 +1,6 @@
-#open-logistics-boy-app {
+#rt-log-boy-open-app {
     position: relative;
-    .logistics-boy-icon {
+    .rt-log-boy-open-app-icon {
         position: absolute;
         height: 24px;
         width: 24px;
@@ -11,21 +11,21 @@
     }
 }
 
-#rpg-tools-logistics-boy-build-form {
+#rt-log-boy-build-form {
     --header-height: 75px;
     --icon-size: 40px;
     height: 100%;
     display: grid;
-    grid-template-rows: var(--header-height) auto 150px;
+    grid-template-rows: var(--header-height) auto 75px;
     header {
         position: relative;
         padding-left: 8px;
         padding-right: 16px;
         background-color: black;
-        img.rpg-tools-logo {
+        img.rt-log-boy-logo {
             height: var(--header-height);
         }
-        img.logistics-boy-icon {
+        img.rt-log-boy-icon {
             height: var(--icon-size);
             position: absolute;
             top: calc(((var(--header-height) - var(--icon-size))/2) - 2px);
@@ -44,7 +44,7 @@
     }
     main {
         padding-top: 16px;
-        ul.rpg-tools-checkbox-list {
+        ul.rt-log-boy-checkbox-list {
             list-style-type: none;
             label {
                 display: inline-block;

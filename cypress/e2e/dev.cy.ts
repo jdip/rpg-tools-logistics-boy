@@ -17,7 +17,7 @@ beforeEach('Login to Game World', () => {
 describe('Build Interface', () => {
   beforeEach('Open App', () => {
     cy.get('a[data-tab=tables]').click()
-    cy.get('button[id=open-logistics-boy-app]').click()
+    cy.get('button[id=rt-log-boy-open-app]').click()
   })
   it('Open app', () => {
     cy.window().its('ui').then(($ui) => {

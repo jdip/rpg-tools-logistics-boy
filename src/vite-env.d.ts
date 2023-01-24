@@ -8,7 +8,8 @@ interface BuildInterfaceProcess {
   iconAnimation?: string
 }
 
-interface BuildInterfaceButtonProps {
+interface BuildInterfaceButtonState {
+  status: BuildInterfaceStatus
   title: string
   action: string
   icon: string

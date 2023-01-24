@@ -2,12 +2,40 @@ import './styles/build-interface.css'
 import { name as moduleId } from './module.json'
 import { availableTables, createRollTables } from './create-roll-tables'
 
-export default class BuildInterface extends Application {
-  constructor (options?: ApplicationOptions) {
-    super(options)
-    this._processes = []
-    this._status = 'initialized'
-  }
+export default class RTLogBoyInterface extends Application {
+  private static readonly _buttonStates: BuildInterfaceButtonState[] = [
+    {
+      status: 'initialized',
+      title: 'Create Rollable Tables',
+      action: 'create-rollable-tables',
+      icon: 'fa-random'
+    },
+    {
+      status: 'running',
+      title: 'Cancel',
+      action: 'cancel',
+      icon: 'fa-cancel'
+    },
+    {
+      status: 'canceling',
+      title: 'Canceling',
+      action: '',
+      icon: 'fa-spinner',
+      iconAnimation: 'fa-spin'
+    },
+    {
+      status: 'aborted',
+      title: 'Back',
+      action: 'back',
+      icon: 'fa-arrow-left'
+    },
+    {
+      status: 'complete',
+      title: 'Back',
+      action: 'back',
+      icon: 'fa-arrow-left'
+    }
+  ]
 
   static override get defaultOptions (): ApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -17,6 +45,12 @@ export default class BuildInterface extends Application {
       width: 720,
       height: 720
     }) as ApplicationOptions
+  }
+
+  constructor (options?: ApplicationOptions) {
+    super(options)
+    this._processes = []
+    this._status = 'initialized'
   }
 
   private _status: BuildInterfaceStatus
@@ -49,40 +83,18 @@ export default class BuildInterface extends Application {
     this._processes = []
   }
 
-  private _buttonProps (): BuildInterfaceButtonProps {
-    switch (this.status()) {
-      case 'initialized':
-        return {
-          title: 'Create Roll Tables',
-          action: 'create-roll-tables',
-          icon: 'fa-random'
-        }
-      case 'running':
-        return {
-          title: 'Cancel',
-          action: 'cancel',
-          icon: 'fa-cancel'
-        }
-      case 'canceling':
-        return {
-          title: 'Canceling',
-          action: '',
-          icon: 'fa-spinner',
-          iconAnimation: 'fa-spin'
-        }
-      case 'aborted':
-        return {
-          title: 'Back',
-          action: 'back',
-          icon: 'fa-arrow-left'
-        }
-      case 'complete':
-        return {
-          title: 'Back',
-          action: 'back',
-          icon: 'fa-arrow-left'
-        }
+  private _doneTimer: ReturnType<typeof setTimeout> | undefined
+
+  private _setDoneTimer (callback: () => void, delay: number): void {
+    if (this._doneTimer !== undefined) {
+      clearTimeout(this._doneTimer)
+      this._doneTimer = undefined
     }
+    this._doneTimer = setTimeout(callback, delay)
+  }
+
+  private _buttonState (): BuildInterfaceButtonState {
+    return (RTLogBoyInterface._buttonStates.find(button => button.status === this.status()) as BuildInterfaceButtonState)
   }
 
   override getData (): BuildInterfaceData {
@@ -90,15 +102,14 @@ export default class BuildInterface extends Application {
       status: this.status(),
       availableTables,
       processes: this._processes,
-      button: this._buttonProps()
+      button: this._buttonState()
     }
   }
 
   override activateListeners (html: JQuery<HTMLElement>): void {
-    console.log('activating listeners')
     super.activateListeners(html)
     html
-      .find('#rpg-tools-logistics-boy-button')
+      .find('#rt-log-boy-button')
       .on('click', (event: JQuery.TriggeredEvent) => {
         this._onClickFormButton(event)
           .catch(err => {
@@ -115,7 +126,7 @@ export default class BuildInterface extends Application {
 
     const action = button.dataset.action
     switch (action) {
-      case 'create-roll-tables':
+      case 'create-rollable-tables':
         await this._createRollTables()
         break
       case 'cancel':
@@ -133,10 +144,10 @@ export default class BuildInterface extends Application {
   private async _createRollTables (): Promise<void> {
     this._setStatus('running')
 
-    const inputs = $('#rpg-tools-logistics-boy-build-form input')
-    const tables = inputs.toArray().filter(input => input instanceof HTMLInputElement).map(input => {
+    const inputs = $('#rt-log-boy-build-form input')
+    const tables = inputs.toArray().filter(input => input instanceof HTMLInputElement && input.checked).map(input => {
       return (input as HTMLInputElement).value
-    }).slice(8)
+    })
 
     const result = await createRollTables(
       tables,
@@ -145,8 +156,11 @@ export default class BuildInterface extends Application {
       this.status.bind(this))
       ? 'complete'
       : 'aborted'
-    setTimeout(() => { this._setStatus(result) }, 1000)
-    ui.notifications?.info(this.status())
+
+    this._setDoneTimer(() => {
+      this._setStatus(result)
+      ui.notifications?.info(`RPG.Tools - LogisticsBoy: Execution ${this.status()}`)
+    }, 1000)
   }
 
   private async _cancel (): Promise<void> {
