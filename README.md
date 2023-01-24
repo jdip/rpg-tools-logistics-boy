@@ -26,20 +26,21 @@ A Foundry VTT Module to automatically create a default set of item roll tables f
 ## Details
 
 - Adds a new ***LogisticsBoy*** button in the ***Rollable Tables*** tab
-- Currently Available Tables:
-    - Alchemist
-    - Arcanist
-    - Armor: Hard
-    - Armor: Soft
-    - Clothing
-    - Oddities
-    - Shields
-    - Treasure
-    - Weapons: Melee
-    - Weapons: Ranged
 - Generated tables will be placed in a 'LogisticsBoy' folder in the Rollable Tables tab
 - You can edit the tables to your heart's content after generation, but re-generating will wipe out any custom changes.
 - Both [StockBoy](https://github.com/jdip/rpg-tools-stock-boy) and [LootBoy](https://github.com/jdip/rpg-tools-loot-boy) will recognize these tables and make them available to use when generating loot.
+- Currently Available Tables:
+    - Alchemist (potions, poisons, bombs, etc.)
+    - Arcanist (scrolls, wands, robes, etc.)
+    - Armor: Hard (metal armor)
+    - Armor: Soft (leather & cloth armor)
+    - Clothing (mundane non-protective clothing)
+    - Oddities (all magic items not found in other tables)
+    - Shields (shields & accessories)
+    - Treasure (precious non-magical items such as gems & rare metals)
+    - Weapons: Melee
+    - Weapons: Ranged
+- The generated tables are heavily weighted against both high level & high rarity items
 
 
 
