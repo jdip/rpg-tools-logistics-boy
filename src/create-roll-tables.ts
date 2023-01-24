@@ -124,7 +124,7 @@ const tableTests = {
       item.system.traits.value.includes('primal') ||
       item.system.traits.value.includes('apex')
     ),
-  Arcana: (item: PathfinderItem) =>
+  Arcanist: (item: PathfinderItem) =>
     (
       hasTraits(item.system.traits) &&
       item.system.traits.value.includes('staff')

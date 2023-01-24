@@ -25,16 +25,16 @@
                 <p>LogisticsBoy will create a standard set of roll tables full of loot items for use with StockBoy/LootBoy.</p>
                 <p></p>
                 <p>This will <b>RESET</b> the existing LogisticsBoy roll tables!</p>
-                    <ul class="rpg-tools-checkbox-list">
-                        {{#each this.availableTables}}
-                            <li>
-                                <label>
-                                    <input type="checkbox" id="logistics-boy-build-form-{{slugify this}}" name="{{slugify this}}" value="{{this}}" checked/>
-                                    <span>{{this}}</span>
-                                </label>
-                            </li>
-                        {{/each}}
-                    </ul>
+                <ul class="rpg-tools-checkbox-list">
+                    {{#each this.availableTables}}
+                        <li>
+                            <label>
+                                <input type="checkbox" id="logistics-boy-build-form-{{slugify this}}" name="{{slugify this}}" value="{{this}}" checked/>
+                                <span>{{this}}</span>
+                            </label>
+                        </li>
+                    {{/each}}
+                </ul>
             {{/if}}
         </main>
         <footer>
