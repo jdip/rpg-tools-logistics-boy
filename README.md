@@ -3,4 +3,39 @@
 # LogisticsBoy
 A Foundry VTT Module to automatically create a default set of item roll tables for use with StockBoy and LootBoy
 
+## Installation
+
+- Go to your foundry instance's ***Configuration and Setup*** page
+- Click the ***Add-on Modules*** Tab
+- Click the ***Install Module*** button
+- Option 1: Automatic Installation:
+    - Search for ***RPG.Tools: LogisticsBoy***
+    - Click the ***Install*** button included in the package description
+- Option 2: Manual Installation:
+    - Copy and paste the following link into the ***Manifest URL*** field: https://github.com/jdip/rpg-tools-logistics-boy/releases//latest/download/module.json
+    - Click the ***Install*** button next to the ***Manifest URL*** field
+- Load your foundry world
+- Go to the ***Game Settings*** tab
+- Click the ***Manage Modules*** button
+- Make sure the box next to **RPG.Tools: LogisticsBoy** is checked
+- Click the ***Save Module Settings*** button
+
+## Details
+
+- Adds a new ***LogisticsBoy*** button in the ***Rollable Tables*** tab
+- Currently Available Tables:
+    - Alchemist
+    - Arcanist
+    - Armor: Hard
+    - Armor: Soft
+    - Clothing
+    - Oddities
+    - Shields
+    - Treasure
+    - Weapons: Melee
+    - Weapons: Ranged
+- Generated tables will be placed in a 'LogisticsBoy' folder in the Rollable Tables tab
+- You can edit the tables to your heart's content after generation, but re-generating will wipe out any custom changes.
+- Both [StockBoy](https://github.com/jdip/rpg-tools-stock-boy) and [LootBoy](https://github.com/jdip/rpg-tools-loot-boy) will recognize these tables and make them available to use when generating loot.
+
 Hand Truck icon (<img alt="hand truck icon" src="public/hand-truck.svg" width="22" height="14">) courtesy of [Delapouite](https://delapouite.com/) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)
