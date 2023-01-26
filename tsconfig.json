@@ -15,7 +15,10 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
-    "types": ["cypress", "node", "@league-of-foundry-developers/foundry-vtt-types"]
+    "types": ["cypress", "node", "jquery"],
+    "typeRoots": [
+      "src/types/foundry"
+    ]
   },
   "include": [
     "src",

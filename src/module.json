@@ -16,7 +16,17 @@
     "minimum": "10",
     "verified": "10"
   },
-  "system": ["pf2e"],
-  "esmodules": ["logistics-boy.mjs"],
+  "relationships": {
+    "systems": [{
+      "id": "pf2e",
+      "type": "system",
+      "manifest": "https://github.com/foundryvtt/pf2e/releases/latest/download/system.json",
+      "compatibility": {
+        "minimum": "4.6.0",
+        "verified": "4.6.8"
+      }
+    }]
+  },
+  "esmodules": ["rt-log-boy.mjs"],
   "styles": ["style.css"]
 }

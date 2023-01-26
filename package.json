@@ -16,11 +16,11 @@
     "hbs": "npx copyfiles -u 2 src/templates/*.hbs dist/templates/",
     "watch-hbs": "chokidar --initial \"src/templates/*.hbs\" -c \"npm run hbs\"",
     "watch-files": "concurrently --kill-others \"npm run watch-css\" \"npm run watch-hbs\" ",
-    "cy-wait": "wait-on -w 1000 dist/style.css dist/module.json dist/logistics-boy.mjs dist/logistics-boy.mjs.map dist/templates/build-interface.hbs && npx cypress open --e2e --browser chrome"
+    "cy-wait": "wait-on -w 2000 dist/style.css dist/module.json dist/rt-log-boy.mjs dist/rt-log-boy.mjs.map dist/templates/rt-log-boy-interface.hbs && npx cypress open --e2e --browser chrome"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.10.0",
-    "@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
+    "@types/jquery": "^3.5.16",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "chokidar": "^3.5.3",
     "chokidar-cli": "^3.0.0",

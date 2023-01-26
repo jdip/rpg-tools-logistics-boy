@@ -6,37 +6,41 @@
         </header>
         <main>
             {{#if (eq this.status "running")}}
-                <ul>
+                <h2>Generating Tables ...</h2>
+                <ul class="rt-log-boy-progress-list">
                 {{#each this.processes}}
                     <li><i class="fas {{this.icon}} fa-fw {{this.iconAnimation}}"></i> {{this.name}}</li>
                 {{/each}}
                 </ul>
             {{else if (eq this.status "canceling")}}
-                <h2>Cancelling ...</h2>
+                <h2 class="rt-log-boy-singleton-message"><i class="fas fa-cog fa-fw fa-spin"></i> Canceling ...</h2>
             {{else if (eq this.status "aborted")}}
-                <h2>Table generation aborted.</h2>
+                <h2 class="rt-log-boy-singleton-message"><i class="fas fa-cancel fa-fw"></i> Rollable table generation canceled.</h2>
             {{else if (eq this.status "complete")}}
-                <h2>Roll Tables Generated</h2>
-                {{#each this.processes}}
-                    <li><i class="fas fa-check fa-fw"></i> {{this.name}}</li>
-                {{/each}}
+                <h2>Rollable Tables Generated</h2>
+                <ul class="rt-log-boy-progress-list">
+                    {{#each this.processes}}
+                        <li><i class="fas fa-check fa-fw"></i> {{this.name}}</li>
+                    {{/each}}
+                </ul>
             {{else}}
                 <h2>Creating Loot Rollable Tables</h2>
                 <ul>
                     <li>LogisticsBoy will create a default set of rollable tables full of loot items for use with StockBoy/LootBoy.</li>
                     <li>The tables will be added to the LogisticsBoy folder in the Rollable Tables tab.</li>
-                    <li>Re-running LogisticsBoy will <b>RESET</b> any existing LogisticsBoy rollable tables!</li>
+                    <li>Re-running Module will <b>RESET</b> any existing Module rollable tables!</li>
                     <li>Only the tables checked below will be created/affected.</li>
                     <li>Click the <i><b>Create Rollable Tables</b></i> button below when you are ready to proceed.</li>
                 </ul>
                 <BR><BR>
                 <h3>Available Tables</h3>
+                <div class="list-widget">Select: <a class="module-control rt-log-boy-action rt-log-boy-link" data-action="select-all">All</a> / <a class="module-control rt-log-boy-action rt-log-boy-link" data-action="select-none">None</a></div>
                 <ul class="rt-log-boy-checkbox-list">
-                    {{#each this.availableTables}}
+                    {{#each this.availableGroups}}
                         <li>
                             <label>
-                                <input type="checkbox" id="rt-log-boy-build-form-{{slugify this}}" name="{{slugify this}}" value="{{this}}" checked/>
-                                <span>{{this}}</span>
+                                <input type="checkbox" name="{{this.title}}" value="{{this.title}}" checked/>
+                                <span><span class="title">{{this.title}}</span> <span class="details">{{this.details}}</span></span>
                             </label>
                         </li>
                     {{/each}}
@@ -45,11 +49,19 @@
         </main>
         <footer>
             <button
-                    id="rt-log-boy-button"
                     type="button"
-                    class="module-control"
+                    class="module-control rt-log-boy-action"
+                    title="Dialog"
+                    data-action="open-create-tables"
+            >
+                <i class="fas fa-fw fa-random"></i> Dialog
+            </button>
+            <button
+                    type="button"
+                    class="module-control rt-log-boy-action"
                     title="{{button.title}}"
                     data-action="{{button.action}}"
+                    {{#if button.disabled}}disabled{{/if}}
             >
                 <i class="fas fa-fw {{button.icon}} {{button.iconAnimation}}"></i> {{button.title}}
             </button>

@@ -10,12 +10,8 @@ const FixURLPlugin = (): Plugin => {
     configureServer (server: ViteDevServer) {
       [
         [
-          'logistics-boy.mjs',
-          'src/logistics-boy.ts'
-        ],
-        [
-          'logistics-boy.mjs',
-          'src/logistics-boy.ts'
+          'rt-log-boy.mjs',
+          'src/module.ts'
         ]
       ].forEach(([original, redirect]) => {
         server.middlewares.use(`/modules/rpg-tools-logistics-boy/${original}`, (_req, res, _next) => {
@@ -95,10 +91,10 @@ const config: UserConfig = {
     emptyOutDir: true,
     sourcemap: true,
     lib: {
-      name: 'logistics-boy',
+      name: 'rt-log-boy',
       entry: 'main.ts',
       formats: ['es'],
-      fileName: 'logistics-boy'
+      fileName: 'rt-log-boy'
     }
   },
   css: {
