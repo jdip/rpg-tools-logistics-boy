@@ -1,7 +1,7 @@
 ![RPG.Tools Logo](public/svg/rpg-tools-logo-letters-combined.svg)
 
 # LogisticsBoy
-A Foundry VTT Module to automatically create a default set of item roll tables for use with StockBoy and LootBoy
+A Foundry VTT Module to automatically create a default set of item roll tables for use with [StockBoy](https://github.com/jdip/rpg-tools-stock-boy) and [LootBoy](https://github.com/jdip/rpg-tools-loot-boy)
 
 ## Compatible Game Systems
 - Pathfinder 2e
