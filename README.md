@@ -12,7 +12,7 @@ A Foundry VTT Module to automatically create a default set of item roll tables f
 - Click the ***Add-on Modules*** Tab
 - Click the ***Install Module*** button
 - Option 1: Automatic Installation:
-    - Search for ***RPG.Tools: Module***
+    - Search for ***RPG.Tools: LogisticsBoy***
     - Click the ***Install*** button included in the package description
 - Option 2: Manual Installation:
     - Copy and paste the following link into the ***Manifest URL*** field: https://github.com/jdip/rpg-tools-logistics-boy/releases//latest/download/module.json
@@ -20,13 +20,13 @@ A Foundry VTT Module to automatically create a default set of item roll tables f
 - Load your foundry world
 - Go to the ***Game Settings*** tab
 - Click the ***Manage Modules*** button
-- Make sure the box next to **RPG.Tools: Module** is checked
+- Make sure the box next to **RPG.Tools: LogisticsBoy** is checked
 - Click the ***Save Module Settings*** button
 
 ## Details
 
 - Adds a new ***Module*** button in the ***Rollable Tables*** tab
-- Generated tables will be placed in a 'Module' folder in the Rollable Tables tab
+- Generated tables will be placed in a 'LogisticsBoy' folder in the Rollable Tables tab
 - You can edit the tables to your heart's content after generation, but re-generating will wipe out any custom changes.
 - Both [StockBoy](https://github.com/jdip/rpg-tools-stock-boy) and [LootBoy](https://github.com/jdip/rpg-tools-loot-boy) will recognize these tables and make them available to use when generating loot.
 - Currently Available Tables:
