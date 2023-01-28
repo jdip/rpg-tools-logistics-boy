@@ -14,7 +14,8 @@
     "watch-css": "chokidar --initial \"src/**/*.css\" \"src/style.css\" -c \"npm run css\"",
     "hbs": "npx copyfiles -u 2 src/templates/*.hbs dist/templates/",
     "watch-hbs": "chokidar --initial \"src/templates/*.hbs\" -c \"npm run hbs\"",
-    "watch-files": "concurrently --kill-others \"npm run watch-css\" \"npm run watch-hbs\" "
+    "watch-files": "concurrently --kill-others \"npm run watch-css\" \"npm run watch-hbs\" ",
+    "clean": "rimraf dist/*"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
@@ -31,8 +32,8 @@
     "chokidar": "^3.5.3",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^7.6.0",
+    "copy-webpack-plugin": "^11.0.0",
     "copyfiles": "^2.4.1",
-    "css-loader": "^6.7.3",
     "cssnano": "^5.1.14",
     "cypress": "^12.4.0",
     "eslint": "^8.32.0",
@@ -46,10 +47,8 @@
     "nyc": "^15.1.0",
     "postcss": "^8.4.21",
     "postcss-cli": "^10.1.0",
-    "postcss-loader": "^7.0.2",
     "postcss-nested": "^6.0.0",
-    "postcss-preset-env": "^8.0.0",
-    "style-loader": "^3.3.1",
+    "rimraf": "^4.1.2",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.4",
     "wait-on": "^7.0.1",

@@ -1,5 +1,3 @@
-/// <reference types="vite/client" />
-
 declare const ui: FoundryUI
 declare const game: Game
 
