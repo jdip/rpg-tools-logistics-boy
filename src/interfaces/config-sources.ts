@@ -1,4 +1,4 @@
-import { name as moduleId } from '../module.json'
+import moduleInfo from '../module.json'
 import { itemSources, defaultPacks } from '../config/sources'
 
 interface ConfigSourceFormData {
@@ -7,9 +7,9 @@ interface ConfigSourceFormData {
 export class RTLBConfigSources extends FormApplication {
   static override get defaultOptions (): FormApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: `${moduleId}-settings`,
+      id: `${moduleInfo.name}-settings`,
       title: 'RPG.Tools: LogisticsBoy Sources',
-      template: `modules/${moduleId}/templates/rt-log-boy-config-sources.hbs`,
+      template: `modules/${moduleInfo.name}/templates/rt-log-boy-config-sources.hbs`,
       width: 880,
       height: 720,
       closeOnSubmit: true,
@@ -19,7 +19,7 @@ export class RTLBConfigSources extends FormApplication {
 
   static registerSettings (): void {
     itemSources.forEach(source => {
-      game.settings.register(moduleId, source, {
+      game.settings.register(moduleInfo.name, source, {
         name: source,
         scope: 'world',
         config: false,
@@ -28,7 +28,7 @@ export class RTLBConfigSources extends FormApplication {
       })
     })
 
-    game.settings.registerMenu(moduleId, 'sourceMenu', {
+    game.settings.registerMenu(moduleInfo.name, 'sourceMenu', {
       name: 'Configure Compendium Sources',
       label: 'Update Sources',
       hint: 'Set the compendium packs used for equipment sources when generating rollable tables.',
@@ -55,7 +55,7 @@ export class RTLBConfigSources extends FormApplication {
   async _updateObject (_event: Event, formData: Record<string, unknown>): Promise<void> {
     const data = expandObject<Record<'sources', string[]>>(formData)
     await Promise.all(itemSources.map(async (source) => {
-      await game.settings.set(moduleId, source, data.sources.includes(source))
+      await game.settings.set(moduleInfo.name, source, data.sources.includes(source))
     }))
   }
 

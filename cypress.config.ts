@@ -1,10 +1,13 @@
 import { defineConfig } from 'cypress'
-import vitePreprocessor from 'cypress-vite'
+import webpackPreprocessor from '@cypress/webpack-preprocessor'
 import registerCodeCoverageTasks from '@cypress/code-coverage/task'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const webpackOptions = require('./webpack.config.js')
 
 export default defineConfig({
   e2e: {
-    baseUrl: 'http://localhost:30001',
+    baseUrl: 'http://localhost:4000',
     env: {
       codeCoverage: {
         exclude: 'cypress/**/*.*'
@@ -12,7 +15,9 @@ export default defineConfig({
     },
     setupNodeEvents (on, config) {
       // implement node event listeners here
-      on('file:preprocessor', vitePreprocessor())
+      on('file:preprocessor', webpackPreprocessor({
+        webpackOptions
+      }))
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       // require('@cypress/code-coverage/task')(on, config)
       registerCodeCoverageTasks(on, config)

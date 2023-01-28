@@ -1,4 +1,4 @@
-import { name as moduleId } from './module.json'
+import moduleInfo from './module.json'
 import Interface from './interface'
 import { getUniqueItemSources } from './config/sources'
 import { registerSettings } from './config/settings'
@@ -21,7 +21,7 @@ interface Module {
 let module: Module
 
 Hooks.once('init', () => {
-  module = game.modules.get(moduleId) as Module
+  module = game.modules.get(moduleInfo.name) as Module
   module.interface = new Interface()
 })
 

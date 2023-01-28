@@ -1,4 +1,4 @@
-import { getUniqueItemSources } from '../../instrumented/config/sources'
+import { getUniqueItemSources } from '../../../src/config/sources'
 
 describe('settings/sources', () => {
   beforeEach('Login', () => {

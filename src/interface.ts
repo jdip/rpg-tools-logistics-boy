@@ -1,5 +1,4 @@
-import './styles/interface.css'
-import { name as moduleId } from './module.json'
+import moduleInfo from './module.json'
 import { itemGroupTests } from './item-groupings'
 import { createRollTables } from './create-roll-tables'
 
@@ -44,9 +43,9 @@ export default class Interface extends Application {
 
   static override get defaultOptions (): ApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: `${moduleId}-build-interface`,
+      id: `${moduleInfo.name}-build-interface`,
       title: 'RPG.Tools: LogisticsBoy',
-      template: `modules/${moduleId}/templates/rt-log-boy-interface.hbs`,
+      template: `modules/${moduleInfo.name}/templates/rt-log-boy-interface.hbs`,
       width: 720,
       height: 720
     }) as ApplicationOptions
@@ -114,6 +113,8 @@ export default class Interface extends Application {
   }
 
   override activateListeners (html: JQuery<HTMLElement>): void {
+    console.log('TEST7')
+
     super.activateListeners(html)
     html
       .find('.rt-log-boy-action')

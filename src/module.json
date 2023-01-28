@@ -27,6 +27,6 @@
       }
     }]
   },
-  "esmodules": ["scripts/rt-log-boy.mjs"],
-  "styles": ["styles/rt-log-boy.css"]
+  "esmodules": ["scripts/rpg-tools-logistics-boy.js"],
+  "styles": ["styles/rpg-tools-logistics-boy.css"]
 }
