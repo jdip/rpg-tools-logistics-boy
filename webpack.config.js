@@ -1,37 +1,10 @@
 const moduleInfo = require('./src/module.json')
 const CopyPlugin = require('copy-webpack-plugin')
 const path = require('path')
-const autoprefixer = require('autoprefixer')
-const postcss = require('postcss')
-const postcssNested = require('postcss-nested')
-const cssnano = require('cssnano')
-
-const transformCSS = async (assets, options) => {
-  const plugins = [autoprefixer, postcssNested]
-  if (options.nano) plugins.push(cssnano)
-  const processed = await Promise.all(
-    assets.map(async (asset) => {
-      const processed = await postcss(plugins)
-        .process(
-          `${asset.data}`,
-          {
-            from: asset.sourceFilename,
-            to: `styles/${moduleInfo.name}.css`,
-            map: options.map ?? {} /* {
-              inline: true,
-              annotation: true
-            } */
-          }
-        )
-      return `${processed}\n`
-    })
-  )
-  return processed.reduce((accumulator, css) => {
-    return `${accumulator}${css}\n`
-  }, '')
-}
+const transformCSS = require('./utils/postcss').transformCSS
 
 module.exports = {
+  devtool: 'source-map',
   entry: {
     index: [
       './src/module.ts'
@@ -67,7 +40,6 @@ module.exports = {
     },
     port: 4000,
     proxy: {
-      // '/modules/rpg-tools-logistics-boy': './dist',
       context: (pathname, _request) => {
         return !pathname.match('^/ws')
       },

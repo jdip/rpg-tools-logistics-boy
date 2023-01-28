@@ -1,3 +1,4 @@
+
 declare const ui: FoundryUI
 declare const game: Game
 

@@ -15,15 +15,13 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
-    "types": ["cypress", "node", "jquery"],
-    "typeRoots": [
-      "src/types/foundry"
-    ]
+    "types": ["cypress", "node", "jquery"]
   },
   "include": [
     "src",
     "./*.ts",
     "./*.js",
-    "./cypress/**/*.ts"
+    "./cypress/**/*.ts",
+    "./types/**/*.d.ts"
   ]
 }

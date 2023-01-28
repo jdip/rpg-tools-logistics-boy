@@ -3,18 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "concurrently --kill-others \"npm run dev-server\" \"npm run watch-css\" \"npm run watch-hbs\" \"npm run cy-wait\"  ",
+    "dev": "concurrently --kill-others \"npm run dev-server\" \"npm run cy-wait\"  ",
     "dev-server": "vite",
     "build": "tsc && vite build",
     "watch": "chokidar --initial \"src/**/*\" \"vite.config.ts\" \"tsconfig.json\" -c \"npm run build\"",
     "cy": "npx cypress open --e2e --browser chrome",
-    "cy-wait": "wait-on -w 2000 dist/styles/rt-log-boy.css dist/module.json dist/scripts/rt-log-boy.mjs dist/scripts/rt-log-boy.mjs.map dist/templates/rt-log-boy-interface.hbs && npx cypress open --e2e --browser chrome",
+    "cy-wait": "wait-on -w 2000 dist/styles/rt-log-boy.css dist/module.json dist/scripts/rpg-tools-logistics-boy.js dist/scripts/rpg-tools-logistics-boy.js.map && npx cypress open --e2e --browser chrome",
     "test": "npx cypress run --e2e --browser chrome",
-    "css": "sed -e '$s/$/\\n/' -s src/**/*.css | npx postcss-cli -o dist/styles/rpg-tools-logistics-boy.css",
-    "watch-css": "chokidar --initial \"src/**/*.css\" \"src/style.css\" -c \"npm run css\"",
-    "hbs": "npx copyfiles -u 2 src/templates/*.hbs dist/templates/",
-    "watch-hbs": "chokidar --initial \"src/templates/*.hbs\" -c \"npm run hbs\"",
-    "watch-files": "concurrently --kill-others \"npm run watch-css\" \"npm run watch-hbs\" ",
     "clean": "rimraf dist/*"
   },
   "devDependencies": {
