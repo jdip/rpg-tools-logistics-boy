@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["cypress", "node"]
+  },
+  "include": ["**/*.ts", "../types/foundry/**/*.d.ts", "../src/global.d.ts"]
+}

@@ -16,7 +16,7 @@ export default defineConfig({
     setupNodeEvents (on, config) {
       // implement node event listeners here
       on('file:preprocessor', webpackPreprocessor({
-        webpackOptions
+        webpackOptions: webpackOptions('development')
       }))
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       // require('@cypress/code-coverage/task')(on, config)

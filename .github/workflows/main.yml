@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run vite build
+      - name: Run webpack build
         env:
           MODULE_VERSION: ${{ env.MODULE_VERSION }}
           MODULE_FILE: ${{ env.MODULE_FILEs }}
