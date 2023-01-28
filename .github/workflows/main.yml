@@ -40,7 +40,7 @@ jobs:
       - name: Run vite build
         env:
           MODULE_VERSION: ${{ env.MODULE_VERSION }}
-          MODULE_FILE: ${{ env.MODULE_FILE }}
+          MODULE_FILE: ${{ env.MODULE_FILEs }}
           GH_PROJECT: ${{ github.repository }}
           GH_TAG: ${{ env.VERSION_TAG }}
         run: npm run build

@@ -10,8 +10,12 @@ const FixURLPlugin = (): Plugin => {
     configureServer (server: ViteDevServer) {
       [
         [
-          'rt-log-boy.mjs',
+          'scripts/rt-log-boy.mjs',
           'src/module.ts'
+        ],
+        [
+          'styles/rt-log-boy.css',
+          'dist/styles/rt-log-boy.css'
         ]
       ].forEach(([original, redirect]) => {
         server.middlewares.use(`/modules/rpg-tools-logistics-boy/${original}`, (_req, res, _next) => {
@@ -83,7 +87,7 @@ const config: UserConfig = {
         } */
     watch: {
       usePolling: true,
-      ignored: ['**/coverage/**', '**/cypress/**', '**/dist/**', '**/.nyc_output/**']
+      ignored: ['**/coverage/**', '**/cypress/**', '**/.nyc_output/**']
     }
   },
   build: {
@@ -94,24 +98,38 @@ const config: UserConfig = {
       name: 'rt-log-boy',
       entry: 'main.ts',
       formats: ['es'],
-      fileName: 'rt-log-boy'
+      fileName: 'scripts/rt-log-boy'
+    },
+    rollupOptions: {
+      output: [
+        {
+          assetFileNames: (chunkInfo): string => {
+            if (chunkInfo.name === 'style.css') return 'styles/rt-log-boy.css'
+            if (chunkInfo.name !== undefined) return chunkInfo.name
+            throw new Error('chuckInfo.name undefined')
+          }
+        }
+      ]
     }
   },
   css: {
     postcss: {
+      to: 'custom.css',
       plugins: [
         nested
       ]
     },
     devSourcemap: true
   },
+
   plugins: [
     FixURLPlugin(),
     updateModuleManifestPlugin(),
     istanbul({
       cypress: true,
       requireEnv: false,
-      exclude: ['**/coverage/**', '**/cypress/**', '**/dist/**', '**/templates/**']
+      include: ['**/src/**', '**/cypress/**'],
+      exclude: ['**/coverage/**', '**/dist/**', '**/templates/**']
     }),
     handlebars({
       reloadOnPartialChange: true

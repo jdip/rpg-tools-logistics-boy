@@ -6,7 +6,7 @@ beforeEach('Login to Game World', () => {
   cy.visit('/')
   cy.get('select').select('Gamemaster')
   cy.get('button[name=join]').click()
-  cy.window().its('game').its('ready').should('be.true').then(result => {
+  cy.window().its('game').its('ready', { timeout: 15000 }).should('be.true').then(result => {
     console.log(result, 'game ready')
   })
   cy.window().its('game').wait(250).then(() => {
@@ -16,8 +16,10 @@ beforeEach('Login to Game World', () => {
 
 describe('Build Interface', () => {
   beforeEach('Open App', () => {
-    cy.get('a[data-tab=tables]').click()
-    cy.get('button[id=rt-log-boy-open-app]').click()
+    cy.get('nav[id=sidebar-tabs] a[data-tab=settings]').click()
+    cy.get('div[id=sidebar] section[id=settings] button[data-action=configure]').click()
+    cy.get('div[id=client-settings] a[data-tab=rpg-tools-logistics-boy]').click()
+    cy.get('div[id=client-settings] button[data-key="rpg-tools-logistics-boy.sourceMenu"]').click()
   })
   it('Open app', () => {
     cy.window().its('ui').then(($ui) => {

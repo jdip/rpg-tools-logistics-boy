@@ -27,6 +27,6 @@
       }
     }]
   },
-  "esmodules": ["rt-log-boy.mjs"],
-  "styles": ["style.css"]
+  "esmodules": ["scripts/rt-log-boy.mjs"],
+  "styles": ["styles/rt-log-boy.css"]
 }

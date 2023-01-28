@@ -1,0 +1,13 @@
+.rt-log-boy-app {
+    form.rt-log-boy-config-sources-form {
+        main {
+            ul.rt-log-boy-checkbox-list {
+                li {
+                    width: 390px;
+                    font-size: 14px;
+                    font-weight: 900!important;
+                }
+            }
+        }
+    }
+}

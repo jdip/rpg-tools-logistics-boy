@@ -1,0 +1,35 @@
+<section id="rt-log-boy-config-sources" class="rt-log-boy-app">
+    <form class="rt-log-boy-config-sources-form">
+        <header>
+            <img class="rt-log-boy-logo" alt="RPG.Tools Logo" src="/modules/rpg-tools-logistics-boy/svg/rpg-tools-logo-letters-combined.svg">
+            <h1><img class="rt-log-boy-icon" alt="Logistics Boy Icon" src="/modules/rpg-tools-logistics-boy/svg/hand-truck.svg"> LogisticsBoy</h1>
+        </header>
+        <main>
+            <h2>Configure Compendium Sources</h2>
+            <p>Only the compendium sources selected below will be used when LogisticsBoy generates its equipment rollable tables.</p>
+            <br>
+            <br>
+            <h3>Available Equipment Sources</h3>
+            <div class="list-widget">Select: <a class="module-control rt-log-boy-action rt-log-boy-link" data-action="select-all">All</a> / <a class="module-control rt-log-boy-action rt-log-boy-link" data-action="select-default">Default</a> / <a class="module-control rt-log-boy-action rt-log-boy-link" data-action="select-none">None</a></div>
+            <ul class="rt-log-boy-checkbox-list">
+                {{#each this.object.sources}}
+                    <li>
+                        <label>
+                            <input type="checkbox" name="sources" value="{{this.name}}" {{#if this.value}}checked{{/if}}/>
+                            <span>{{this.title}}</span>
+                        </label>
+                    </li>
+                {{/each}}
+            </ul>
+        </main>
+        <footer>
+            <button
+                    type="submit"
+                    class="module-control"
+                    title="Save Changes"
+            >
+                <i class="fas fa-fw fa-save"></i> Save Changes
+            </button>
+        </footer>
+    </form>
+</section>
