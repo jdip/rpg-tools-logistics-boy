@@ -1,5 +1,7 @@
+console.log('WEBPACK MODE: DEVELOPMENT')
 module.exports = {
-  devtool: 'source-map',
+  mode: 'development',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -29,7 +31,12 @@ module.exports = {
       },
       {
         test: /\.ts?$/,
-        use: 'ts-loader',
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: false
+          }
+        },
         exclude: /node_modules/
       }
     ]

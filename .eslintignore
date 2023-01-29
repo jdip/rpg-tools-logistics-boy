@@ -1,1 +1,2 @@
-src/types/foundry/**/*
+cypress.config.ts
+types/pf2e/**/*

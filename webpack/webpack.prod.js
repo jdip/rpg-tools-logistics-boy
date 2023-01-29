@@ -1,5 +1,7 @@
+console.log('WEBPACK MODE: PRODUCTION')
 module.exports = {
-  devtool: undefined,
+  mode: 'production',
+  devtool: false,
   module: {
     rules: [
       {

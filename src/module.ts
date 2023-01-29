@@ -1,4 +1,4 @@
-import moduleInfo from './module.json'
+import * as moduleInfo from './module.json'
 import Interface from './interface'
 import { getUniqueItemSources } from './config/sources'
 import { registerSettings } from './config/settings'

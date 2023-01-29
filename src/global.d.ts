@@ -1,5 +1,4 @@
-
-declare const ui: FoundryUI
+declare const ui: FoundryUI<any, any, any, any, any>
 declare const game: Game
 
 type BuildInterfaceStatus = 'initialized' | 'running' | 'canceling' | 'aborted' | 'complete'
@@ -23,7 +22,7 @@ interface BuildInterfaceData {
   status: BuildInterfaceStatus
   availableGroups: ItemGroupTest[]
   processes: BuildInterfaceProcess[] | undefined
-  button: BuildInterfaceButtonProps
+  button: BuildInterfaceButtonState
 }
 type BuildInterfaceProcessCallback = (message: string) => Promise<void>
 

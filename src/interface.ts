@@ -1,4 +1,4 @@
-import moduleInfo from './module.json'
+import * as moduleInfo from './module.json'
 import { itemGroupTests } from './item-groupings'
 import { createRollTables } from './create-roll-tables'
 

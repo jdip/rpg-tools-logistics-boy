@@ -1,4 +1,4 @@
-import moduleInfo from '../module.json'
+import * as moduleInfo from '../module.json'
 import { itemSources, defaultPacks } from '../config/sources'
 
 interface ConfigSourceFormData {
@@ -38,7 +38,7 @@ export class RTLBConfigSources extends FormApplication {
     })
   }
 
-  async getData (): Promise<FormApplicationData<ConfigSourceFormData>> {
+  override async getData (): Promise<FormApplicationData<ConfigSourceFormData>> {
     return {
       object: {
         sources: itemSources.map(source => {

@@ -1,6 +1,7 @@
 const moduleInfo = require('../src/module.json')
 const CopyPlugin = require('copy-webpack-plugin')
 const path = require('path')
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const transformCSS = require('./postcss').transformCSS
 
 module.exports = (env) => {
@@ -16,7 +17,10 @@ module.exports = (env) => {
       ]
     },
     resolve: {
-      extensions: ['.tsx', '.ts', '.js']
+      extensions: ['.js', '.mjs', '.ts', '.mts'],
+      plugins: [
+        new TsconfigPathsPlugin({ configFile: './tsconfig.json' })
+      ]
     },
     output: {
       filename: `scripts/${moduleInfo.name}.js`,
