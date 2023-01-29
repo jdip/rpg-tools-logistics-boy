@@ -1,8 +1,8 @@
-<section id="rt-log-boy-config-sources" class="rt-log-boy-app">
-    <form class="rt-log-boy-config-sources-form">
+<section id="{{this.module.name}}-config-sources" class="{{this.module.name}}-app">
+    <form class="{{this.module.name}}-config-sources-form">
         <header>
-            <img class="rt-log-boy-logo" alt="RPG.Tools Logo" src="/modules/rpg-tools-logistics-boy/svg/rpg-tools-logo-letters-combined.svg">
-            <h1><img class="rt-log-boy-icon" alt="Logistics Boy Icon" src="/modules/rpg-tools-logistics-boy/svg/hand-truck.svg"> LogisticsBoy</h1>
+            <img class="{{module.name}}-logo" alt="RPG.Tools Logo" src="/modules/rpg-tools-logistics-boy/svg/rpg-tools-logo-letters-combined.svg">
+            <h1><img class="{{this.module.name}}-icon" alt="Logistics Boy Icon" src="/modules/rpg-tools-logistics-boy/svg/hand-truck.svg"> LogisticsBoy</h1>
         </header>
         <main>
             <h2>Configure Compendium Sources</h2>
@@ -10,8 +10,12 @@
             <br>
             <br>
             <h3>Available Equipment Sources</h3>
-            <div class="list-widget">Select: <a class="module-control rt-log-boy-action rt-log-boy-link" data-action="select-all">All</a> / <a class="module-control rt-log-boy-action rt-log-boy-link" data-action="select-default">Default</a> / <a class="module-control rt-log-boy-action rt-log-boy-link" data-action="select-none">None</a></div>
-            <ul class="rt-log-boy-checkbox-list">
+            <div class="list-widget">
+                Select: <a class="module-control {{this.module.name}}-action {{this.module.name}}-link" data-action="select-all">All</a>
+                / <a class="module-control {{this.module.name}}-action {{this.module.name}}-link" data-action="select-default">Default</a>
+                / <a class="module-control {{this.module.name}}-action {{this.module.name}}-link" data-action="select-none">None</a>
+            </div>
+            <ul class="{{this.module.name}}-checkbox-list">
                 {{#each this.object.sources}}
                     <li>
                         <label>

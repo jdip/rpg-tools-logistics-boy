@@ -13,7 +13,8 @@ module.exports = {
     rules: {
       'no-unused-expressions': 'off',
       '@typescript-eslint/no-unused-expressions': 'off',
-      'chai-friendly/no-unused-expressions': 'error'
+      'chai-friendly/no-unused-expressions': 'error',
+      '@typescript-eslint/indent': 'off'
     }
   }],
   parserOptions: {

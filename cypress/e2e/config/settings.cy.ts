@@ -1,14 +1,17 @@
-import { RTLBConfigSources } from '../../../src/interfaces/config-sources'
-import { registerSettings } from '../../../src/config/settings'
+import moduleInfo from '../../../src/module.json'
 
-interface mock {
-  settingsRegistered: boolean
-}
-describe('settings/sources', () => {
-  it('calls all registration functions', () => {
-    cy.stub(RTLBConfigSources, 'registerSettings').returns({ settingsRegistered: true })
-    cy.wrap(registerSettings()).then(result => {
-      expect((result as mock).settingsRegistered).to.be.true
+describe('config/settings', () => {
+  beforeEach(() => {
+    cy.login()
+  })
+  it('registers all available equipment packs as settings', () => {
+    cy.window().its('game').then(game => {
+      const settings = [...game.settings.settings.keys()]
+      cy.fixture('sources').then(sources => {
+        cy.wrap(sources).each((source: string) => {
+          expect(settings.includes(`${moduleInfo.name}.${source}`)).to.be.true
+        })
+      })
     })
   })
 })

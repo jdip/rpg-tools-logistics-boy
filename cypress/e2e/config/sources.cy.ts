@@ -1,20 +1,27 @@
+import moduleInfo from '../../../src/module.json'
 import { getUniqueItemSources } from '../../../src/config/sources'
 
-describe('settings/sources', () => {
-  beforeEach('Login', () => {
-  })
-  it('Throws when it can\'t get the equipment compendium', (done) => {
+const isArrayOfString = (obj: unknown): obj is string[] => {
+  if (!Array.isArray(obj)) return false
+  for (let i = 0; i < obj.length; i = i + 1) {
+    if (typeof obj[i] !== 'string') return false
+  }
+  return true
+}
+describe('config/sources - unit', () => {
+  it('Throws/notifies when it can\'t get the equipment compendium', (done) => {
     Object.defineProperty(globalThis, 'game', {
       configurable: true,
       value: {
         packs: new Map()
       }
     })
+    let message = ''
     Object.defineProperty(globalThis, 'ui', {
       configurable: true,
       value: {
         notifications: {
-          error: () => {}
+          error: (m: string) => { message = m }
         }
       }
     })
@@ -24,46 +31,33 @@ describe('settings/sources', () => {
         throw new Error('expected exception never thrown')
       })
       .catch(err => {
-        expect(err.message).to.contain('LogisticsBoy: equipment compendium does not appear to be initialized.')
+        expect(err.message).to.contain(`${moduleInfo.title}: equipment compendium does not appear to be initialized.`)
+        expect(message).to.eq(`${moduleInfo.title}: equipment compendium does not appear to be initialized.`)
         done()
-        // expect(globalThis.ui.notifications.error).to.be.calledOnceWith('LogisticsBoy: equipment compendium does not appear to be initialized.')
       })
-    /* cy.login().then(() => {
+  })
+})
+describe('config/sources - e2e', () => {
+  beforeEach('Login', () => {
+    cy.login()
+  })
+  it('gathers available sources', () => {
+    cy.window().its('game').then(game => {
       Object.defineProperty(globalThis, 'game', {
         configurable: true,
-        value: { packs: new Map() }
+        value: game
       })
-      cy.spy(ui.notifications, 'error')
-      cy.window().then(win => {
-        console.log(win)
-      })
-      cy.window().its('game').then(game => {
-        console.log('GAME', game)
-      })
-      getUniqueItemSources()
-        .then(() => {
-          throw new Error('expected exception never thrown')
+      cy.wrap(getUniqueItemSources()).then(sources => {
+        expect(isArrayOfString(sources)).to.be.true
+        cy.fixture('sources').then(fixture => {
+          expect(sources).to.deep.eq(fixture)
         })
-        .catch(err => {
-          cy.window().then(win => {
-            console.log('WINDOW', win)
+        cy.fixture('defaultSources').then(defaultSources => {
+          cy.wrap(defaultSources).each((pack: string) => {
+            expect((sources as string[]).includes(pack)).to.be.true
           })
-          expect(ui.notifications.error).to.be.calledOnceWith('LogisticsBoy: equipment compendium does not appear to be initialized.')
-          expect(err.message).to.contain('LogisticsBoy: equipment compendium does not appear to be initialized.')
-          done()
-        })
-    }) */
-  })
-  /* it('Retrieves available equipment sources', () => {
-    cy.login().then(() => {
-      cy.wrap(getUniqueItemSources()).then(itemSources => {
-        expect(itemSources).is.a('array')
-        cy.fixture('sources').then(sources => {
-          expect((itemSources as unknown[]).length).to.eq(sources.length)
-          const diff = Cypress._.difference(sources, (itemSources as unknown[]))
-          expect(diff).to.be.empty
         })
       })
     })
-  }) */
+  })
 })

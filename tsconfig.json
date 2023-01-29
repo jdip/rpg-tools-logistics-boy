@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "inlineSourceMap": true,
     "baseUrl": ".",
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -22,6 +23,7 @@
     "./*.ts",
     "./*.js",
     "./cypress/**/*.ts",
-    "./types/**/*.ts"
+    "./types/**/*.ts",
+    "./types/**/*.mts"
   ]
 }

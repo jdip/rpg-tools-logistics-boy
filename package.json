@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "concurrently --kill-others \"npm run dev-server\" \"npm run cy-wait\"  ",
-    "dev-server": "npm run clean && cross-env NODE_ENV=development webpack-dev-server --mode development",
-    "build": "npm run clean && cross-env NODE_ENV=production webpack --mode=production",
-    "build-dev": "npm run clean && cross-env NODE_ENV=development webpack --mode=development",
+    "dev-server": "npm run clean && cross-env NODE_ENV=development webpack-dev-server",
+    "build": "npm run clean && cross-env NODE_ENV=production webpack",
+    "build-dev": "npm run clean && cross-env NODE_ENV=development webpack",
     "cy": "npx cypress open --e2e --browser chrome",
-    "cy-wait": "wait-on -w 2000 dist/styles/rpg-tools-logistics-boy.css dist/module.json dist/scripts/rpg-tools-logistics-boy.js dist/scripts/rpg-tools-logistics-boy.js.map && npm run cy",
+    "cy-wait": "wait-on -w 2000 dist/styles/rpg-tools-logistics-boy.css dist/module.json dist/scripts/rpg-tools-logistics-boy.js && npm run cy",
     "test": "npx cypress run --e2e --browser chrome",
     "clean": "node utils/clean.mjs"
   },

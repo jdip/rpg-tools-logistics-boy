@@ -7,8 +7,8 @@ interface ConfigSourceFormData {
 export class RTLBConfigSources extends FormApplication {
   static override get defaultOptions (): FormApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: `${moduleInfo.name}-settings`,
-      title: 'RPG.Tools: LogisticsBoy Sources',
+      id: `${moduleInfo.name}-config-sources-app`,
+      title: `${moduleInfo.title}: LogisticsBoy Sources`,
       template: `modules/${moduleInfo.name}/templates/rt-log-boy-config-sources.hbs`,
       width: 880,
       height: 720,
@@ -38,8 +38,9 @@ export class RTLBConfigSources extends FormApplication {
     })
   }
 
-  async getData (): Promise<FormApplicationData<ConfigSourceFormData>> {
+  async getData (): Promise<FormApplicationData<ConfigSourceFormData> & { module: Record<string, any> }> {
     return {
+      module: moduleInfo,
       object: {
         sources: itemSources.map(source => {
           return {
@@ -62,21 +63,21 @@ export class RTLBConfigSources extends FormApplication {
   override activateListeners (html: JQuery<HTMLElement>): void {
     super.activateListeners(html)
     html
-      .find('.rt-log-boy-action')
+      .find(`.${moduleInfo.name}-action`)
       .on('click', (event: JQuery.TriggeredEvent) => {
-        this._onClickFormButton(event)
+        this._onClickButton(event)
           .catch(err => {
+            ui?.notifications?.error(
+              `${moduleInfo.title}: Unexpected Error, report bugs at ${moduleInfo.bugs}.`
+            )
             console.error(err)
           })
       })
   }
 
-  private async _onClickFormButton (event: JQuery.TriggeredEvent): Promise<void> {
+  private async _onClickButton (event: JQuery.TriggeredEvent): Promise<void> {
     event.preventDefault()
-    const button = (event.target.parentElement.tagName === 'BUTTON'
-      ? event.target.parentElement
-      : event.target) as HTMLElement
-
+    const button = (event.target) as HTMLElement
     const action = button.dataset.action
     switch (action) {
       case 'select-all':
@@ -88,18 +89,20 @@ export class RTLBConfigSources extends FormApplication {
       case 'select-none':
         await this._selectNone()
         break
+      default:
+        throw new Error(`Unexpected Button Action: ${action ?? 'none'}`)
     }
   }
 
   private async _selectAll (): Promise<void> {
-    const inputs = $('#rt-log-boy-config-sources form.rt-log-boy-config-sources-form input')
+    const inputs = $(`#${moduleInfo.name}-config-sources form.${moduleInfo.name}-config-sources-form input`)
     inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(input => {
       (input as HTMLInputElement).checked = true
     })
   }
 
   private async _selectDefault (): Promise<void> {
-    const inputs = $('#rt-log-boy-config-sources form.rt-log-boy-config-sources-form input')
+    const inputs = $(`#${moduleInfo.name}-config-sources form.${moduleInfo.name}-config-sources-form input`)
     inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(i => {
       const input = (i as HTMLInputElement)
       input.checked = defaultPacks.includes(input.value)
@@ -107,7 +110,7 @@ export class RTLBConfigSources extends FormApplication {
   }
 
   private async _selectNone (): Promise<void> {
-    const inputs = $('#rt-log-boy-config-sources form.rt-log-boy-config-sources-form input')
+    const inputs = $(`#${moduleInfo.name}-config-sources form.${moduleInfo.name}-config-sources-form input`)
     inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(input => {
       (input as HTMLInputElement).checked = false
     })

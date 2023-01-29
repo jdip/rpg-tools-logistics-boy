@@ -7,6 +7,7 @@ const webpackOptions = require('./webpack.config.js')
 
 export default defineConfig({
   e2e: {
+    // numTestsKeptInMemory: 0,
     baseUrl: 'http://localhost:4000',
     env: {
       codeCoverage: {

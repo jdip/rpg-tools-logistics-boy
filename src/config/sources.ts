@@ -1,3 +1,4 @@
+import moduleInfo from '../module.json'
 const defaultPacks = [
   'Pathfinder Core Rulebook',
   'Pathfinder Gamemastery Guide',
@@ -14,9 +15,9 @@ const getEquipmentPack = (): CompendiumCollection => {
   const equipmentPack = game?.packs?.get('pf2e.equipment-srd')
   if (equipmentPack === undefined) {
     ui?.notifications?.error(
-      'LogisticsBoy: equipment compendium does not appear to be initialized.'
+      `${moduleInfo.title}: equipment compendium does not appear to be initialized.`
     )
-    throw new Error('LogisticsBoy: equipment compendium does not appear to be initialized.')
+    throw new Error(`${moduleInfo.title}: equipment compendium does not appear to be initialized.`)
   }
   return equipmentPack
 }

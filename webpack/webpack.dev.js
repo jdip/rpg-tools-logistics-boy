@@ -1,5 +1,5 @@
 module.exports = {
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -12,16 +12,7 @@ module.exports = {
             ],
             presets: [
               '@babel/typescript',
-              [
-                '@babel/env',
-                {
-                  modules: false,
-                  targets: {
-                    chrome: '58',
-                    ie: '11'
-                  }
-                }
-              ]
+              '@babel/preset-env'
             ]
           }
         },
