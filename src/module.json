@@ -1,6 +1,6 @@
 {
   "name": "rpg-tools-logistics-boy",
-  "title": "RPG.Tools: LogisticsBoy",
+  "title": "RPG.Tools LogisticsBoy",
   "description": "Automatically create a default set of item roll tables for use with StockBoy and LootBoy",
   "authors": [
     {

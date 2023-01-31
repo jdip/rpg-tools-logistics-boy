@@ -1,0 +1,55 @@
+<section id="{{this.meta.name}}-ready-content" class="{{this.meta.name}}-interface">
+    <form class="{{this.meta.name}}-interface-form">
+        <header>
+            <img class="{{this.meta.name}}-logo" alt="RPG.Tools Logo" src="/modules/{{this.meta.name}}/svg/rpg-tools-logo-letters-combined.svg">
+            <h1><img class="{{this.meta.name}}-icon" alt="Logistics Boy Icon" src="/modules/{{this.meta.name}}/svg/hand-truck.svg"> LogisticsBoy</h1>
+        </header>
+        <main>
+            <h2>Creating Loot Rollable Tables</h2>
+            <ul>
+                <li>LogisticsBoy will create a default set of rollable tables full of loot items for use with StockBoy/LootBoy.</li>
+                <li>The tables will be added to the LogisticsBoy folder in the Rollable Tables tab.</li>
+                <li>Re-running Module will <b>RESET</b> any existing Module rollable tables!</li>
+                <li>Only the tables checked below will be created/affected.</li>
+                <li>Click the <i><b>Create Rollable Tables</b></i> button below when you are ready to proceed.</li>
+            </ul>
+            <BR><BR>
+            <h3>Available Tables</h3>
+            <div class="{{this.meta.name}}-list-widget">
+                Select: <a class="module-control {{this.meta.name}}-action {{this.meta.name}}-link" data-action="select-all">All</a>
+                / <a class="module-control {{this.meta.name}}-action {{this.meta.name}}-link" data-action="select-none">None</a></div>
+            <ul class="{{this.meta.name}}-checkbox-list">
+                {{#each this.availableGroups}}
+                    <li>
+                        <label>
+                            <input type="checkbox" name="{{this.title}}" value="{{this.title}}" checked/>
+                            <span>
+                                <span class="{{this.meta.name}}-label-title">{{this.title}}</span>
+                                <span class="{{this.meta.name}}-label-details">{{this.details}}</span>
+                            </span>
+                        </label>
+                    </li>
+                {{/each}}
+            </ul>
+        </main>
+        <footer>
+            <button
+                    type="button"
+                    class="module-control {{this.meta.name}}-action"
+                    title="Dialog"
+                    data-action="open-create-tables"
+            >
+                <i class="fas fa-fw fa-random"></i> Dialog
+            </button>
+            <button
+                    type="button"
+                    class="module-control {{this.meta.name}}-action"
+                    title="{{button.title}}"
+                    data-action="{{button.action}}"
+                    {{#if button.disabled}}disabled{{/if}}
+            >
+                <i class="fas fa-fw {{button.icon}} {{button.iconAnimation}}"></i> {{button.title}}
+            </button>
+        </footer>
+    </form>
+</section>

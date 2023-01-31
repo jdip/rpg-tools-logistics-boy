@@ -1,14 +1,9 @@
-import moduleInfo from '../module.json'
-import { itemSources, defaultPacks } from '../config/dnd5e-sources'
-
-interface ConfigSourceFormData {
-  sources: Array<{ title: string, name: string, value: boolean }>
-}
-export class RTLBDnD5eConfigSources extends FormApplication {
+import moduleInfo from '../../src/module.json'
+export class ConfigSources extends FormApplication {
   static override get defaultOptions (): FormApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: `${moduleInfo.name}-pf2e-config-sources-app`,
-      title: `${moduleInfo.title}: LogisticsBoy Sources`,
+      id: `${moduleInfo.name}-config-sources-app`,
+      title: `${moduleInfo.title}: ${game.i18n.localize('RTLB.Sources')}`,
       template: `modules/${moduleInfo.name}/templates/config-sources.hbs`,
       width: 880,
       height: 720,
@@ -18,46 +13,31 @@ export class RTLBDnD5eConfigSources extends FormApplication {
   }
 
   static registerSettings (): void {
-    itemSources.forEach(source => {
-      game.settings.register(moduleInfo.name, source, {
-        name: source,
-        scope: 'world',
-        config: false,
-        type: Boolean,
-        default: defaultPacks.includes(source)
-      })
-    })
+    console.log('REGISTER SETTINGS')
+  }
 
+  static registerMenu (): void {
     game.settings.registerMenu(moduleInfo.name, 'sourceMenu', {
-      name: 'Configure PF2e Compendium Sources',
-      label: 'Update Sources',
-      hint: 'Set the compendium packs used for equipment sources when generating rollable tables.',
+      name: game.i18n.localize('RTLB.ConfigureCompendiumSources'),
+      label: game.i18n.localize('RTLB.UpdateSources'),
+      hint: game.i18n.localize('RTLB.SelectCompendiumPacksUsed'),
       icon: 'fas fa-list',
-      type: RTLBDnD5eConfigSources,
+      type: ConfigSources,
       restricted: true
     })
   }
 
-  async getData (): Promise<FormApplicationData<ConfigSourceFormData> & { moduleInfo: Record<string, any> }> {
+  async getData (): Promise<FormApplicationData<Record<string, unknown>> & { meta: typeof moduleInfo }> {
     return {
-      moduleInfo,
+      meta: moduleInfo,
       object: {
-        sources: itemSources.map(source => {
-          return {
-            title: source.replace('Pathfinder ', ''),
-            name: source,
-            value: game.settings.get('rpg-tools-logistics-boy', source)
-          }
-        })
       }
     }
   }
 
   async _updateObject (_event: Event, formData: Record<string, unknown>): Promise<void> {
     const data = expandObject<Record<'sources', string[]>>(formData)
-    await Promise.all(itemSources.map(async (source) => {
-      await game.settings.set(moduleInfo.name, source, data.sources.includes(source))
-    }))
+    console.log('UPDATE', data)
   }
 
   override activateListeners (html: JQuery<HTMLElement>): void {
@@ -68,7 +48,7 @@ export class RTLBDnD5eConfigSources extends FormApplication {
         this._onClickButton(event)
           .catch(err => {
             ui?.notifications?.error(
-              `${moduleInfo.title}: Unexpected Error, report bugs at ${moduleInfo.bugs}.`
+              `${moduleInfo.title}: ${game.i18n.localize('RTLB.UnexpectedError')}, ${game.i18n.localize('RTLB.ReportBugsAt')} ${moduleInfo.bugs}.`
             )
             console.error(err)
           })
@@ -90,27 +70,27 @@ export class RTLBDnD5eConfigSources extends FormApplication {
         await this._selectNone()
         break
       default:
-        throw new Error(`Unexpected Button Action: ${action ?? 'none'}`)
+        throw new Error(`${game.i18n.localize('RTLB.UnexpectedButtonAction')}: ${action ?? 'none'}`)
     }
   }
 
   private async _selectAll (): Promise<void> {
-    const inputs = $(`#${moduleInfo.name}-config-sources form.${moduleInfo.name}-config-sources-form input`)
+    const inputs = $(`#${moduleInfo.name}-config-sources-content form.${moduleInfo.name}-config-sources-form input`)
     inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(input => {
       (input as HTMLInputElement).checked = true
     })
   }
 
   private async _selectDefault (): Promise<void> {
-    const inputs = $(`#${moduleInfo.name}-config-sources form.${moduleInfo.name}-config-sources-form input`)
+    const inputs = $(`#${moduleInfo.name}-config-sources-content form.${moduleInfo.name}-config-sources-form input`)
     inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(i => {
       const input = (i as HTMLInputElement)
-      input.checked = defaultPacks.includes(input.value)
+      input.checked = false // defaultPacks.includes(input.value)
     })
   }
 
   private async _selectNone (): Promise<void> {
-    const inputs = $(`#${moduleInfo.name}-config-sources form.${moduleInfo.name}-config-sources-form input`)
+    const inputs = $(`#${moduleInfo.name}-config-sources-content form.${moduleInfo.name}-config-sources-form input`)
     inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(input => {
       (input as HTMLInputElement).checked = false
     })

@@ -5,12 +5,12 @@
         "ts-node/register"
     ],
     "report-dir": "coverage",
+    "include": [
+        "src/**/*.ts"
+    ],
     "exclude": [
-        "coverage/**",
-        "cypress/**",
-        "dist/**",
-        "types/foundry/**",
-        "utils/**",
-        "webpack/**"
+        "src/macros/**",
+        "src/styles/**",
+        "src/templates/**"
     ]
 }
