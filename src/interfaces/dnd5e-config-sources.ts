@@ -1,15 +1,15 @@
 import moduleInfo from '../module.json'
-import { itemSources, defaultPacks } from '../config/sources'
+import { itemSources, defaultPacks } from '../config/dnd5e-sources'
 
 interface ConfigSourceFormData {
   sources: Array<{ title: string, name: string, value: boolean }>
 }
-export class RTLBConfigSources extends FormApplication {
+export class RTLBDnD5eConfigSources extends FormApplication {
   static override get defaultOptions (): FormApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: `${moduleInfo.name}-config-sources-app`,
+      id: `${moduleInfo.name}-pf2e-config-sources-app`,
       title: `${moduleInfo.title}: LogisticsBoy Sources`,
-      template: `modules/${moduleInfo.name}/templates/rt-log-boy-config-sources.hbs`,
+      template: `modules/${moduleInfo.name}/templates/config-sources.hbs`,
       width: 880,
       height: 720,
       closeOnSubmit: true,
@@ -29,18 +29,18 @@ export class RTLBConfigSources extends FormApplication {
     })
 
     game.settings.registerMenu(moduleInfo.name, 'sourceMenu', {
-      name: 'Configure Compendium Sources',
+      name: 'Configure PF2e Compendium Sources',
       label: 'Update Sources',
       hint: 'Set the compendium packs used for equipment sources when generating rollable tables.',
       icon: 'fas fa-list',
-      type: RTLBConfigSources,
+      type: RTLBDnD5eConfigSources,
       restricted: true
     })
   }
 
-  async getData (): Promise<FormApplicationData<ConfigSourceFormData> & { module: Record<string, any> }> {
+  async getData (): Promise<FormApplicationData<ConfigSourceFormData> & { moduleInfo: Record<string, any> }> {
     return {
-      module: moduleInfo,
+      moduleInfo,
       object: {
         sources: itemSources.map(source => {
           return {

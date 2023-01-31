@@ -1,9 +1,11 @@
-import moduleInfo from './module.json'
-import { itemGroupTests } from './item-groupings'
-import { createRollTables } from './create-roll-tables'
+import { thisSystem, moduleInfo } from '../module'
+import { pf2eItemGroupTests } from '../roll-tables/pf2e-item-groupings'
+import { dnd5eItemGroupTests } from '../roll-tables/dnd5e-item-groupings'
+import { pf2eCreateRollTables } from '../roll-tables/pf2e-create-roll-tables'
+import { dnd5eCreateRollTables } from '../roll-tables/dnd5e-create-roll-tables'
 
-export default class Interface extends Application {
-  private static readonly _buttonStates: BuildInterfaceButtonState[] = [
+export default class MainInterface extends Application {
+  private static readonly _buttonStates: MainInterfaceButtonState[] = [
     {
       status: 'initialized',
       title: 'Create Rollable Tables',
@@ -43,32 +45,33 @@ export default class Interface extends Application {
 
   static override get defaultOptions (): ApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: `${moduleInfo.name}-build-interface`,
+      id: `${moduleInfo.name}-main-interface`,
       title: 'RPG.Tools: LogisticsBoy',
-      template: `modules/${moduleInfo.name}/templates/rt-log-boy-interface.hbs`,
+      template: `modules/${moduleInfo.name}/templates/main-interface.hbs`,
       width: 720,
       height: 720
     }) as ApplicationOptions
   }
 
-  constructor (options?: ApplicationOptions) {
+  constructor (system: ValidSystems, options?: ApplicationOptions) {
     super(options)
+    this._system = system
     this._processes = []
     this._status = 'initialized'
   }
 
-  private _status: BuildInterfaceStatus
-
-  status (): BuildInterfaceStatus {
+  private readonly _system: ValidSystems
+  private _status: MainInterfaceStatus
+  status (): MainInterfaceStatus {
     return this._status
   }
 
-  private async _setStatus (newStatus: BuildInterfaceStatus): Promise<void> {
+  private async _setStatus (newStatus: MainInterfaceStatus): Promise<void> {
     this._status = newStatus
     await this.render()
   }
 
-  private _processes: BuildInterfaceProcess[]
+  private _processes: MainInterfaceProcess[]
 
   async startProcess (name: string): Promise<void> {
     this._processes.push({ name, icon: 'fa-cog', iconAnimation: 'fa-spin' })
@@ -99,22 +102,21 @@ export default class Interface extends Application {
     this._doneTimer = setTimeout(callback, delay)
   }
 
-  private _buttonState (): BuildInterfaceButtonState {
-    return (Interface._buttonStates.find(button => button.status === this.status()) as BuildInterfaceButtonState)
+  private _buttonState (): MainInterfaceButtonState {
+    return (MainInterface._buttonStates.find(button => button.status === this.status()) as MainInterfaceButtonState)
   }
 
-  override getData (): BuildInterfaceData {
+  override getData (): MainInterfaceData {
     return {
+      moduleInfo,
       status: this.status(),
-      availableGroups: itemGroupTests,
+      availableGroups: thisSystem === 'dnd5e' ? dnd5eItemGroupTests : pf2eItemGroupTests,
       processes: this._processes,
       button: this._buttonState()
     }
   }
 
   override activateListeners (html: JQuery<HTMLElement>): void {
-    console.log('TEST7')
-
     super.activateListeners(html)
     html
       .find('.rt-log-boy-action')
@@ -162,7 +164,7 @@ export default class Interface extends Application {
     })
     if (tables.length > 0) {
       await this._setStatus('running')
-
+      const createRollTables = this._system === 'dnd5e' ? dnd5eCreateRollTables : pf2eCreateRollTables
       const result = await createRollTables(
         tables,
         this.startProcess.bind(this),

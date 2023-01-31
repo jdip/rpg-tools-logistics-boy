@@ -19,7 +19,7 @@
     "types": ["cypress", "node", "jquery"],
   },
   "include": [
-    "src",
+    "src/**/*.ts",
     "./*.ts",
     "./*.js",
     "./cypress/**/*.ts",

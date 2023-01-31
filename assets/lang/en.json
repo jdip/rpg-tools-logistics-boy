@@ -1,0 +1,17 @@
+{
+  "RTLB.ConfigureCompendiumSources": "Configure Compendium Sources",
+  "RTLB.ConfigureCompendiumSourcesDescription": "Only the compendium sources selected below will be used when LogisticsBoy generates its equipment rollable tables.",
+  "RTLB.AvailableEquipmentSources": "Available Equipment Sources",
+  "RTLB.Select": "Select",
+  "RTLB.All": "All",
+  "RTLB.Default": "Default",
+  "RTLB.None": "None",
+  "RTLB.SaveChanges": "Save Changes",
+  "RTLB.Sources": "Sources",
+  "RTLB.UpdateSources": "Update Sources",
+  "RTLB.SelectCompendiumPacksUsed": "Select the compendium packs used as equipment sources when generating rollable tables",
+  "RTLB.UnexpectedError": "Unexpected Error",
+  "RTLB.UnexpectedButtonAction": "Unexpected Button Action",
+  "RTLB.ReportBugsAt": "report bugs at",
+  "RTLB.EquipmentCompendiumNotInitialized": "equipment compendium does not appear to be initialized"
+}

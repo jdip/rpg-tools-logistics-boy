@@ -1,0 +1,39 @@
+<section id="{{this.moduleInfo.name}}-config-sources-content"  class="{{this.moduleInfo.name}}-interface">
+    <form class="{{this.moduleInfo.name}}-config-sources-form">
+        <header>
+            <img class="{{this.moduleInfo.name}}-logo" alt="RPG.Tools Logo" src="/modules/{{this.moduleInfo.name}}/svg/rpg-tools-logo-letters-combined.svg">
+            <h1><img class="{{this.moduleInfo.name}}-icon" alt="Logistics Boy Icon" src="/modules/{{this.moduleInfo.name}}/svg/hand-truck.svg"> LogisticsBoy</h1>
+        </header>
+        <main>
+            <h2>{{localize 'RTLB.ConfigureCompendiumSources'}}</h2>
+            <p>{{localize 'RTLB.ConfigureCompendiumSourcesDescription'}}</p>
+            <br>
+            <br>
+            <h3>{{localize 'RTLB.AvailableEquipmentSources'}}</h3>
+            <div class="list-widget">
+                {{localize 'RTLB.Select'}}Select: <a class="module-control {{this.moduleInfo.name}}-action {{this.moduleInfo.name}}-link" data-action="select-all">{{localize 'RTLB.All'}}</a>
+                / <a class="module-control {{this.moduleInfo.name}}-action {{this.moduleInfo.name}}-link" data-action="select-default">{{localize 'RTLB.Default'}}</a>
+                / <a class="module-control {{this.moduleInfo.name}}-action {{this.moduleInfo.name}}-link" data-action="select-none">{{localize 'RTLB.None'}}</a>
+            </div>
+            <ul class="{{this.moduleInfo.name}}-checkbox-list">
+                {{#each this.object.sources}}
+                    <li>
+                        <label>
+                            <input type="checkbox" name="sources" value="{{this.name}}" {{#if this.value}}checked{{/if}}/>
+                            <span>{{this.title}}</span>
+                        </label>
+                    </li>
+                {{/each}}
+            </ul>
+        </main>
+        <footer>
+            <button
+                    type="submit"
+                    class="module-control"
+                    title="{{localize 'RTLB.SaveChanges'}}"
+            >
+                <i class="fas fa-fw fa-save"></i> {{localize 'RTLB.SaveChanges'}}
+            </button>
+        </footer>
+    </form>
+</section>

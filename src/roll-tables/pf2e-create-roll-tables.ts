@@ -1,4 +1,4 @@
-import { itemGroupTests } from './item-groupings'
+import { pf2eItemGroupTests } from './pf2e-item-groupings'
 
 const isGame = (game: Game | unknown): game is Game => {
   return game instanceof Game
@@ -46,7 +46,7 @@ const buildTable = async (
 
   await Promise.all(items.map(async (item: PathfinderItem) => {
     const rarity = item.system.traits?.rarity !== undefined ? item.system.traits.rarity : 'common'
-    if (rarity === 'unique') return
+    if (rarityWeights[rarity] === 0) return
     const level = item.system.level?.value !== undefined ? parseInt(item.system.level.value) : 0
     const levelFactor = (21 - level) * (21 - level)
     const weight = levelFactor * rarityWeights[rarity] * (Object.hasOwn(weightAdjustments, item.name) ? weightAdjustments[item.name] : 1)
@@ -63,11 +63,11 @@ const buildTable = async (
   await tbl.normalize()
 }
 
-const createRollTables = async (
+const pf2eCreateRollTables = async (
   tables: string[],
-  startProcess: BuildInterfaceProcessCallback,
-  stopProcess: BuildInterfaceProcessCallback,
-  status: () => BuildInterfaceStatus
+  startProcess: MainInterfaceProcessCallback,
+  stopProcess: MainInterfaceProcessCallback,
+  status: () => MainInterfaceStatus
 ): Promise<boolean> => {
   if (!isGame(game) || !isFolders(game.folders) || !game.ready) {
     ui.notifications?.error(
@@ -113,11 +113,11 @@ const createRollTables = async (
     if (status() === 'canceling') return false
     const table = tables[i]
     await startProcess(table)
-    const testData = itemGroupTests.find(t => t.title === table) as ItemGroupTest
+    const testData = pf2eItemGroupTests.find(t => t.title === table) as ItemGroupTest
     const filtered: PathfinderItem[] = [...items].filter(testData.test)
     await buildTable(logisticsFolder, `LogisticsBoy - ${table}`, filtered, testData.weightAdjustments)
     await stopProcess(table)
   }
   return status() !== 'canceling'
 }
-export { createRollTables }
+export { pf2eCreateRollTables }

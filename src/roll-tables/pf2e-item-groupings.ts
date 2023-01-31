@@ -380,7 +380,7 @@ const weaponsAmmunition = (item: PathfinderItem): boolean => (
   )
 )
 
-const itemGroupTests: ItemGroupTest[] = [
+const pf2eItemGroupTests: ItemGroupTest[] = [
   {
     title: 'Alchemist',
     details: 'bombs, elixirs, mutagens, oils, potions, poisons',
@@ -491,11 +491,11 @@ const itemGroupTests: ItemGroupTest[] = [
     }
   }
 ]
-const coreTests = [...itemGroupTests]
+const coreTests = [...pf2eItemGroupTests]
 
-itemGroupTests.sort((a, b) => a.title.localeCompare(b.title))
+pf2eItemGroupTests.sort((a, b) => a.title.localeCompare(b.title))
 
-itemGroupTests.push({
+pf2eItemGroupTests.push({
   title: 'Other',
   details: 'catch-all for uncategorized items',
   test: (item: PathfinderItem) => {
@@ -509,4 +509,4 @@ itemGroupTests.push({
   weightAdjustments: {}
 })
 
-export { itemGroupTests }
+export { pf2eItemGroupTests }

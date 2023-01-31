@@ -1,48 +1,43 @@
+import { preparePF2e } from './config/pf2e'
+import { prepareDnD5e } from './config/dnd5e'
+
 import moduleInfo from './module.json'
-import Interface from './interface'
-import { getUniqueItemSources } from './config/sources'
-import { registerSettings } from './config/settings'
+import RTLBMainInterface from './interfaces/main-interface'
 
-interface Module {
-  id: string
-  active: boolean
-  esmodules: Set<string>
-  scripts: Set<string>
-  flags: Record<string, Record<string, unknown>>
-  title: string
-  compatibility: {
-    minimum?: string
-    verified?: string
-    maximum?: string
-  }
-  interface: Interface
+let thisModule: FoundryModule
+let thisSystem: ValidSystems
+const isValidSystem = (systemId: unknown): systemId is ValidSystems => {
+  return systemId === 'pf2e' || systemId === 'dnd5e'
 }
-
-let module: Module
-
-Hooks.once('init', () => {
-  module = game.modules.get(moduleInfo.name) as Module
-  module.interface = new Interface()
+Hooks.once('setup', () => {
+  if (!isValidSystem(game.system.id)) {
+    console.error(`${moduleInfo.title}: Invalid game system: ${game.system.id}`)
+    return
+  }
+  thisModule = game.modules.get(moduleInfo.name) as FoundryModule
+  thisSystem = game.system.id
+  thisModule.interface = new RTLBMainInterface(game.system.id)
+  if (thisSystem === 'pf2e') {
+    preparePF2e()
+  } else if (thisSystem === 'dnd5e') {
+    prepareDnD5e()
+  }
+  Hooks.on('renderRollTableDirectory', (_: Application, html: JQuery) => {
+    const button = $(
+      `<button id="${moduleInfo.name}-open-main-interface-button" class="cc-sidebar-button" type="button">
+       <img class="${moduleInfo.name}-open-main-interface-icon" alt="${moduleInfo.title} Icon" width="14" height="14" src="/modules/${moduleInfo.name}/svg/hand-truck-black.svg">
+       <span>LogisticsBoy</span>
+     </button>`
+    )
+    button.on('click', () => {
+      thisModule.interface.render(true)
+    })
+    html.find('.directory-header .action-buttons').append(button)
+  })
 })
 
 Hooks.once('ready', async () => {
-  await getUniqueItemSources()
-  await registerSettings()
+  console.log('READY', game.system.id)
 })
-Hooks.on('renderRollTableDirectory', (_: Application, html: JQuery) => {
-  const button = $(
-    `<button id="rt-log-boy-open-app-button" class="cc-sidebar-button" type="button">
-       <img class="rt-log-boy-open-app-icon" alt="Logistics Boy Icon" width="14" height="14" src="/modules/rpg-tools-logistics-boy/svg/hand-truck-black.svg">
-       <span>LogisticsBoy</span>
-     </button>`
-  )
-  button.on('click', () => {
-    const result = module.interface.render(true)
-    if (result instanceof Promise) {
-      result.catch(err => {
-        console.error(err)
-      })
-    }
-  })
-  html.find('.directory-header .action-buttons').append(button)
-})
+
+export { thisModule, thisSystem, moduleInfo }

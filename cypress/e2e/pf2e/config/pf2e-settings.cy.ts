@@ -1,8 +1,8 @@
-import moduleInfo from '../../../src/module.json'
+import moduleInfo from '../../../../src/module.json'
 
-describe('config/settings', () => {
+describe('config/pf2e-settings', () => {
   beforeEach(() => {
-    cy.login()
+    cy.login({ world: 'PF2e' })
   })
   it('registers all available equipment packs as settings', () => {
     cy.window().its('game').then(game => {

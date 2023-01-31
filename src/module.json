@@ -17,16 +17,39 @@
     "verified": "10"
   },
   "relationships": {
-    "systems": [{
-      "id": "pf2e",
-      "type": "system",
-      "manifest": "https://github.com/foundryvtt/pf2e/releases/latest/download/system.json",
-      "compatibility": {
-        "minimum": "4.6.0",
-        "verified": "4.6.8"
+    "systems": [
+      {
+        "id": "pf2e",
+        "type": "system",
+        "manifest": "https://github.com/foundryvtt/pf2e/releases/latest/download/system.json",
+        "compatibility": {
+          "minimum": "4.6.0",
+          "verified": "4.6.8"
+        }
+      },
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "manifest": "https://raw.githubusercontent.com/foundryvtt/dnd5e/master/system.json",
+        "compatibility": {
+          "minimum": "2.1.0",
+          "verified": "2.1.4"
+        }
       }
-    }]
+    ]
   },
-  "esmodules": ["scripts/rpg-tools-logistics-boy.js"],
-  "styles": ["styles/rpg-tools-logistics-boy.css"]
+  "esmodules": [
+    "scripts/rpg-tools-logistics-boy.js"
+  ],
+  "styles": [
+    "styles/rpg-tools-logistics-boy.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    }
+  ]
 }

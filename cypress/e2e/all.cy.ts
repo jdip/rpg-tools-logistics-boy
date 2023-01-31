@@ -1,2 +1,2 @@
-import './config/all.cy'
-import './interfaces/all.cy'
+import './pf2e/all.cy'
+import './dnd5e/all.cy'
