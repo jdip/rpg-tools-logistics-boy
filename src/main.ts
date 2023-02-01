@@ -17,13 +17,14 @@ class ThisModule implements RTLB.ThisModule {
 
   static Error (message: string, localize: boolean = true): Error {
     const errorMessage = localize ? game.i18n.localize(message) : message
-    ui.notifications.error(`${moduleInfo.title}: ${errorMessage}`)
+    ui.notifications?.error(`${moduleInfo.title}: ${errorMessage}`)
     return new Error(`${moduleInfo.title}: ${errorMessage}`)
   }
 
   static init (): void {
     let main: ThisModule
-    Hooks.once('init', async () => {
+    Hooks.once('setup', async () => {
+      console.log(`${moduleInfo.title}: ${game.i18n.localize('RTLB.InitializingModule')}`)
       const foundryModule = game.modules.get(moduleInfo.name)
       if (!ThisModule._isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
       main = new ThisModule(foundryModule)
