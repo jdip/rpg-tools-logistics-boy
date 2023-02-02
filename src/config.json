@@ -1,0 +1,18 @@
+{
+  "pf2e": {
+    "packs": [
+      "pf2e.equipment-srd"
+    ],
+    "DefaultSources" : [
+      "Pathfinder Core Rulebook",
+      "Pathfinder Gamemastery Guide",
+      "Pathfinder Bestiary",
+      "Pathfinder Bestiary 2",
+      "Pathfinder Bestiary 3",
+      "Pathfinder Secrets of Magic",
+      "Pathfinder Advanced Player's Guide",
+      "Pathfinder Dark Archive",
+      "Pathfinder Book of the Dead"
+    ]
+  }
+}

@@ -1,4 +1,5 @@
 import moduleInfo from './module.json'
+import { Sources } from './sources'
 import { Ready } from './interfaces/ready'
 import { ConfigSources } from './interfaces/config-sources'
 import { renderRollTableDirectoryButton } from './ui/roll-table-directory-button'
@@ -22,18 +23,28 @@ class ThisModule implements RTLB.ThisModule {
   }
 
   static init (): void {
-    let main: ThisModule
     Hooks.once('setup', async () => {
       console.log(`${moduleInfo.title}: ${game.i18n.localize('RTLB.InitializingModule')}`)
       const foundryModule = game.modules.get(moduleInfo.name)
       if (!ThisModule._isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
-      main = new ThisModule(foundryModule)
-      foundryModule.main = main
+      foundryModule.main = new ThisModule(foundryModule)
       ConfigSources.registerSettings()
       ConfigSources.registerMenu()
     })
-    Hooks.on('renderRollTableDirectory', (app: Application, html: JQuery) => {
-      renderRollTableDirectoryButton(app, html, main)
+    Hooks.once('ready', async () => {
+      const foundryModule = game.modules.get(moduleInfo.name)
+      if (!ThisModule._isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
+      if (!(foundryModule.main instanceof ThisModule)) throw ThisModule.Error('RTLB.MainModuleUndefined')
+      const sources = await Sources.create(foundryModule.main)
+      foundryModule.main.setSources(sources)
+      await foundryModule.main.setStatus('ready')
+      console.log(`${moduleInfo.title}: ${game.i18n.localize('RTLB.ModuleReady')}`)
+    })
+    Hooks.on('renderRollTableDirectory', (_app: Application, html: JQuery) => {
+      const foundryModule = game.modules.get(moduleInfo.name)
+      if (!ThisModule._isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
+      if (!(foundryModule.main instanceof ThisModule)) throw ThisModule.Error('RTLB.MainModuleUndefined')
+      renderRollTableDirectoryButton(html, foundryModule.main)
     })
   }
 
@@ -41,12 +52,22 @@ class ThisModule implements RTLB.ThisModule {
     if (!ThisModule._isValidSystem(game.system.id)) throw ThisModule.Error('RTLB.InvalidGameSystem')
     this.module = foundryModule
     this.system = game.system.id
-    this._status = 'ready'
+    this._status = 'initializing'
     this._interface = new Ready(this)
   }
 
   readonly module: RTLB.FoundryModule
   readonly system: RTLB.ValidSystems
+  // @ts-expect-error: we are assigning in 'ready' hook
+  private _sources: RTLB.Sources
+  setSources (sources: RTLB.Sources): void {
+    this._sources = sources
+  }
+
+  get sources (): RTLB.Sources {
+    return this._sources
+  }
+
   private _status: RTLB.ModuleStatus
 
   get status (): RTLB.ModuleStatus {
@@ -68,6 +89,9 @@ class ThisModule implements RTLB.ThisModule {
   }
 
   private _interface: Application
+  get interface (): Application {
+    return this._interface
+  }
 
   error (message: string, localize: boolean = true): Error {
     return ThisModule.Error(message, localize)

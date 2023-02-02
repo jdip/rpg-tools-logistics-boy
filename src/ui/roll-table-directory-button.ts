@@ -1,5 +1,5 @@
 import moduleInfo from '../module.json'
-const renderRollTableDirectoryButton = (_: Application, html: JQuery, main: RTLB.ThisModule): void => {
+const renderRollTableDirectoryButton = (html: JQuery, main: RTLB.ThisModule): void => {
   const button = $(
     `<button id="${moduleInfo.name}-open-main-interface-button" class="cc-sidebar-button" type="button">
        <img class="${moduleInfo.name}-open-main-interface-icon" alt="${moduleInfo.title} Icon" width="14" height="14" src="/modules/${moduleInfo.name}/svg/hand-truck-black.svg">

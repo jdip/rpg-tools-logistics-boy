@@ -1,9 +1,10 @@
 {
   "RTLB": {
     "ModuleNotLoaded": "Module Not Loaded",
-    "InitializingModule": "Initialing Module",
+    "InitializingModule": "Initializing Module",
     "InvalidGameSystem": "Invalid Game System",
     "InvalidInterfaceStatus": "Invalid Interface Status",
+    "MainModuleUndefined": "Main Module Undefined",
     "ConfigureCompendiumSources": "Configure Compendium Sources",
     "ConfigureCompendiumSourcesDescription": "Only the compendium sources selected below will be used when LogisticsBoy generates its equipment rollable tables.",
     "AvailableEquipmentSources": "Available Equipment Sources",

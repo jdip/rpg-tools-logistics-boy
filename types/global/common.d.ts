@@ -1,15 +1,22 @@
-
 declare const ui: FoundryUI
 declare const game: Game
 
 declare namespace RTLB {
   type ValidSystems = 'pf2e' | 'dnd5e'
-  type ModuleStatus = 'ready' | 'running' | 'canceling' | 'aborted' | 'complete'
-  class ThisModule {
+  type ModuleStatus = 'initializing' | 'ready' | 'running' | 'canceling' | 'aborted' | 'complete'
+  declare class Sources {
+    static create: (module: RTLB.ThisModule) => Promise<Sources>
+    uniqueSources: string[]
+    defaultSources: string[]
+  }
+  declare class ThisModule {
     static Error: (message: string) => Error
     static setup: () => void
     readonly system: ValidSystems
+    readonly sources: Sources
+    setSources: (sources: Sources) => void
     readonly status: ModuleStatus
+    readonly interface: Application
     error: (message: string, localize: boolean = true) => Error
     async render (force?: boolean, options?: RenderOptions): Promise<Application>
   }
