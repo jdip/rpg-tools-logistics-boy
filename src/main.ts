@@ -4,12 +4,12 @@ import { Ready } from './interfaces/ready'
 import { ConfigSources } from './interfaces/config-sources'
 import { renderRollTableDirectoryButton } from './ui/roll-table-directory-button'
 
-class ThisModule implements RTLB.ThisModule {
-  private static _isValidSystem (systemId: unknown): systemId is RTLB.ValidSystems {
+export class ThisModule implements RTLB.ThisModule {
+  static isValidSystem (systemId: unknown): systemId is RTLB.ValidSystems {
     return systemId === 'pf2e' || systemId === 'dnd5e'
   }
 
-  private static _isFoundryModule (moduleDocument: unknown): moduleDocument is RTLB.FoundryModule {
+  static isFoundryModule (moduleDocument: unknown): moduleDocument is RTLB.FoundryModule {
     return typeof moduleDocument === 'object' &&
       moduleDocument !== null &&
       Object.hasOwn(moduleDocument, 'id') &&
@@ -22,34 +22,44 @@ class ThisModule implements RTLB.ThisModule {
     return new Error(`${moduleInfo.title}: ${errorMessage}`)
   }
 
+  static getModule (): ThisModule {
+    const foundryModule = game.modules.get(moduleInfo.name)
+    if (!ThisModule.isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
+    if (!(foundryModule.main instanceof ThisModule)) throw ThisModule.Error('RTLB.MainModuleUndefined')
+    return foundryModule.main
+  }
+
+  static getSources (): RTLB.Sources {
+    const module = ThisModule.getModule()
+    return module.sources
+  }
+
   static init (): void {
     Hooks.once('setup', async () => {
       console.log(`${moduleInfo.title}: ${game.i18n.localize('RTLB.InitializingModule')}`)
       const foundryModule = game.modules.get(moduleInfo.name)
-      if (!ThisModule._isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
+      if (!ThisModule.isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
       foundryModule.main = new ThisModule(foundryModule)
       ConfigSources.registerSettings()
       ConfigSources.registerMenu()
     })
     Hooks.once('ready', async () => {
-      const foundryModule = game.modules.get(moduleInfo.name)
-      if (!ThisModule._isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
-      if (!(foundryModule.main instanceof ThisModule)) throw ThisModule.Error('RTLB.MainModuleUndefined')
-      const sources = await Sources.create(foundryModule.main)
-      foundryModule.main.setSources(sources)
-      await foundryModule.main.setStatus('ready')
+      const module = ThisModule.getModule()
+      const sources = await Sources.create(module)
+      module.setSources(sources)
+      await module.setStatus('ready')
       console.log(`${moduleInfo.title}: ${game.i18n.localize('RTLB.ModuleReady')}`)
     })
     Hooks.on('renderRollTableDirectory', (_app: Application, html: JQuery) => {
       const foundryModule = game.modules.get(moduleInfo.name)
-      if (!ThisModule._isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
+      if (!ThisModule.isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
       if (!(foundryModule.main instanceof ThisModule)) throw ThisModule.Error('RTLB.MainModuleUndefined')
       renderRollTableDirectoryButton(html, foundryModule.main)
     })
   }
 
   constructor (foundryModule: RTLB.FoundryModule) {
-    if (!ThisModule._isValidSystem(game.system.id)) throw ThisModule.Error('RTLB.InvalidGameSystem')
+    if (!ThisModule.isValidSystem(game.system.id)) throw ThisModule.Error('RTLB.InvalidGameSystem')
     this.module = foundryModule
     this.system = game.system.id
     this._status = 'initializing'

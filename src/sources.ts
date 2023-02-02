@@ -1,4 +1,5 @@
 import config from './config.json'
+import moduleInfo from './module.json'
 export class Sources implements RTLB.Sources {
   private static _getPF2eEquipmentPacks (module: RTLB.ThisModule): CompendiumCollection[] {
     const equipmentPacks: CompendiumCollection[] = []
@@ -41,6 +42,7 @@ export class Sources implements RTLB.Sources {
   private constructor (uniqueSources: string[], defaultSources: string[]) {
     this._uniqueSources = Sources._cloneAndFreezeArray(uniqueSources)
     this._defaultSources = Sources._cloneAndFreezeArray(defaultSources)
+    this._registerSettings()
   }
 
   private readonly _uniqueSources: string[]
@@ -52,5 +54,23 @@ export class Sources implements RTLB.Sources {
 
   get defaultSources (): string[] {
     return this._defaultSources
+  }
+
+  get activeSources (): string[] {
+    const result = this.uniqueSources.filter(source => game.settings.get(moduleInfo.name, source))
+    Object.freeze(result)
+    return result
+  }
+
+  private _registerSettings (): void {
+    this.uniqueSources.forEach(source => {
+      game.settings.register(moduleInfo.name, source, {
+        name: source,
+        scope: 'world',
+        config: false,
+        type: Boolean,
+        default: this.defaultSources.includes(source)
+      })
+    })
   }
 }

@@ -4,42 +4,34 @@ import config from '../../src/config.json'
 
 describe('sources', () => {
   it('Throws on invalid system', () => {
-    let thrown = 0
-    cy.on('uncaught:exception', error => {
-      thrown = thrown + 1
-      switch (thrown) {
-        case 1:
-          expect(error.message.includes(`${moduleInfo.title}: ${i18n.RTLB.InvalidGameSystem}`)).to.be.true
-          return false
-        default:
-          expect('Should not have reached here').to.eq('but did')
-      }
-      return true
-    })
-    cy.login({
-      world: 'PF2e',
-      onFoundryLoad: () => {
-        cy.window()
-          .its('Hooks')
-          .then(Hooks => {
-            cy.window()
-              .its('game')
-              .its('modules')
-              .invoke('get', moduleInfo.name)
-              .then(module => {
-                Hooks.once('setup', () => {
-                  module.main.system = 'BAD SYSTEM'
+    cy.try([`${moduleInfo.title}: ${i18n.RTLB.InvalidGameSystem}`])
+      .login({
+        world: 'PF2e',
+        onFoundryLoad: () => {
+          cy.window()
+            .its('Hooks')
+            .then(Hooks => {
+              cy.window()
+                .its('game')
+                .its('modules')
+                .invoke('get', moduleInfo.name)
+                .then(module => {
+                  Hooks.once('setup', () => {
+                    module.main.system = 'BAD SYSTEM'
+                  })
                 })
-              })
-          })
-      },
-      skipModuleReady: true
-    })
-      .then(() => {
-        expect(thrown).to.eq(1)
+            })
+        },
+        skipModuleReady: true
       })
+      .caught()
+      .its('length')
+      .should('eq', 1)
+      .caught()
+      .invoke('at', 0)
+      .should('contain', `${moduleInfo.title}: ${i18n.RTLB.InvalidGameSystem}`)
   })
-  it.only('Throws if it can\'t get  the pf2e equipment compendium', () => {
+  it('Throws if it can\'t get  the pf2e equipment compendium', () => {
     cy.try([`${moduleInfo.title}: ${i18n.RTLB.EquipmentCompendiumNotInitialized}`])
       .login({
         world: 'PF2e',
@@ -67,11 +59,12 @@ describe('sources', () => {
       .invoke('at', 0)
       .should('contain', `${moduleInfo.title}: ${i18n.RTLB.EquipmentCompendiumNotInitialized}`)
   })
-  it('Freezes uniqueSources & defaultSources', () => {
+  it('Freezes uniqueSources/defaultSources, registerSettings, gathers activeSources', () => {
     cy.login({
       world: 'PF2e'
     })
       .then(module => {
+        // Check that uniqueSources is frozen
         cy.wrap(module)
           .its('sources')
           .its('uniqueSources')
@@ -82,6 +75,7 @@ describe('sources', () => {
               expect(`${error}`.includes('Cannot add property')).to.be.true
             }
           })
+        // Check that defaultSources is frozen
         cy.wrap(module)
           .its('sources')
           .its('defaultSources')
@@ -91,6 +85,33 @@ describe('sources', () => {
             } catch (error: unknown) {
               expect(`${error}`.includes('Cannot add property')).to.be.true
             }
+          })
+        // Check that settings got registered
+        cy.window()
+          .its('game')
+          .its('settings')
+          .then(settings => {
+            cy.wrap(module)
+              .its('sources')
+              .then(sources => {
+                cy.wrap(sources.uniqueSources)
+                  .each(source => {
+                    const value = settings.get(moduleInfo.name, source)
+                    expect(value).to.not.be.undefined
+                    expect(sources.defaultSources.includes(source) === value).to.be.true
+                  })
+              })
+          })
+        // Active Sources should match Default Sources
+        cy.wrap(module)
+          .its('sources')
+          .then(sources => {
+            const activeSources = sources.activeSources
+            expect(sources.defaultSources.length).to.eq(activeSources.length)
+            cy.wrap(sources.defaultSources)
+              .each(source => {
+                expect(activeSources.includes(source)).to.be.true
+              })
           })
       })
   })

@@ -2,65 +2,51 @@ import moduleInfo from '../../src/module.json'
 import i18n from '../../assets/lang/en.json'
 describe('main', () => {
   it('Throws if its module isn\'t loaded', () => {
-    let thrown = 0
-    cy.on('uncaught:exception', error => {
-      thrown = thrown + 1
-      switch (thrown) {
-        case 1:
-          expect(error.message.includes(`${moduleInfo.title}: ${i18n.RTLB.ModuleNotLoaded}`)).to.be.true
-          return false
-        case 2:
-          expect(error.message.includes(`${moduleInfo.title}: ${i18n.RTLB.ModuleNotLoaded}`)).to.be.true
-          return false
-        default:
-          expect('Should not have reached here').to.eq('but did')
-      }
-      return true
-    })
-    cy.login({
-      world: 'PF2e',
-      onFoundryLoad: () => {
-        cy.window().its('game').its('system').then(() => {
-          cy.window().its('game').then(game => {
-            cy.stub(game.modules, 'get').returns(undefined)
+    cy.try([`${moduleInfo.title}: ${i18n.RTLB.ModuleNotLoaded}`])
+      .login({
+        world: 'PF2e',
+        onFoundryLoad: () => {
+          cy.window().its('game').its('system').then(() => {
+            cy.window().its('game').then(game => {
+              cy.stub(game.modules, 'get').returns(undefined)
+            })
           })
-        })
-      },
-      skipModuleReady: true
-    })
-      .then(() => {
-        expect(thrown).to.gte(1)
-        expect(thrown).to.lte(2)
+        },
+        skipModuleReady: true
       })
+      .caught()
+      .its('length')
+      .should('eq', 2)
+      .caught()
+      .invoke('at', 0)
+      .should('contain', `${moduleInfo.title}: ${i18n.RTLB.ModuleNotLoaded}`)
+      .caught()
+      .invoke('at', 1)
+      .should('contain', `${moduleInfo.title}: ${i18n.RTLB.ModuleNotLoaded}`)
   })
   it('Throws if game.system.id isn\'t valid', () => {
-    let thrown = 0
-    cy.on('uncaught:exception', error => {
-      thrown = thrown + 1
-      switch (thrown) {
-        case 1:
-          expect(error.message.includes(`${moduleInfo.title}: ${i18n.RTLB.InvalidGameSystem}`)).to.be.true
-          return false
-        case 2:
-          expect(error.message.includes(`${moduleInfo.title}: ${i18n.RTLB.MainModuleUndefined}`)).to.be.true
-          return false
-        default:
-          expect('Should not have reached here').to.eq('but did')
-      }
-      return true
-    })
-    cy.login({
-      world: 'PF2e',
-      onFoundryLoad: () => {
-        cy.window().its('game').its('system').then(system => {
-          system.id = 'BAD SYSTEM'
-        })
-      },
-      skipModuleReady: true
-    })
-      .then(() => {
-        expect(thrown).to.eq(2)
+    cy.try([
+      `${moduleInfo.title}: ${i18n.RTLB.InvalidGameSystem}`,
+      `${moduleInfo.title}: ${i18n.RTLB.MainModuleUndefined}`
+    ])
+      .login({
+        world: 'PF2e',
+        onFoundryLoad: () => {
+          cy.window().its('game').its('system').then(system => {
+            system.id = 'BAD SYSTEM'
+          })
+        },
+        skipModuleReady: true
       })
+      .caught()
+      .its('length')
+      .should('eq', 2)
+      .caught()
+      .invoke('at', 0)
+      .should('contain', `${moduleInfo.title}: ${i18n.RTLB.InvalidGameSystem}`)
+      .caught()
+      .invoke('at', 1)
+      .should('contain', `${moduleInfo.title}: ${i18n.RTLB.MainModuleUndefined}`)
   })
   it('Sets Sources', () => {
     cy.login({ world: 'PF2e' })

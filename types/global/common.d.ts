@@ -1,3 +1,4 @@
+
 declare const ui: FoundryUI
 declare const game: Game
 
@@ -8,8 +9,11 @@ declare namespace RTLB {
     static create: (module: RTLB.ThisModule) => Promise<Sources>
     uniqueSources: string[]
     defaultSources: string[]
+    activeSources: string[]
   }
   declare class ThisModule {
+    static isValidSystem (systemId: unknown): systemId is RTLB.ValidSystems
+    static isFoundryModule (moduleDocument: unknown): moduleDocument is RTLB.FoundryModule
     static Error: (message: string) => Error
     static setup: () => void
     readonly system: ValidSystems

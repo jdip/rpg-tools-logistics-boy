@@ -1,4 +1,5 @@
 import moduleInfo from '../../src/module.json'
+import { ThisModule } from '../main'
 export class ConfigSources extends FormApplication {
   static override get defaultOptions (): FormApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -12,9 +13,7 @@ export class ConfigSources extends FormApplication {
     }) as FormApplicationOptions
   }
 
-  static registerSettings (): void {
-    console.log('REGISTER SETTINGS')
-  }
+  static registerSettings (): void {}
 
   static registerMenu (): void {
     game.settings.registerMenu(moduleInfo.name, 'sourceMenu', {
@@ -27,17 +26,34 @@ export class ConfigSources extends FormApplication {
     })
   }
 
+  constructor (...args: any[]) {
+    super(...args)
+    this._sources = ThisModule.getSources()
+  }
+
+  private readonly _sources: RTLB.Sources
+
   async getData (): Promise<FormApplicationData<Record<string, unknown>> & { meta: typeof moduleInfo }> {
+    const activeSources = this._sources.activeSources
     return {
       meta: moduleInfo,
       object: {
+        sources: this._sources.uniqueSources.map(source => {
+          return {
+            name: source,
+            title: source.replace(/^Pathfinder\s+/, ''),
+            value: activeSources.includes(source)
+          }
+        })
       }
     }
   }
 
   async _updateObject (_event: Event, formData: Record<string, unknown>): Promise<void> {
     const data = expandObject<Record<'sources', string[]>>(formData)
-    console.log('UPDATE', data)
+    await Promise.all(this._sources.uniqueSources.map(async (source) => {
+      await game.settings.set(moduleInfo.name, source, data.sources.includes(source))
+    }))
   }
 
   override activateListeners (html: JQuery<HTMLElement>): void {
@@ -85,7 +101,7 @@ export class ConfigSources extends FormApplication {
     const inputs = $(`#${moduleInfo.name}-config-sources-content form.${moduleInfo.name}-config-sources-form input`)
     inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(i => {
       const input = (i as HTMLInputElement)
-      input.checked = false // defaultPacks.includes(input.value)
+      input.checked = this._sources.defaultSources.includes(input.value)
     })
   }
 
