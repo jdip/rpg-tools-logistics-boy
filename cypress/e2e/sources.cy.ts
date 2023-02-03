@@ -2,6 +2,16 @@ import meta from '../../src/module.json'
 import i18n from '../../assets/lang/en.json'
 import config from '../../src/config.json'
 
+const resetDefaultSettings = () => {
+  cy.window().its('game').its('settings').then(settings => {
+    cy.fixture<string[]>('defaultSources').then(defaultSources => {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      cy.fixture<string[]>('sources').each((source: string) => {
+        return settings.set(meta.name, source, defaultSources.includes(source))
+      })
+    })
+  })
+}
 describe('sources.ts', () => {
   describe('Throws during setup if', () => {
     it('game system is invalid', () => {
@@ -64,16 +74,10 @@ describe('sources.ts', () => {
   describe('Behaves correctly by', { testIsolation: false }, () => {
     before('Load Foundry', () => {
       cy.login({ world: 'PF2e' })
+      resetDefaultSettings()
     })
     afterEach('reset defaults', () => {
-      cy.window().its('game').its('settings').then(settings => {
-        cy.fixture<string[]>('defaultSources').then(defaultSources => {
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          cy.fixture<string[]>('sources').each((source: string) => {
-            return settings.set(meta.name, source, defaultSources.includes(source))
-          })
-        })
-      })
+      resetDefaultSettings()
     })
     it('registering settings', () => {
       cy.window()

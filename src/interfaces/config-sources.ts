@@ -53,11 +53,6 @@ export class ConfigSources extends FormApplication {
           type: 'submit',
           title: 'RTLB.SaveChanges',
           icon: 'fa-save'
-        },
-        {
-          title: 'RTLB.SaveChanges',
-          icon: 'fa-save',
-          action: 'save'
         }
       ]
     }

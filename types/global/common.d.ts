@@ -29,6 +29,12 @@ declare namespace RTLB {
     error: (message: string, localize: boolean = true) => Error
     async render (force?: boolean, options?: RenderOptions): Promise<Application>
   }
+  type ItemTestGroup = Record<string, {
+    title: string
+    description: string
+    adjustments: Record<string, number>
+    test: (item: PathfinderItem) => boolean
+  }>
   interface FoundryModule {
     id: string
     active: boolean
