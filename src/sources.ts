@@ -1,5 +1,5 @@
+import meta from './module.json'
 import config from './config.json'
-import moduleInfo from './module.json'
 export class Sources implements RTLB.Sources {
   private static _getPF2eEquipmentPacks (module: RTLB.ThisModule): CompendiumCollection[] {
     const equipmentPacks: CompendiumCollection[] = []
@@ -56,15 +56,18 @@ export class Sources implements RTLB.Sources {
     return this._defaultSources
   }
 
-  get activeSources (): string[] {
-    const result = this.uniqueSources.filter(source => game.settings.get(moduleInfo.name, source))
+  async activeSources (): Promise<string[]> {
+    const settings = await Promise.all(this.uniqueSources.map(async (source) => {
+      return { name: source, value: game.settings.get(meta.name, source) }
+    }))
+    const result = settings.filter(source => source.value).map<string>(source => source.name)
     Object.freeze(result)
     return result
   }
 
   private _registerSettings (): void {
     this.uniqueSources.forEach(source => {
-      game.settings.register(moduleInfo.name, source, {
+      game.settings.register(meta.name, source, {
         name: source,
         scope: 'world',
         config: false,

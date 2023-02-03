@@ -1,9 +1,6 @@
 <section id="{{this.meta.name}}-ready-content" class="{{this.meta.name}}-interface">
     <form class="{{this.meta.name}}-interface-form">
-        <header>
-            <img class="{{this.meta.name}}-logo" alt="RPG.Tools Logo" src="/modules/{{this.meta.name}}/svg/rpg-tools-logo-letters-combined.svg">
-            <h1><img class="{{this.meta.name}}-icon" alt="Logistics Boy Icon" src="/modules/{{this.meta.name}}/svg/hand-truck.svg"> LogisticsBoy</h1>
-        </header>
+        {{>(this.partials.header)}}
         <main>
             <h2>Creating Loot Rollable Tables</h2>
             <ul>
@@ -15,9 +12,7 @@
             </ul>
             <BR><BR>
             <h3>Available Tables</h3>
-            <div class="{{this.meta.name}}-list-widget">
-                Select: <a class="module-control {{this.meta.name}}-action {{this.meta.name}}-link" data-action="select-all">All</a>
-                / <a class="module-control {{this.meta.name}}-action {{this.meta.name}}-link" data-action="select-none">None</a></div>
+            {{>(this.partials.list-widget)}}
             <ul class="{{this.meta.name}}-checkbox-list">
                 {{#each this.availableGroups}}
                     <li>
@@ -32,15 +27,8 @@
                 {{/each}}
             </ul>
         </main>
+        {{>(this.partials.footer)}}
         <footer>
-            <button
-                    type="button"
-                    class="module-control {{this.meta.name}}-action"
-                    title="Dialog"
-                    data-action="open-create-tables"
-            >
-                <i class="fas fa-fw fa-random"></i> Dialog
-            </button>
             <button
                     type="button"
                     class="module-control {{this.meta.name}}-action"

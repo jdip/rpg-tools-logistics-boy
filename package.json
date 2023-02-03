@@ -34,6 +34,7 @@
     "cross-env": "^7.0.3",
     "cssnano": "^5.1.14",
     "cypress": "^12.4.1",
+    "cypress-recurse": "^1.27.0",
     "del": "^7.0.0",
     "eslint": "^8.32.0",
     "eslint-config-standard-with-typescript": "^33.0.0",

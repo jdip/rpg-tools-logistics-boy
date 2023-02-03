@@ -6,20 +6,25 @@ declare namespace RTLB {
   type ValidSystems = 'pf2e' | 'dnd5e'
   type ModuleStatus = 'initializing' | 'ready' | 'running' | 'canceling' | 'aborted' | 'complete'
   declare class Sources {
-    static create: (module: RTLB.ThisModule) => Promise<Sources>
+    static create: (module: ThisModule) => Promise<Sources>
     uniqueSources: string[]
     defaultSources: string[]
-    activeSources: string[]
+    activeSources: () => Promise<string[]>
   }
   declare class ThisModule {
-    static isValidSystem (systemId: unknown): systemId is RTLB.ValidSystems
-    static isFoundryModule (moduleDocument: unknown): moduleDocument is RTLB.FoundryModule
+    static isValidSystem (systemId: unknown): systemId is ValidSystems
+    static isFoundryModule (moduleDocument: unknown): moduleDocument is FoundryModule
     static Error: (message: string) => Error
-    static setup: () => void
+    static getModule (): ThisModule
+    static getSources (): Sources
+    static init: () => void
+    readonly module: RTLB.FoundryModule
     readonly system: ValidSystems
+    readonly thisClass: any
     readonly sources: Sources
     setSources: (sources: Sources) => void
     readonly status: ModuleStatus
+    async setStatus (newStatus: RTLB.ModuleStatus): Promise<void>
     readonly interface: Application
     error: (message: string, localize: boolean = true) => Error
     async render (force?: boolean, options?: RenderOptions): Promise<Application>

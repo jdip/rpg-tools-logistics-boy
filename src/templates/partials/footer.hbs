@@ -1,0 +1,13 @@
+<footer>
+    {{# this.buttons}}
+        <button
+            {{#if this.type}}type="{{this.type}}"{{/if}}
+            class="module-control{{#if this.action}} {{../meta.name}}-action{{/if}}"
+            title="{{localize this.title}}"
+            {{#if this.action}}data-action="{{this.action}}"{{/if}}
+        >
+            <i class="fas fa-fw {{this.icon}}{{#if button.iconAnimation}} {{button.iconAnimation}}{{/if}}"></i>
+            {{localize this.title}}
+        </button>
+    {{/this.buttons}}
+</footer>

@@ -1,4 +1,9 @@
 {
+  "partials": [
+    "header",
+    "footer",
+    "list-widget"
+  ],
   "pf2e": {
     "packs": [
       "pf2e.equipment-srd"

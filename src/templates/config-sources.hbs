@@ -1,39 +1,29 @@
 <section id="{{this.meta.name}}-config-sources-content"  class="{{this.meta.name}}-interface">
     <form class="{{this.meta.name}}-config-sources-form">
-        <header>
-            <img class="{{this.meta.name}}-logo" alt="RPG.Tools Logo" src="/modules/{{this.meta.name}}/svg/rpg-tools-logo-letters-combined.svg">
-            <h1><img class="{{this.meta.name}}-icon" alt="Logistics Boy Icon" src="/modules/{{this.meta.name}}/svg/hand-truck.svg"> LogisticsBoy</h1>
-        </header>
+        {{>(this.partials.header)}}
         <main>
             <h2>{{localize 'RTLB.ConfigureCompendiumSources'}}</h2>
             <p>{{localize 'RTLB.ConfigureCompendiumSourcesDescription'}}</p>
             <br>
             <br>
             <h3>{{localize 'RTLB.AvailableEquipmentSources'}}</h3>
-            <div class="list-widget">
-                {{localize 'RTLB.Select'}}Select: <a class="module-control {{this.meta.name}}-action {{this.meta.name}}-link" data-action="select-all">{{localize 'RTLB.All'}}</a>
-                / <a class="module-control {{this.meta.name}}-action {{this.meta.name}}-link" data-action="select-default">{{localize 'RTLB.Default'}}</a>
-                / <a class="module-control {{this.meta.name}}-action {{this.meta.name}}-link" data-action="select-none">{{localize 'RTLB.None'}}</a>
-            </div>
+            {{>(this.partials.list-widget)}}
             <ul class="{{this.meta.name}}-checkbox-list">
                 {{#each this.object.sources}}
                     <li>
                         <label>
-                            <input type="checkbox" name="sources" value="{{this.name}}" {{#if this.value}}checked{{/if}}/>
+                            <input
+                                type="checkbox"
+                                name="sources"
+                                value="{{this.name}}"
+                                {{#if this.value}}checked{{/if}}
+                            />
                             <span>{{this.title}}</span>
                         </label>
                     </li>
                 {{/each}}
             </ul>
         </main>
-        <footer>
-            <button
-                    type="submit"
-                    class="module-control"
-                    title="{{localize 'RTLB.SaveChanges'}}"
-            >
-                <i class="fas fa-fw fa-save"></i> {{localize 'RTLB.SaveChanges'}}
-            </button>
-        </footer>
+        {{>(this.partials.footer)}}
     </form>
 </section>

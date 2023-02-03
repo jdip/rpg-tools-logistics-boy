@@ -1,4 +1,5 @@
-import moduleInfo from './module.json'
+import meta from './module.json'
+import config from './config.json'
 import { Sources } from './sources'
 import { Ready } from './interfaces/ready'
 import { ConfigSources } from './interfaces/config-sources'
@@ -13,17 +14,17 @@ export class ThisModule implements RTLB.ThisModule {
     return typeof moduleDocument === 'object' &&
       moduleDocument !== null &&
       Object.hasOwn(moduleDocument, 'id') &&
-      (moduleDocument as { id: any }).id === moduleInfo.name
+      (moduleDocument as { id: any }).id === meta.name
   }
 
   static Error (message: string, localize: boolean = true): Error {
     const errorMessage = localize ? game.i18n.localize(message) : message
-    ui.notifications?.error(`${moduleInfo.title}: ${errorMessage}`)
-    return new Error(`${moduleInfo.title}: ${errorMessage}`)
+    ui.notifications?.error(`${meta.title}: ${errorMessage}`)
+    return new Error(`${meta.title}: ${errorMessage}`)
   }
 
   static getModule (): ThisModule {
-    const foundryModule = game.modules.get(moduleInfo.name)
+    const foundryModule = game.modules.get(meta.name)
     if (!ThisModule.isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
     if (!(foundryModule.main instanceof ThisModule)) throw ThisModule.Error('RTLB.MainModuleUndefined')
     return foundryModule.main
@@ -35,9 +36,14 @@ export class ThisModule implements RTLB.ThisModule {
   }
 
   static init (): void {
+    Hooks.once('init', async () => {
+      await loadTemplates(config.partials.map((template: string) => {
+        return `modules/${meta.name}/templates/partials/${template}.hbs`
+      }))
+    })
     Hooks.once('setup', async () => {
-      console.log(`${moduleInfo.title}: ${game.i18n.localize('RTLB.InitializingModule')}`)
-      const foundryModule = game.modules.get(moduleInfo.name)
+      console.log(`${meta.title}: ${game.i18n.localize('RTLB.InitializingModule')}`)
+      const foundryModule = game.modules.get(meta.name)
       if (!ThisModule.isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
       foundryModule.main = new ThisModule(foundryModule)
       ConfigSources.registerSettings()
@@ -48,10 +54,10 @@ export class ThisModule implements RTLB.ThisModule {
       const sources = await Sources.create(module)
       module.setSources(sources)
       await module.setStatus('ready')
-      console.log(`${moduleInfo.title}: ${game.i18n.localize('RTLB.ModuleReady')}`)
+      console.log(`${meta.title}: ${game.i18n.localize('RTLB.ModuleReady')}`)
     })
     Hooks.on('renderRollTableDirectory', (_app: Application, html: JQuery) => {
-      const foundryModule = game.modules.get(moduleInfo.name)
+      const foundryModule = game.modules.get(meta.name)
       if (!ThisModule.isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
       if (!(foundryModule.main instanceof ThisModule)) throw ThisModule.Error('RTLB.MainModuleUndefined')
       renderRollTableDirectoryButton(html, foundryModule.main)
@@ -64,10 +70,12 @@ export class ThisModule implements RTLB.ThisModule {
     this.system = game.system.id
     this._status = 'initializing'
     this._interface = new Ready(this)
+    this.thisClass = ThisModule
   }
 
   readonly module: RTLB.FoundryModule
   readonly system: RTLB.ValidSystems
+  readonly thisClass: any
   // @ts-expect-error: we are assigning in 'ready' hook
   private _sources: RTLB.Sources
   setSources (sources: RTLB.Sources): void {

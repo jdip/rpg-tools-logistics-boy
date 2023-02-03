@@ -17,7 +17,8 @@ import slugify from 'slugify'
 // @ts-expect-error: it actually is used
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Chainable } from 'Cypress'
-import moduleInfo from '../../src/module.json'
+import meta from '../../src/module.json'
+import { recurse } from 'cypress-recurse'
 
 interface LoginParams {
   world: string
@@ -44,12 +45,12 @@ const defaultAdminPassword = 'asdf1234'
 const defaultUserPassword = ''
 let sessionCookie: Cypress.Cookie
 
-const waitModuleReady = (): Chainable<RTLB.ThisModule> => {
+Cypress.Commands.add('waitModuleReady', (): Chainable<RTLB.ThisModule> => {
   return cy.window()
     .its('game')
     .its('modules')
     .then(modules => {
-      const mod = modules.get(moduleInfo.name)
+      const mod = modules.get(meta.name)
       return cy.wrap(mod.main)
         .its('status')
         .should('eq', 'ready')
@@ -57,7 +58,7 @@ const waitModuleReady = (): Chainable<RTLB.ThisModule> => {
           return cy.wrap(mod.main)
         })
     })
-}
+})
 
 const processPage = (params: ProcessParams, $body: JQuery<HTMLBodyElement>): Chainable<RTLB.ThisModule | undefined> => {
   if ($body[0].classList.contains('auth')) {
@@ -162,7 +163,7 @@ const processPage = (params: ProcessParams, $body: JQuery<HTMLBodyElement>): Cha
                 params.onFoundryReady?.()
                 return params.skipModuleReady === true
                   ? undefined
-                  : waitModuleReady()
+                  : cy.waitModuleReady()
                     .then((module: RTLB.ThisModule) => {
                       params.onModuleReady?.()
                       return cy.wrap(module)
@@ -215,9 +216,53 @@ Cypress.Commands.add('try', (exceptions: string[]) => {
 Cypress.Commands.add('caught', () => {
   return cy.wrap(caught)
 })
+
+Cypress.Commands.add('closeFoundryApp', (id: string) => {
+  return cy.get('body')
+    .then($body => {
+      recurse(
+        () => {
+          const $a = $body.find(`#${id} > header > a.close`)?.[0]
+          if ($a !== undefined) {
+            $a.click()
+            return cy.wrap($a)
+          }
+          return cy.wrap<JQuery<HTMLElement>>($body)
+        },
+        html => html.prop('tagName') === 'BODY',
+        {
+          delay: 50
+        }
+      )
+    })
+})
+
+Cypress.Commands.add('clickSidebarButton', (tab: string, action: string): Chainable<JQuery<HTMLButtonElement>> => {
+  return cy.get(`nav[id=sidebar-tabs] a[data-tab="${tab}"]`)
+    .click()
+    .get(`div[id=sidebar] section[id="${tab}"] button[data-action="${action}"]`)
+    .click()
+})
+
+Cypress.Commands.add('openConfigMenu', (tab: string, key: string): Chainable<JQuery<HTMLButtonElement>> => {
+  return cy.clickSidebarButton('settings', 'configure')
+    .get(`div[id=client-settings] a[data-tab="${tab}"]`)
+    .click()
+    .get(`div[id=client-settings] button[data-key="${key}"]`)
+    .click()
+})
+
+Cypress.Commands.add('arrayDiff', (arrA: any[], arrB: any[]): Chainable<any[]> => {
+  return cy.wrap(
+    arrA
+      .filter(x => !arrB.includes(x))
+      .concat(arrB.filter(x => !arrA.includes(x)))
+  )
+})
 Cypress.Commands.add('console', (message: string) => {
   console.log(message)
 })
+
 //
 //
 // -- This is a child command --
@@ -237,8 +282,13 @@ declare global {
     export interface Chainable {
       // eslint-disable-next-line @typescript-eslint/method-signature-style
       login: (params: LoginParams) => Chainable<RTLB.ThisModule | undefined>
+      waitModuleReady: () => Chainable<RTLB.ThisModule>
       try: (exceptions: string[]) => Chainable<string[]>
       caught: () => Chainable<string[]>
+      closeFoundryApp: (id: string) => Chainable<JQuery<HTMLBodyElement>>
+      clickSidebarButton: (tab: string, action: string) => Chainable<JQuery<HTMLButtonElement>>
+      openConfigMenu: (tab: string, key: string) => Chainable<JQuery<HTMLButtonElement>>
+      arrayDiff: (arrA: any[], arrB: any[]) => Chainable<any[]>
       console: (message: string) => Chainable<void>
       //       drag(subject: string, params?: Partial<Typeparams>): Chainable<Element>
       //       dismiss(subject: string, params?: Partial<Typeparams>): Chainable<Element>
