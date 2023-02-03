@@ -19,6 +19,25 @@
     "UnexpectedError": "Unexpected Error",
     "UnexpectedButtonAction": "Unexpected Button Action",
     "ReportBugsAt": "report bugs at",
-    "EquipmentCompendiumNotInitialized": "equipment compendium does not appear to be initialized"
+    "EquipmentCompendiumNotInitialized": "equipment compendium does not appear to be initialized",
+    "CreatingTables": {
+      "Title": "Creating Tables",
+      "Detail1": "LogisticsBoy will create a default set of rollable tables full of loot items for use with StockBoy/LootBoy.",
+      "Detail2": "The tables will be added to the LogisticsBoy folder in the Rollable Tables tab.",
+      "Detail3": "Re-running Module will <b>RESET</b> any existing Module rollable tables!",
+      "Detail4": "Only the tables checked below will be created/affected.",
+      "Detail5": "Click the <i><b>Create Rollable Tables</b></i> button below when you are ready to proceed."
+    },
+    "Misc": "Misc",
+    "Miscellaneous": "Miscellaneous",
+    "Alchemist": "Alchemist",
+    "BombsElixirsMutagensOilsPoisonsPotions": "{Bombs}, {Elixirs}, Mutagens, Oils, Poisons, & Potions",
+    "Bombs": "Bombs",
+    "Elixirs": "Elixirs",
+    "Mutagens": "Mutagens",
+    "Oils": "Oils",
+    "Poisons": "Poisons",
+    "Potions": "Potions",
+    "Arcanist": "Arcanist"
   }
 }
