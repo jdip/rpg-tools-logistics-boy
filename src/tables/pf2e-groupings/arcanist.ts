@@ -38,44 +38,44 @@ const all = (item: PathfinderItem): boolean => {
 }
 export const Arcanist: RTLB.ItemTestGroup = {
   robe: {
-    title: 'Robes',
-    description: 'Robes',
+    title: 'RTLB.Robes',
+    description: 'RTLB.Robes',
     adjustments: {},
     test: robe
   },
   scroll: {
-    title: 'Scrolls',
-    description: 'Scrolls',
+    title: 'RTLB.Scrolls',
+    description: 'RTLB.Scrolls',
     adjustments: {},
     test: scroll
   },
   spellbook: {
-    title: 'Spellbooks',
-    description: 'Spellbooks',
+    title: 'RTLB.Spellbooks',
+    description: 'RTLB.Spellbooks',
     adjustments: {},
     test: spellbook
   },
   staff: {
-    title: 'Staves',
-    description: 'Staves',
+    title: 'RTLB.Staves',
+    description: 'RTLB.Staves',
     adjustments: {},
     test: staff
   },
   wand: {
-    title: 'Wands',
-    description: 'Wands',
+    title: 'RTLB.Wands',
+    description: 'RTLB.Wands',
     adjustments: {},
     test: wand
   },
   misc: {
-    title: 'Misc',
-    description: 'Miscellaneous',
+    title: 'RTLB.Misc',
+    description: 'RTLB.Miscellaneous',
     adjustments: {},
     test: misc
   },
   all: {
-    title: 'Full Shop',
-    description: 'Robes, Scrolls, Spellbooks, Staves, & Wands',
+    title: 'RTLB.Arcanist',
+    description: 'RTLB.RobesScrollsSpellbooksStavesWands',
     adjustments: {},
     test: all
   }

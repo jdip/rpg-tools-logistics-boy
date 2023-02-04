@@ -1,108 +1,52 @@
 import meta from './module.json'
 import config from './config.json'
-import { Sources } from './sources'
+import { isValidSystem, isFoundryModule, reportError } from './helpers'
+import { createSources } from './sources'
 import { Ready } from './interfaces/ready'
-import { ConfigSources } from './interfaces/config-sources'
+import { Running } from './interfaces/running'
+import { registerConfigSources } from './interfaces/config-sources'
 import { renderRollTableDirectoryButton } from './ui/roll-table-directory-button'
+import { PF2eTables } from './tables/pf2e-tables'
 
 export class ThisModule implements RTLB.ThisModule {
-  static isValidSystem (systemId: unknown): systemId is RTLB.ValidSystems {
-    return systemId === 'pf2e' || systemId === 'dnd5e'
-  }
-
-  static isFoundryModule (moduleDocument: unknown): moduleDocument is RTLB.FoundryModule {
-    return typeof moduleDocument === 'object' &&
-      moduleDocument !== null &&
-      Object.hasOwn(moduleDocument, 'id') &&
-      (moduleDocument as { id: any }).id === meta.name
-  }
-
-  static Error (message: string, localize: boolean = true): Error {
-    const errorMessage = localize ? game.i18n.localize(message) : message
-    ui.notifications?.error(`${meta.title}: ${errorMessage}`)
-    return new Error(`${meta.title}: ${errorMessage}`)
-  }
-
-  static getModule (): ThisModule {
-    const foundryModule = game.modules.get(meta.name)
-    if (!ThisModule.isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
-    if (!(foundryModule.main instanceof ThisModule)) throw ThisModule.Error('RTLB.MainModuleUndefined')
-    return foundryModule.main
-  }
-
-  static getSources (): RTLB.Sources {
-    const module = ThisModule.getModule()
-    return module.sources
-  }
-
-  static init (): void {
-    Hooks.once('init', async () => {
-      await loadTemplates(config.partials.map((template: string) => {
-        return `modules/${meta.name}/templates/partials/${template}.hbs`
-      }))
-    })
-    Hooks.once('setup', async () => {
-      console.log(`${meta.title}: ${game.i18n.localize('RTLB.InitializingModule')}`)
-      const foundryModule = game.modules.get(meta.name)
-      if (!ThisModule.isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
-      foundryModule.main = new ThisModule(foundryModule)
-      ConfigSources.registerSettings()
-      ConfigSources.registerMenu()
-    })
-    Hooks.once('ready', async () => {
-      const module = ThisModule.getModule()
-      const sources = await Sources.create(module)
-      module.setSources(sources)
-      await module.setStatus('ready')
-      console.log(`${meta.title}: ${game.i18n.localize('RTLB.ModuleReady')}`)
-    })
-    Hooks.on('renderRollTableDirectory', (_app: Application, html: JQuery) => {
-      const foundryModule = game.modules.get(meta.name)
-      if (!ThisModule.isFoundryModule(foundryModule)) throw ThisModule.Error('RTLB.ModuleNotLoaded')
-      if (!(foundryModule.main instanceof ThisModule)) throw ThisModule.Error('RTLB.MainModuleUndefined')
-      renderRollTableDirectoryButton(html, foundryModule.main)
-    })
-  }
-
   constructor (foundryModule: RTLB.FoundryModule) {
-    if (!ThisModule.isValidSystem(game.system.id)) throw ThisModule.Error('RTLB.InvalidGameSystem')
+    if (!isValidSystem(game.system.id)) throw reportError('RTLB.InvalidGameSystem')
     this.module = foundryModule
     this.system = game.system.id
     this._status = 'initializing'
     this._interface = new Ready(this)
-    this.thisClass = ThisModule
   }
 
   readonly module: RTLB.FoundryModule
   readonly system: RTLB.ValidSystems
-  readonly thisClass: any
   // @ts-expect-error: we are assigning in 'ready' hook
   private _sources: RTLB.Sources
-  setSources (sources: RTLB.Sources): void {
-    this._sources = sources
-  }
-
-  get sources (): RTLB.Sources {
-    return this._sources
-  }
-
+  setSources (sources: RTLB.Sources): void { this._sources = sources }
+  get sources (): RTLB.Sources { return this._sources }
+  // @ts-expect-error: we are assigning in 'ready' hook
+  private _tables: RTLB.Tables
+  setTables (tables: RTLB.Tables): void { this._tables = tables }
+  get tables (): RTLB.Tables { return this._tables }
   private _status: RTLB.ModuleStatus
-
-  get status (): RTLB.ModuleStatus {
-    return this._status
-  }
-
-  async setStatus (newStatus: RTLB.ModuleStatus): Promise<void> {
-    if (newStatus !== this._status) {
-      this._status = newStatus
+  get status (): RTLB.ModuleStatus { return this._status }
+  async setStatus (newStatus: RTLB.ModuleStatus, ...args: any[]): Promise<void> {
+    const oldStatus = this._status
+    this._status = newStatus
+    if (oldStatus !== this._status) {
+      if (this._interface !== undefined) await this._interface.close()
       switch (this._status) {
         case 'ready':
-          this._interface = new Ready(this)
+          this._interface = new Ready(this, ...args)
+          break
+        case 'running':
+          this._interface = new Running(this, ...args)
           break
         default:
-          throw ThisModule.Error('RTLB.InvalidInterfaceStatus')
+          throw reportError('RTLB.InvalidInterfaceStatus')
       }
-      await this.render()
+      if (oldStatus !== 'initializing') {
+        await this.render(true)
+      }
     }
   }
 
@@ -111,14 +55,48 @@ export class ThisModule implements RTLB.ThisModule {
     return this._interface
   }
 
-  error (message: string, localize: boolean = true): Error {
-    return ThisModule.Error(message, localize)
-  }
-
-  async render (force?: boolean, options?: RenderOptions): Promise<Application> {
-    // eslint-disable-next-line @typescript-eslint/return-await
-    return this._interface.render(force, options)
+  async render (force?: boolean, options?: RenderOptions): Promise<void> {
+    await this._interface.render(force, options)
   }
 }
 
-ThisModule.init()
+let main: ThisModule
+let setupComplete = false
+let readyComplete = false
+
+Hooks.once('init', async () => {
+  await loadTemplates(config.partials.map((template: string) => {
+    return `modules/${meta.name}/templates/partials/${template}.hbs`
+  }))
+})
+Hooks.once('setup', async () => {
+  console.log(`${meta.title}: ${game.i18n.localize('RTLB.InitializingModule')}`)
+  const foundryModule = game.modules.get(meta.name)
+  if (!isFoundryModule(foundryModule)) throw reportError('RTLB.ModuleNotLoaded')
+  main = new ThisModule(foundryModule)
+  foundryModule.main = main
+  registerConfigSources(foundryModule.main)
+  setupComplete = true
+})
+Hooks.once('ready', async () => {
+  if (!setupComplete) throw reportError('RTLB.ModuleNotSetup')
+  switch (main.system) {
+    case 'pf2e':
+      main.setTables(await PF2eTables.create(main))
+      break
+    default:
+      throw reportError('RTLB.InvalidGameSystem')
+  }
+  main.setSources(await createSources(main))
+  await main.setStatus('ready')
+  console.log(`${meta.title}: ${game.i18n.localize('RTLB.ModuleReady')}`)
+  readyComplete = true
+})
+Hooks.on('renderRollTableDirectory', (_app: Application, html: JQuery) => {
+  renderRollTableDirectoryButton(
+    html,
+    main,
+    /* istanbul ignore next */
+    () => readyComplete
+  )
+})

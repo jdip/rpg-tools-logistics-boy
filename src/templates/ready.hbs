@@ -2,18 +2,50 @@
     <form class="{{this.meta.name}}-interface-form">
         {{>(this.partials.header)}}
         <main>
-            <h2>Creating Loot Rollable Tables</h2>
+            <h2>{{localize 'RTLB.Ready.CreatingTables'}}</h2>
             <ul>
-                <li>LogisticsBoy will create a default set of rollable tables full of loot items for use with StockBoy/LootBoy.</li>
-                <li>The tables will be added to the LogisticsBoy folder in the Rollable Tables tab.</li>
-                <li>Re-running Module will <b>RESET</b> any existing Module rollable tables!</li>
-                <li>Only the tables checked below will be created/affected.</li>
-                <li>Click the <i><b>Create Rollable Tables</b></i> button below when you are ready to proceed.</li>
+                <li>{{{localize 'RTLB.Ready.Detail1'}}}</li>
+                <li>{{{localize 'RTLB.Ready.Detail2'}}}</li>
+                <li>{{{localize 'RTLB.Ready.Detail3'}}}</li>
+                <li>{{{localize 'RTLB.Ready.Detail4'}}}</li>
+                <li>{{{localize 'RTLB.Ready.Detail5'}}}</li>
             </ul>
             <BR><BR>
             <h3>Available Tables</h3>
             {{>(this.partials.list-widget)}}
             <ul class="{{this.meta.name}}-checkbox-list">
+                {{#each this.tables}}
+                    <li class="{{../meta.name}}-heading" >
+                        <label>
+                            <input type="checkbox" name="{{this.all.title}}" value="{{@key}}.all" checked/>
+                            <span>
+                                <span class="{{../meta.name}}-label-title">{{localize this.all.title}}</span>
+                                <span class="{{../meta.name}}-label-description">{{localize this.all.description}}</span>
+                            </span>
+                        </label>
+                        <a
+                                class="{{../meta.name}}-action right-drop"
+                                data-group="{{@key}}"
+                                data-action="drop-details"
+                        >
+                            <i class="fas fa-fw fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <ul class="{{../meta.name}}-details-list {{../meta.name}}-{{@key}} display-none">
+                        {{#each this}}
+                            {{#if (ne @key 'all')}}
+                                <li>
+                                    <label>
+                                        <input type="checkbox" name="{{this.title}}" value="{{@../key}}.{{@key}}"/>
+                                        <span>
+                                            <span class="{{../../meta.name}}-label-title">{{localize this.title}}</span>
+                                        </span>
+                                    </label>
+                                </li>
+                            {{/if}}
+                        {{/each}}
+                    </ul>
+                {{/each}}
                 {{#each this.availableGroups}}
                     <li>
                         <label>
@@ -28,16 +60,5 @@
             </ul>
         </main>
         {{>(this.partials.footer)}}
-        <footer>
-            <button
-                    type="button"
-                    class="module-control {{this.meta.name}}-action"
-                    title="{{button.title}}"
-                    data-action="{{button.action}}"
-                    {{#if button.disabled}}disabled{{/if}}
-            >
-                <i class="fas fa-fw {{button.icon}} {{button.iconAnimation}}"></i> {{button.title}}
-            </button>
-        </footer>
     </form>
 </section>

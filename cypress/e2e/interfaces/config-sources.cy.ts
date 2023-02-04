@@ -1,4 +1,5 @@
 import meta from '../../../src/module.json'
+import i18n from '../../../assets/lang/en.json'
 
 describe('interfaces/config-sources.ts', { testIsolation: false }, () => {
   before('Load Foundry', () => {
@@ -114,44 +115,28 @@ describe('interfaces/config-sources.ts', { testIsolation: false }, () => {
   })
   describe('Handles an action that is', () => {
     it('invalid', () => {
-      cy.window().its('console').then(testConsole => {
-        console.log(testConsole)
-        const consoleSpy = cy.spy(testConsole, 'error')
-        cy.window().its('ui').then(ui => {
-          const notificationSpy = cy.spy(ui.notifications, 'error')
-          cy.get<HTMLAnchorElement[]>(`section[id=${meta.name}-config-sources-content] a[data-action="select-all"]`)
-            .then($link => {
-              $link[0].dataset.action = 'bad-action'
-              return $link[0]
-            })
-            .click()
-            .then(() => {
-              expect(notificationSpy).to.be
-                .calledOnceWith(`${meta.title}: Unexpected Error, report bugs at ${meta.bugs}.`)
-              expect(consoleSpy.getCalls()[1].args[0].message).to.eq('Unexpected Button Action: bad-action')
-            })
+      cy.try([
+        `${meta.title}: ${i18n.RTLB.UnexpectedButtonAction} - bad-action`
+      ])
+        .get<HTMLAnchorElement[]>(`section[id=${meta.name}-config-sources-content] a[data-action="select-all"]`)
+        .then($link => {
+          $link[0].dataset.action = 'bad-action'
+          return $link[0]
         })
-      })
+        .click()
+        .caught()
     })
     it('missing', () => {
-      cy.window().its('console').then(testConsole => {
-        console.log(testConsole)
-        const consoleSpy = cy.spy(testConsole, 'error')
-        cy.window().its('ui').then(ui => {
-          const notificationSpy = cy.spy(ui.notifications, 'error')
-          cy.get<HTMLAnchorElement[]>(`section[id=${meta.name}-config-sources-content] a[data-action="select-all"]`)
-            .then($link => {
-              delete $link[0].dataset.action
-              return $link[0]
-            })
-            .click()
-            .then(() => {
-              expect(notificationSpy).to.be
-                .calledOnceWith(`${meta.title}: Unexpected Error, report bugs at ${meta.bugs}.`)
-              expect(consoleSpy.getCalls()[1].args[0].message).to.eq('Unexpected Button Action: none')
-            })
+      cy.try([
+          `${meta.title}: ${i18n.RTLB.UnexpectedButtonAction} - none`
+        ])
+        .get<HTMLAnchorElement[]>(`section[id=${meta.name}-config-sources-content] a[data-action="select-all"]`)
+        .then($link => {
+          delete $link[0].dataset.action
+          return $link[0]
         })
-      })
+        .click()
+        .caught()
     })
   })
 })

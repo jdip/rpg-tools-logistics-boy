@@ -55,50 +55,50 @@ const all = (item: PathfinderItem): boolean => {
 }
 export const Alchemist = {
   bomb: {
-    title: 'Bombs',
-    description: 'Bombs',
+    title: 'RTLB.Bombs',
+    description: 'RTLB.Bombs',
     adjustments: {},
     test: all
   },
   elixir: {
-    title: 'Elixirs',
-    description: 'Elixirs',
+    title: 'RTLB.Elixirs',
+    description: 'RTLB.Elixirs',
     adjustments: {},
     test: all
   },
   mutagen: {
-    title: 'Mutagens',
-    description: 'Mutagens',
+    title: 'RTLB.Mutagens',
+    description: 'RTLB.Mutagens',
     adjustments: {},
     test: all
   },
   oil: {
-    title: 'Oils',
-    description: 'Oils',
+    title: 'RTLB.Oils',
+    description: 'RTLB.Oils',
     adjustments: {},
     test: all
   },
   poison: {
-    title: 'Poisons',
-    description: 'Poisons',
+    title: 'RTLB.Poisons',
+    description: 'RTLB.Poisons',
     adjustments: {},
     test: all
   },
   potion: {
-    title: 'Potions',
-    description: 'Potions',
+    title: 'RTLB.Potions',
+    description: 'RTLB.Potions',
     adjustments: {},
     test: all
   },
   misc: {
-    title: 'Misc',
-    description: 'Miscellaneous',
+    title: 'RTLB.Misc',
+    description: 'RTLB.Miscellaneous',
     adjustments: {},
     test: misc
   },
   all: {
-    title: 'Alchemist Shop',
-    description: 'Bombs, Elixirs, Mutagens, Oils, Poisons, & Potions',
+    title: 'RTLB.Alchemist',
+    description: 'RTLB.BombsElixirsMutagensOilsPoisonsPotions',
     adjustments: {},
     test: all
   }

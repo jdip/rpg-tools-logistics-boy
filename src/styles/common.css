@@ -1,3 +1,6 @@
+.display-none {
+    display: none !important;
+}
 .rpg-tools-logistics-boy-interface {
     --header-height: 75px;
     --icon-size: 40px;
@@ -45,7 +48,6 @@
                 padding-left: 16px;
                 li {
                     display: inline-block;
-                    width: 322px;
                     margin-right: 16px;
                     margin-bottom: 16px;
                     border: 1px solid rgba(175,175,175,0.75);
@@ -61,12 +63,12 @@
                             vertical-align: middle;
                             span {
                                 display: block;
-                                &.title {
+                                &.rpg-tools-logistics-boy-label-title {
                                     font-size: 18px;
                                     font-weight: 900!important;
                                     font-variant: small-caps;
                                 }
-                                &.details {
+                                &.rpg-tools-logistics-boy-label-description {
                                     font-size: 12px;
                                     font-style: italic;
                                 }
@@ -75,6 +77,28 @@
                     }
                     input {
                         vertical-align: middle;
+                    }
+                    &.rpg-tools-logistics-boy-heading {
+                        display: grid;
+                        position: relative;
+                        grid-template-columns: auto 25px;
+                        a.right-drop {
+                            justify-self: center;
+                            align-self: center;
+                        }
+                    }
+                }
+                > ul li {
+                    label {
+                        span {
+                            span {
+                                display: block;
+                                &.rpg-tools-logistics-boy-label-title {
+                                    font-size: 16px;
+                                    font-weight: 700!important;
+                                }
+                            }
+                        }
                     }
                 }
             }

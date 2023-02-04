@@ -197,23 +197,30 @@ Cypress.Commands.add('login', (params) => {
   })
 })
 
+let expectedErrors: string[] = []
+let totalExpectedErrors = 0
 let caught: string[] = []
 Cypress.Commands.add('try', (exceptions: string[]) => {
+  expect(exceptions.length).to.be.gt(0)
+  expectedErrors = [...exceptions]
+  totalExpectedErrors = expectedErrors.length
   caught = []
   cy.on('uncaught:exception', error => {
-    let result = true
-    for (let i = 0; i < exceptions.length; i = i + 1) {
-      if (error.message.includes(exceptions[i])) {
-        result = false
-        caught.push(error.message)
-      }
+    const expectedError = expectedErrors.shift()
+    if (expectedError !== undefined && error.message.includes(expectedError)) {
+      caught.push(expectedError)
+      return false
     }
-    return result
+    return true
   })
   return cy.wrap(caught)
 })
 
 Cypress.Commands.add('caught', () => {
+  cy.wrap(caught)
+    .should('have.length', totalExpectedErrors)
+    .wrap(expectedErrors)
+    .should('have.length', 0)
   return cy.wrap(caught)
 })
 

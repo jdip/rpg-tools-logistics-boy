@@ -1,68 +1,55 @@
 import meta from './module.json'
 import config from './config.json'
-export class Sources implements RTLB.Sources {
-  private static _getPF2eEquipmentPacks (module: RTLB.ThisModule): CompendiumCollection[] {
-    const equipmentPacks: CompendiumCollection[] = []
-    const pack = game?.packs?.get(config.pf2e.packs[0])
-    if (pack === undefined) throw module.error('RTLB.EquipmentCompendiumNotInitialized')
-    equipmentPacks.push(pack)
-    return equipmentPacks
-  }
+import { reportError, cloneAndFreezeArray } from './helpers'
 
-  private static async _getPF2eUniqueItemSources (module: RTLB.ThisModule): Promise<string[]> {
-    const uniqueSources = new Set<string>()
-    const packs = Sources._getPF2eEquipmentPacks(module)
-    await Promise.all(packs.map(async (pack) => {
-      const documents = (await pack.getDocuments()) as unknown as PathfinderItem[]
-      documents.forEach(item => {
-        if (typeof item.system.source?.value === 'string') uniqueSources.add(item.system.source.value)
-      })
-    }))
-    return ([...uniqueSources].filter(s => s !== undefined)).sort()
-  }
+const getPF2eEquipmentPacks = (): CompendiumCollection[] => {
+  const equipmentPacks: CompendiumCollection[] = []
+  const pack = game?.packs?.get(config.pf2e.packs[0])
+  if (pack === undefined) throw reportError('RTLB.EquipmentCompendiumNotInitialized')
+  equipmentPacks.push(pack)
+  return equipmentPacks
+}
 
-  private static _cloneAndFreezeArray <T>(original: T[]): T[] {
-    const clone = [...original]
-    Object.freeze(clone)
-    return clone
-  }
+const getPF2eUniqueItemSources = async (): Promise<string[]> => {
+  const uniqueSources = new Set<string>()
+  const packs = getPF2eEquipmentPacks()
+  await Promise.all(packs.map(async (pack) => {
+    const documents = (await pack.getDocuments()) as unknown as PathfinderItem[]
+    documents.forEach(item => {
+      if (typeof item.system.source?.value === 'string') uniqueSources.add(item.system.source.value)
+    })
+  }))
+  return ([...uniqueSources].filter(s => s !== undefined)).sort()
+}
 
-  static async create (module: RTLB.ThisModule): Promise<Sources> {
-    switch (module.system) {
-      case 'pf2e': {
-        const uniqueSources = await Sources._getPF2eUniqueItemSources(module)
-        const defaultSources = config.pf2e.DefaultSources
-        return new Sources(uniqueSources, defaultSources)
-      }
-      default:
-        throw module.error('RTLB.InvalidGameSystem')
+export const createSources = async (module: RTLB.ThisModule): Promise<Sources> => {
+  switch (module.system) {
+    case 'pf2e': {
+      const uniqueSources = await getPF2eUniqueItemSources()
+      const defaultSources = config.pf2e.DefaultSources
+      return new Sources(uniqueSources, defaultSources)
     }
+    /* istanbul ignore next */
+    default:
+      throw reportError('RTLB.InvalidGameSystem')
   }
+}
 
-  private constructor (uniqueSources: string[], defaultSources: string[]) {
-    this._uniqueSources = Sources._cloneAndFreezeArray(uniqueSources)
-    this._defaultSources = Sources._cloneAndFreezeArray(defaultSources)
+class Sources implements RTLB.Sources {
+  constructor (uniqueSources: string[], defaultSources: string[]) {
+    this._uniqueSources = cloneAndFreezeArray(uniqueSources)
+    this._defaultSources = cloneAndFreezeArray(defaultSources)
     this._registerSettings()
   }
 
   private readonly _uniqueSources: string[]
-  private readonly _defaultSources: string[]
-
   get uniqueSources (): string[] {
     return this._uniqueSources
   }
 
+  private readonly _defaultSources: string[]
   get defaultSources (): string[] {
     return this._defaultSources
-  }
-
-  async activeSources (): Promise<string[]> {
-    const settings = await Promise.all(this.uniqueSources.map(async (source) => {
-      return { name: source, value: game.settings.get(meta.name, source) }
-    }))
-    const result = settings.filter(source => source.value).map<string>(source => source.name)
-    Object.freeze(result)
-    return result
   }
 
   private _registerSettings (): void {
@@ -75,5 +62,14 @@ export class Sources implements RTLB.Sources {
         default: this.defaultSources.includes(source)
       })
     })
+  }
+
+  async activeSources (): Promise<string[]> {
+    const settings = await Promise.all(this.uniqueSources.map(async (source) => {
+      return { name: source, value: game.settings.get(meta.name, source) }
+    }))
+    const result = settings.filter(source => source.value).map<string>(source => source.name)
+    Object.freeze(result)
+    return result
   }
 }

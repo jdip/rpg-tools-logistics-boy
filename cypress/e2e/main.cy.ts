@@ -3,7 +3,10 @@ import i18n from '../../assets/lang/en.json'
 describe('main.ts', () => {
   describe('Throws during setup if', () => {
     it('the module isn\'t loaded', () => {
-      cy.try([`${meta.title}: ${i18n.RTLB.ModuleNotLoaded}`])
+      cy.try([
+        `${meta.title}: ${i18n.RTLB.ModuleNotLoaded}`,
+        `${meta.title}: ${i18n.RTLB.ModuleNotSetup}`
+      ])
         .login({
           world: 'PF2e',
           onFoundryLoad: () => {
@@ -16,19 +19,11 @@ describe('main.ts', () => {
           skipModuleReady: true
         })
         .caught()
-        .its('length')
-        .should('eq', 2)
-        .caught()
-        .invoke('at', 0)
-        .should('contain', `${meta.title}: ${i18n.RTLB.ModuleNotLoaded}`)
-        .caught()
-        .invoke('at', 1)
-        .should('contain', `${meta.title}: ${i18n.RTLB.ModuleNotLoaded}`)
     })
-    it('if game.system.id isn\'t valid', () => {
+    it('if game.system.id isn\'t valid during setup', () => {
       cy.try([
         `${meta.title}: ${i18n.RTLB.InvalidGameSystem}`,
-        `${meta.title}: ${i18n.RTLB.MainModuleUndefined}`
+        `${meta.title}: ${i18n.RTLB.ModuleNotSetup}`
       ])
         .login({
           world: 'PF2e',
@@ -40,14 +35,30 @@ describe('main.ts', () => {
           skipModuleReady: true
         })
         .caught()
-        .its('length')
-        .should('eq', 2)
+    })
+    it('if game.system.id isn\'t valid during ready', () => {
+      cy.try([
+        `${meta.title}: ${i18n.RTLB.InvalidGameSystem}`
+      ])
+        .login({
+          world: 'PF2e',
+          onFoundryLoad: () => {
+            cy.window()
+              .its('Hooks')
+              .then(Hooks => {
+                cy.window()
+                  .its('game')
+                  .then(game => {
+                    Hooks.on('setup', () => {
+                      const foundryModule = game.modules.get(meta.name)
+                      foundryModule.main.system = 'BAD SYSTEM'
+                    })
+                  })
+              })
+          },
+          skipModuleReady: true
+        })
         .caught()
-        .invoke('at', 0)
-        .should('contain', `${meta.title}: ${i18n.RTLB.InvalidGameSystem}`)
-        .caught()
-        .invoke('at', 1)
-        .should('contain', `${meta.title}: ${i18n.RTLB.MainModuleUndefined}`)
     })
   })
   describe('Behaves correctly by', { testIsolation: false }, () => {
@@ -60,7 +71,25 @@ describe('main.ts', () => {
         .its('modules')
         .then(modules => {
           const mod = modules.get(meta.name)
-          mod._status = 'ready'
+          mod.main._status = 'ready'
+        })
+    })
+    afterEach('close interfaces', () => {
+      cy.window()
+        .its('$')
+        .then($ => {
+          cy.wrap<string[]>([
+            'ready',
+            'running',
+            'canceling',
+            'aborted',
+            'complete'
+          ]).each((app: string) => {
+            const id = `${meta.name}-${app}-interface`
+            if ($(`#${id}`)[0] !== undefined) {
+              cy.closeFoundryApp(id)
+            }
+          })
         })
     })
     it('setting up sources', () => {
@@ -69,56 +98,68 @@ describe('main.ts', () => {
           cy.wrap(mod)
             .its('sources')
             .should('not.be.undefined')
-            .wrap(mod.thisClass.getSources())
             .its('uniqueSources')
             .should('have.length.gt', 0)
         })
     })
-    it('handling status changes', done => {
-      cy.waitModuleReady()
-        .then(mod => {
-          expect(mod.status).to.eq('ready')
-          cy.spy(mod, 'render').as('spyRender')
-          cy.wrap(mod.setStatus('ready'))
-            .then(() => {
-              cy.get('@spyRender').should('not.be.called')
-              // @ts-expect-error: intentionally modifying a private property
-              mod._status = 'NOT READY'
-            })
-            .then(() => {
-              cy.wrap(mod.setStatus('ready')).then(() => {
-                expect(mod.interface.constructor.name === 'Ready')
-                cy.get('@spyRender').should('be.calledOnce')
-                  .then(() => {
-                    // @ts-expect-error: intentionally setting a bad status
-                    mod.setStatus('BAD STATUS')
-                      .then(() => {
-                        expect('Should have errored').to.eq('but didn\'t')
-                        done()
-                      })
-                      .catch((error: Error) => {
-                        expect(error.message).to.contain(`${meta.title}: ${i18n.RTLB.InvalidInterfaceStatus}`)
-                        done()
-                      })
+    describe('handling status changes', () => {
+      it('from ready to running', () => {
+        cy.waitModuleReady()
+          .then(mod => {
+            cy.spy(mod, 'render').as('spyRender')
+            cy.wrap(mod)
+              .its('_interface.constructor.name')
+              .should('eq', 'Ready')
+              .wrap(mod)
+              .its('status')
+              .should('eq', 'ready')
+              .then(() => {
+                cy.wrap(mod)
+                  .its('_interface')
+                  .then(_interface => {
+                    cy.spy(_interface, 'close').as('spyClose')
                   })
+                  .wrap(mod)
+                  .invoke('setStatus', 'running')
+                  .get('@spyRender')
+                  .should('have.been.called')
+                  .get('@spyClose')
+                  .should('have.been.called')
+                  .get(`#${meta.name}-running-interface`)
+                  .should('be.visible')
               })
-            })
+          })
       })
-    })
-    it('notifying errors', () => {
-      cy.window().its('ui').its('notifications').then(notifications => {
-        cy.spy(notifications, 'error').as('uiNotifyError')
-        cy.window().its('game').then(game => {
-          const mod = game.modules.get(meta.name).main
-          const err1 = mod.error('RTLB.ModuleNotLoaded')
-          expect(err1.message).to.eq(`${meta.title}: ${i18n.RTLB.ModuleNotLoaded}`)
-          cy.get('@uiNotifyError').should('be.calledWith', `${meta.title}: ${i18n.RTLB.ModuleNotLoaded}`)
-
-          const notLocalized = 'NOT LOCALIZED'
-          const err2 = mod.error(notLocalized, false)
-          expect(err2.message).to.eq(`${meta.title}: ${notLocalized}`)
-          cy.get('@uiNotifyError').should('be.calledWith', `${meta.title}: ${notLocalized}`)
-        })
+      it('to a bad status', done => {
+        cy.waitModuleReady()
+          .then(mod => {
+            expect(mod.status).to.eq('ready')
+            cy.spy(mod, 'render').as('spyRender')
+            cy.wrap(mod.setStatus('ready'))
+              .then(() => {
+                cy.get('@spyRender').should('not.be.called')
+                // @ts-expect-error: intentionally modifying a private property
+                mod._status = 'NOT READY'
+              })
+              .then(() => {
+                cy.wrap(mod.setStatus('ready')).then(() => {
+                  expect(mod.interface.constructor.name === 'Ready')
+                  cy.get('@spyRender').should('be.calledOnce')
+                    .then(() => {
+                      // @ts-expect-error: intentionally setting a bad status
+                      mod.setStatus('BAD STATUS')
+                        .then(() => {
+                          expect('Should have errored').to.eq('but didn\'t')
+                          done()
+                        })
+                        .catch((error: Error) => {
+                          expect(error.message).to.contain(`${meta.title}: ${i18n.RTLB.InvalidInterfaceStatus}`)
+                          done()
+                        })
+                    })
+                })
+              })
+          })
       })
     })
   })

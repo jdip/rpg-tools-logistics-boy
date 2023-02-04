@@ -1,33 +1,29 @@
-
 declare const ui: FoundryUI
 declare const game: Game
 
 declare namespace RTLB {
   type ValidSystems = 'pf2e' | 'dnd5e'
   type ModuleStatus = 'initializing' | 'ready' | 'running' | 'canceling' | 'aborted' | 'complete'
-  declare class Sources {
-    static create: (module: ThisModule) => Promise<Sources>
+  interface Sources {
     uniqueSources: string[]
     defaultSources: string[]
     activeSources: () => Promise<string[]>
   }
-  declare class ThisModule {
-    static isValidSystem (systemId: unknown): systemId is ValidSystems
-    static isFoundryModule (moduleDocument: unknown): moduleDocument is FoundryModule
-    static Error: (message: string) => Error
-    static getModule (): ThisModule
-    static getSources (): Sources
-    static init: () => void
+  interface ThisModule {
     readonly module: RTLB.FoundryModule
     readonly system: ValidSystems
-    readonly thisClass: any
     readonly sources: Sources
     setSources: (sources: Sources) => void
+    readonly tables: Tables
+    setTables: (tables: Tables) => void
     readonly status: ModuleStatus
-    async setStatus (newStatus: RTLB.ModuleStatus): Promise<void>
+    setStatus: (newStatus: RTLB.ModuleStatus, ...args: any[]) => Promise<void>
     readonly interface: Application
-    error: (message: string, localize: boolean = true) => Error
-    async render (force?: boolean, options?: RenderOptions): Promise<Application>
+    render: (force?: boolean, options?: RenderOptions) => Promise<void>
+  }
+  interface Tables {
+    definitions: Record<string, ItemTestGroup>
+    build: (group: string, table: string) => Promise<void>
   }
   type ItemTestGroup = Record<string, {
     title: string

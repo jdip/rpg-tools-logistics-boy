@@ -2,8 +2,8 @@ import meta from '../../src/module.json'
 import i18n from '../../assets/lang/en.json'
 import config from '../../src/config.json'
 
-const resetDefaultSettings = () => {
-  cy.window().its('game').its('settings').then(settings => {
+const resetDefaultSettings = (): Cypress.Chainable<void> => {
+  return cy.window().its('game').its('settings').then(settings => {
     cy.fixture<string[]>('defaultSources').then(defaultSources => {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       cy.fixture<string[]>('sources').each((source: string) => {
@@ -14,34 +14,6 @@ const resetDefaultSettings = () => {
 }
 describe('sources.ts', () => {
   describe('Throws during setup if', () => {
-    it('game system is invalid', () => {
-      cy.try([`${meta.title}: ${i18n.RTLB.InvalidGameSystem}`])
-        .login({
-          world: 'PF2e',
-          onFoundryLoad: () => {
-            cy.window()
-              .its('Hooks')
-              .then(Hooks => {
-                cy.window()
-                  .its('game')
-                  .its('modules')
-                  .invoke('get', meta.name)
-                  .then(module => {
-                    Hooks.once('setup', () => {
-                      module.main.system = 'BAD SYSTEM'
-                    })
-                  })
-              })
-          },
-          skipModuleReady: true
-        })
-        .caught()
-        .its('length')
-        .should('eq', 1)
-        .caught()
-        .invoke('at', 0)
-        .should('contain', `${meta.title}: ${i18n.RTLB.InvalidGameSystem}`)
-    })
     it('it can\'t get  the pf2e equipment compendium', () => {
       cy.try([`${meta.title}: ${i18n.RTLB.EquipmentCompendiumNotInitialized}`])
         .login({
@@ -64,11 +36,6 @@ describe('sources.ts', () => {
           skipModuleReady: true
         })
         .caught()
-        .its('length')
-        .should('eq', 1)
-        .caught()
-        .invoke('at', 0)
-        .should('contain', `${meta.title}: ${i18n.RTLB.EquipmentCompendiumNotInitialized}`)
     })
   })
   describe('Behaves correctly by', { testIsolation: false }, () => {

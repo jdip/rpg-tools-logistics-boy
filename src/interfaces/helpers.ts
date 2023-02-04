@@ -1,5 +1,6 @@
 import meta from '../module.json'
 import config from '../config.json'
+import { reportError } from '../helpers'
 
 export type GetDataResults =
   FormApplicationData<Record<string, unknown>> &
@@ -34,23 +35,31 @@ export function activateButtons (actionMap: ActionMap, html: JQuery<HTMLElement>
     .on('click', (event: JQuery.TriggeredEvent) => {
       onClickButton(actionMap, event)
         .catch(err => {
-          ui?.notifications?.error(
-            `${meta.title}: ${game.i18n.localize('RTLB.UnexpectedError')}, ${game.i18n.localize('RTLB.ReportBugsAt')} ${meta.bugs}.`
-          )
-          console.error(err)
+          throw reportError(err)
         })
     })
 }
 
+export function getClickedWidget (event: JQuery.TriggeredEvent): HTMLButtonElement | HTMLAnchorElement {
+  let button: HTMLElement = event.target
+  while (!(button instanceof HTMLButtonElement) && !(button instanceof HTMLAnchorElement)) {
+    if (button.parentElement === null) {
+      throw reportError('Couldn\'t find a button or anchor in parent chain')
+    }
+    button = button.parentElement
+  }
+  return button
+}
+
 async function onClickButton (actionMap: ActionMap, event: JQuery.TriggeredEvent): Promise<void> {
   event.preventDefault()
-  const button = (event.target) as HTMLElement
+  const button: HTMLElement = getClickedWidget(event)
   const requestedAction = button.dataset.action
   for (const [action, callback] of actionMap) {
     if (action === requestedAction) {
-      await callback()
+      await callback(event)
       return
     }
   }
-  throw new Error(`${game.i18n.localize('RTLB.UnexpectedButtonAction')}: ${requestedAction ?? 'none'}`)
+  throw reportError(`${game.i18n.localize('RTLB.UnexpectedButtonAction')} - ${requestedAction ?? 'none'}`)
 }
