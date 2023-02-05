@@ -53,7 +53,7 @@ const all = (item: PathfinderItem): boolean => {
     misc(item)
   )
 }
-export const Alchemist = {
+export const Alchemist: RTLB.TableGroupDefinitions = {
   bomb: {
     title: 'RTLB.Bombs',
     description: 'RTLB.Bombs',
@@ -87,7 +87,7 @@ export const Alchemist = {
   potion: {
     title: 'RTLB.Potions',
     description: 'RTLB.Potions',
-    adjustments: {},
+    adjustments: { 'Healing Potion (Minor)': 2 },
     test: potion
   },
   misc: {

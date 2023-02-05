@@ -231,6 +231,25 @@ Cypress.Commands.add('caught', () => {
   return cy.wrap(caught)
 })
 
+Cypress.Commands.add('tryAsync', (
+  promise: Promise<any>,
+  exception: string,
+  done: Mocha.Done,
+  beforeDone?: () => void
+) => {
+  promise
+    .then(() => {
+      beforeDone?.()
+      expect('Should not have arrived here').to.eq('but did')
+      done()
+    })
+    .catch((error: Error) => {
+      beforeDone?.()
+      expect(error.message).to.contain(exception)
+      done()
+    })
+})
+
 Cypress.Commands.add('closeFoundryApp', (id: string) => {
   return cy.get('body')
     .then($body => {
@@ -300,6 +319,7 @@ declare global {
       waitMainReady: () => Chainable<RTLB.Main>
       try: (exceptions: string[]) => Chainable<string[]>
       caught: () => Chainable<string[]>
+      tryAsync: (promise: Promise<any>, exception: string, done: Mocha.Done, beforeDone?: () => void) => Chainable<void>
       closeFoundryApp: (id: string) => Chainable<JQuery<HTMLBodyElement>>
       clickSidebarButton: (tab: string, action: string) => Chainable<JQuery<HTMLButtonElement>>
       openConfigMenu: (tab: string, key: string) => Chainable<JQuery<HTMLButtonElement>>

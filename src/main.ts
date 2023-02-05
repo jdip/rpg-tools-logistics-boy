@@ -42,7 +42,7 @@ class Main implements RTLB.Main {
           await this._interface.render(true)
           break
         case 'canceling':
-          this.tables.shouldCancel()
+          this.tables.cancel()
           await this._interface.render(true)
           break
         case 'aborted':

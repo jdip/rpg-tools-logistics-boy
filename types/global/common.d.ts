@@ -31,16 +31,19 @@ declare namespace RTLB {
   }
   interface Tables {
     definitions: Record<string, ItemTestGroup>
-    shouldCancel: () => void
-    build: (table: string, group: string, items: unknown[]) => Promise<void>
+    getFolder: () => Promise<Folder>
+    cancel: () => void
+    build: (table: string, group: string, items: unknown[]) => Promise<RollTable, TableGroupDefinition>
     buildAll: (tables: Array<[string, string]>) => Promise<void>
   }
-  type ItemTestGroup = Record<string, {
+  type TableGroupSystem = Record<string, TableGroupDefinitions>
+  type TableGroupDefinitions = Record<string, TableGroupDefinition>
+  interface TableGroupDefinition {
     title: string
     description: string
     adjustments: Record<string, number>
     test: (item: PathfinderItem) => boolean
-  }>
+  }
   interface FoundryModule {
     id: string
     active: boolean

@@ -1,7 +1,6 @@
 import meta from '../module.json'
 import { activateButtons, getClickedWidget, getCommonData, type GetDataResults } from './helpers'
 import { reportError } from '../helpers'
-import ItemTestGroup = RTLB.ItemTestGroup
 
 export class Ready extends Application {
   static override get defaultOptions (): ApplicationOptions {
@@ -21,7 +20,7 @@ export class Ready extends Application {
 
   private readonly _module: RTLB.Main
 
-  async getData (): Promise<GetDataResults & { tables: Record<string, ItemTestGroup> }> {
+  async getData (): Promise<GetDataResults & { tables: Record<string, RTLB.TableGroupDefinition> }> {
     return {
       ...getCommonData(),
       tables: this._module.tables.definitions,

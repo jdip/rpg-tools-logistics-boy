@@ -38,7 +38,16 @@ export const isKeyOf = <T extends object>(obj: T, key: string): key is keyof T &
 }
 
 export const isPathfinderItem = (obj: object): obj is PathfinderItem => {
-  return obj?.constructor?.name === 'EquipmentPF2e'
+  return obj?.constructor?.name !== undefined &&
+    [
+      'EquipmentPF2e',
+      'TreasurePF2e',
+      'ConsumablePF2e',
+      'WeaponPF2e',
+      'ArmorPF2e',
+      'ContainerPF2e',
+      'KitPF2e'
+    ].includes(obj.constructor.name)
 }
 
 export const isPathfinderItemArray = (obj: object): obj is PathfinderItem[] => {

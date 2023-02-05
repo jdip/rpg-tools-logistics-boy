@@ -139,7 +139,7 @@ describe('main.ts', () => {
         cy.waitMainReady()
           .then(main => {
             cy.stub(main.interface, 'render').as('stubRender')
-            cy.stub(main.tables, 'shouldCancel').as('stubCancel')
+            cy.stub(main.tables, 'cancel').as('stubCancel')
             cy.wrap(main)
               .its('status')
               .should('eq', 'idle')

@@ -36,7 +36,7 @@ const all = (item: PathfinderItem): boolean => {
     misc(item)
   )
 }
-export const Arcanist: RTLB.ItemTestGroup = {
+export const Arcanist: RTLB.TableGroupDefinitions = {
   robe: {
     title: 'RTLB.Robes',
     description: 'RTLB.Robes',
