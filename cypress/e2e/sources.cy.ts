@@ -33,7 +33,7 @@ describe('sources.ts', () => {
                   })
               })
           },
-          skipModuleReady: true
+          skipMainReady: true
         })
         .caught()
     })
@@ -63,7 +63,7 @@ describe('sources.ts', () => {
         })
     })
     it('producing frozen uniqueSources', () => {
-      cy.waitModuleReady()
+      cy.waitMainReady()
         .its('sources')
         .its('uniqueSources')
         .then(uniqueSources => {
@@ -82,7 +82,7 @@ describe('sources.ts', () => {
         })
     })
     it('producing frozen defaultSources', () => {
-      cy.waitModuleReady()
+      cy.waitMainReady()
         .its('sources')
         .its('defaultSources')
         .then(defaultSources => {
@@ -102,7 +102,7 @@ describe('sources.ts', () => {
     })
     describe('producing activeSources that', () => {
       it('are frozen', () => {
-        cy.waitModuleReady()
+        cy.waitMainReady()
           .its('sources')
           .then(sources => {
             cy.wrap(sources.activeSources())
@@ -118,7 +118,7 @@ describe('sources.ts', () => {
           })
       })
       it('match defaults', () => {
-        cy.waitModuleReady()
+        cy.waitMainReady()
           .its('sources')
           .then(sources => {
             cy.fixture<string[]>('defaultSources')
@@ -132,7 +132,7 @@ describe('sources.ts', () => {
           })
       })
       it('update when settings are changed', () => {
-        cy.waitModuleReady()
+        cy.waitMainReady()
           .its('sources')
           .then(sources => {
             cy.window()

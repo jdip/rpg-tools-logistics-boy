@@ -4,7 +4,11 @@
         <main>
             <h2>{{localize 'RTLB.Running.Title'}}</h2>
             <BR><BR>
-
+            <ul>
+                {{#each this.tables}}
+                    <li>{{this.[0]}}{{#if (ne this.[1] 'all')}} - {{this.[1]}}{{/if}}</li>
+                {{/each}}
+            </ul>
         </main>
         {{>(this.partials.footer)}}
     </form>

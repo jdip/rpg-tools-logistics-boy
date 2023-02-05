@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "../",
+    "types": ["cypress", "node", "jquery"]
+  },
+  "include": [
+    "./**/*.ts",
+    "../types/**/*.ts",
+    "../types/**/*.mts"
+  ]
+}

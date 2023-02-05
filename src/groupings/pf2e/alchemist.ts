@@ -58,37 +58,37 @@ export const Alchemist = {
     title: 'RTLB.Bombs',
     description: 'RTLB.Bombs',
     adjustments: {},
-    test: all
+    test: bomb
   },
   elixir: {
     title: 'RTLB.Elixirs',
     description: 'RTLB.Elixirs',
     adjustments: {},
-    test: all
+    test: elixir
   },
   mutagen: {
     title: 'RTLB.Mutagens',
     description: 'RTLB.Mutagens',
     adjustments: {},
-    test: all
+    test: mutagen
   },
   oil: {
     title: 'RTLB.Oils',
     description: 'RTLB.Oils',
     adjustments: {},
-    test: all
+    test: oil
   },
   poison: {
     title: 'RTLB.Poisons',
     description: 'RTLB.Poisons',
     adjustments: {},
-    test: all
+    test: poison
   },
   potion: {
     title: 'RTLB.Potions',
     description: 'RTLB.Potions',
     adjustments: {},
-    test: all
+    test: potion
   },
   misc: {
     title: 'RTLB.Misc',

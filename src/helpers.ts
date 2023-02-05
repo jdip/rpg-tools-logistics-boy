@@ -20,8 +20,27 @@ export const reportError = (error: string | Error, localize: boolean = true): Er
     : new Error(`${meta.title}: ${errorMessage}`)
 }
 
-export const cloneAndFreezeArray = <T>(original: T[]): T[] => {
-  const clone = [...original]
-  Object.freeze(clone)
-  return clone
+export const deepFreeze = <T extends object>(object: T, paths?: string[], currentPath?: string): T => {
+  paths = paths ?? []
+  currentPath = currentPath ?? ''
+  const propNames = Reflect.ownKeys(object)
+  for (const name of (propNames as Array<keyof typeof object>)) {
+    const value = object[name]
+    if ((value !== undefined && value !== null && typeof value === 'object')) {
+      deepFreeze(value, paths, `${currentPath}.${String(name)}`)
+    }
+  }
+  return Object.freeze(object)
+}
+
+export const isKeyOf = <T extends object>(obj: T, key: string): key is keyof T & string => {
+  return Object.hasOwn(obj, key)
+}
+
+export const isPathfinderItem = (obj: object): obj is PathfinderItem => {
+  return obj?.constructor?.name === 'EquipmentPF2e'
+}
+
+export const isPathfinderItemArray = (obj: object): obj is PathfinderItem[] => {
+  return Array.isArray(obj) && isPathfinderItem(obj[0])
 }

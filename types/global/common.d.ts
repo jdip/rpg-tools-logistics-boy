@@ -3,27 +3,37 @@ declare const game: Game
 
 declare namespace RTLB {
   type ValidSystems = 'pf2e' | 'dnd5e'
-  type ModuleStatus = 'initializing' | 'ready' | 'running' | 'canceling' | 'aborted' | 'complete'
-  interface Sources {
-    uniqueSources: string[]
-    defaultSources: string[]
-    activeSources: () => Promise<string[]>
+  type MainStatus = 'initializing' | 'initialized' | 'idle' | 'running' | 'canceling' | 'aborted' | 'complete'
+  interface ProgressItem {
+    group: string
+    table: string
+    status: 'pending' | 'running' | 'canceled' | 'done'
   }
-  interface ThisModule {
+  interface Main {
     readonly module: RTLB.FoundryModule
     readonly system: ValidSystems
     readonly sources: Sources
-    setSources: (sources: Sources) => void
     readonly tables: Tables
-    setTables: (tables: Tables) => void
     readonly status: ModuleStatus
-    setStatus: (newStatus: RTLB.ModuleStatus, ...args: any[]) => Promise<void>
+    setStatus: (newStatus: RTLB.MainStatus, ...args: any[]) => Promise<void>
+    isReady: boolean
     readonly interface: Application
-    render: (force?: boolean, options?: RenderOptions) => Promise<void>
+    progress: ProgressItem[]
+    setProgress: (progress: ProgressItem[]) => void
+    updateProgress: (progressItem: ProgressItem) => Promise<void>
+  }
+  interface Sources {
+    init: () => Promise<void>
+    uniqueSources: string[]
+    defaultSources: string[]
+    activeSources: () => Promise<string[]>
+    getItems: () => Promise<unknown[]>
   }
   interface Tables {
     definitions: Record<string, ItemTestGroup>
-    build: (group: string, table: string) => Promise<void>
+    shouldCancel: () => void
+    build: (table: string, group: string, items: unknown[]) => Promise<void>
+    buildAll: (tables: Array<[string, string]>) => Promise<void>
   }
   type ItemTestGroup = Record<string, {
     title: string
@@ -43,50 +53,6 @@ declare namespace RTLB {
       verified?: string
       maximum?: string
     }
-    main: ThisModule
+    main: Main
   }
 }
-
-/*
-type ValidSystems = 'pf2e' | 'dnd5e'
-interface FoundryModule {
-  id: string
-  active: boolean
-  esmodules: Set<string>
-  scripts: Set<string>
-  flags: Record<string, Record<string, unknown>>
-  title: string
-  compatibility: {
-    minimum?: string
-    verified?: string
-    maximum?: string
-  }
-  interface: Interface
-}
-
-type MainInterfaceStatus = 'initialized' | 'running' | 'canceling' | 'aborted' | 'complete'
-
-interface MainInterfaceProcess {
-  name: string
-  icon: string
-  iconAnimation?: string
-}
-
-interface MainInterfaceButtonState {
-  status: MainInterfaceStatus
-  title: string
-  action: string
-  disabled: boolean
-  icon: string
-  iconAnimation?: string
-}
-
-interface MainInterfaceData {
-  moduleInfo: Record<string, any>
-  status: MainInterfaceStatus
-  availableGroups: ItemGroupTest[]
-  processes: MainInterfaceProcess[] | undefined
-  button: MainInterfaceButtonProps
-}
-type MainInterfaceProcessCallback = (message: string) => Promise<void>
-*/

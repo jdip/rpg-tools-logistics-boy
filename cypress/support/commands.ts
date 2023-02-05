@@ -30,8 +30,8 @@ interface LoginParams {
   viewHeight?: number
   onFoundryLoad?: () => void // run early in foundry loading process
   onFoundryReady?: () => void // run once game.ready === true
-  skipModuleReady?: boolean
-  onModuleReady?: () => void
+  skipMainReady?: boolean
+  onMainReady?: () => void
 }
 
 type ProcessParams = LoginParams & {
@@ -45,22 +45,29 @@ const defaultAdminPassword = 'asdf1234'
 const defaultUserPassword = ''
 let sessionCookie: Cypress.Cookie
 
-Cypress.Commands.add('waitModuleReady', (): Chainable<RTLB.ThisModule> => {
+Cypress.Commands.add('getMain', (): Chainable<RTLB.Main> => {
   return cy.window()
     .its('game')
     .its('modules')
     .then(modules => {
       const mod = modules.get(meta.name)
       return cy.wrap(mod.main)
-        .its('status')
-        .should('eq', 'ready')
+    })
+})
+
+Cypress.Commands.add('waitMainReady', (): Chainable<RTLB.Main> => {
+  return cy.getMain()
+    .then(main => {
+      return cy.wrap(main)
+        .its('isReady')
+        .should('be.true')
         .then(() => {
-          return cy.wrap(mod.main)
+          return cy.wrap(main)
         })
     })
 })
 
-const processPage = (params: ProcessParams, $body: JQuery<HTMLBodyElement>): Chainable<RTLB.ThisModule | undefined> => {
+const processPage = (params: ProcessParams, $body: JQuery<HTMLBodyElement>): Chainable<RTLB.Main | undefined> => {
   if ($body[0].classList.contains('auth')) {
     // Need to authenticate as admin
     return cy.get<HTMLInputElement>('#setup-authentication input[name="adminPassword"]')
@@ -161,12 +168,12 @@ const processPage = (params: ProcessParams, $body: JQuery<HTMLBodyElement>): Cha
               .should('be.true')
               .then(() => {
                 params.onFoundryReady?.()
-                return params.skipModuleReady === true
+                return params.skipMainReady === true
                   ? undefined
-                  : cy.waitModuleReady()
-                    .then((module: RTLB.ThisModule) => {
-                      params.onModuleReady?.()
-                      return cy.wrap(module)
+                  : cy.waitMainReady()
+                    .then((main: RTLB.Main) => {
+                      params.onMainReady?.()
+                      return cy.wrap(main)
                     })
               })
           } else {
@@ -288,8 +295,9 @@ declare global {
   namespace Cypress {
     export interface Chainable {
       // eslint-disable-next-line @typescript-eslint/method-signature-style
-      login: (params: LoginParams) => Chainable<RTLB.ThisModule | undefined>
-      waitModuleReady: () => Chainable<RTLB.ThisModule>
+      login: (params: LoginParams) => Chainable<RTLB.Main | undefined>
+      getMain: () => Chainable<RTLB.Main>
+      waitMainReady: () => Chainable<RTLB.Main>
       try: (exceptions: string[]) => Chainable<string[]>
       caught: () => Chainable<string[]>
       closeFoundryApp: (id: string) => Chainable<JQuery<HTMLBodyElement>>

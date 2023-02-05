@@ -7,7 +7,7 @@ describe('ui/roll-table-directory-button.ts', () => {
       cy.login({
         world: 'PF2e',
         onFoundryLoad: () => {
-          cy.try([`${meta.title}: ${i18n.RTLB.ModuleNotReady}`])
+          cy.try([`${meta.title}: ${i18n.RTLB.Error.ModuleNotReady}`])
             .get('#sidebar-tabs a[data-tab="tables"]')
             .click()
             .get(`#${meta.name}-open-main-interface-button`)
@@ -53,12 +53,12 @@ describe('ui/roll-table-directory-button.ts', () => {
         .should('be.visible')
     })
     it('handling a render error', () => {
-      cy.waitModuleReady()
-        .then(mod => {
-          expect(mod === undefined).to.be.false
-          cy.wrap(mod?.interface.close())
+      cy.waitMainReady()
+        .then(main => {
+          expect(main === undefined).to.be.false
+          cy.wrap(main?.interface.close())
             .then(() => {
-              cy.stub(mod.interface, 'render', () => {
+              cy.stub(main.interface, 'render', () => {
                 throw new Error('INTENTIONAL ERROR')
               })
               cy.get('#sidebar-tabs a[data-tab="tables"]')

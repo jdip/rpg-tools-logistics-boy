@@ -1,7 +1,7 @@
 import meta from '../../src/module.json'
 import { type GetDataFormResults, getCommonData, activateButtons } from './helpers'
 
-export const registerConfigSources = (mod: RTLB.ThisModule): void => {
+export const registerConfigSources = (mod: RTLB.Main): void => {
   const ConfigSources = class extends FormApplication {
     static override get defaultOptions (): FormApplicationOptions {
       return foundry.utils.mergeObject(super.defaultOptions, {
@@ -20,7 +20,7 @@ export const registerConfigSources = (mod: RTLB.ThisModule): void => {
       this._module = mod
     }
 
-    private readonly _module: RTLB.ThisModule
+    private readonly _module: RTLB.Main
 
     async getData (): Promise<GetDataFormResults> {
       const activeSources = await this._module.sources.activeSources()

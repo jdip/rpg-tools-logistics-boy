@@ -16,13 +16,12 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
-    "types": ["cypress", "node", "jquery"],
+    "types": ["node", "jquery"],
   },
   "include": [
-    "src/**/*.ts",
+    "./src/**/*.ts",
     "./*.ts",
     "./*.js",
-    "./cypress/**/*.ts",
     "./types/**/*.ts",
     "./types/**/*.mts"
   ]

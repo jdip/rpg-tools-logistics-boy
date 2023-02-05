@@ -1,6 +1,12 @@
 .display-none {
     display: none !important;
 }
+button.disabled {
+    cursor: default;
+    &:hover {
+        box-shadow: none;
+    }
+}
 .rpg-tools-logistics-boy-interface {
     --header-height: 75px;
     --icon-size: 40px;

@@ -1,33 +1,11 @@
 import meta from './module.json'
 import config from './config.json'
-import { reportError, cloneAndFreezeArray } from './helpers'
+import { reportError, deepFreeze } from './helpers'
 
-const getPF2eEquipmentPacks = (): CompendiumCollection[] => {
-  const equipmentPacks: CompendiumCollection[] = []
-  const pack = game?.packs?.get(config.pf2e.packs[0])
-  if (pack === undefined) throw reportError('RTLB.EquipmentCompendiumNotInitialized')
-  equipmentPacks.push(pack)
-  return equipmentPacks
-}
-
-const getPF2eUniqueItemSources = async (): Promise<string[]> => {
-  const uniqueSources = new Set<string>()
-  const packs = getPF2eEquipmentPacks()
-  await Promise.all(packs.map(async (pack) => {
-    const documents = (await pack.getDocuments()) as unknown as PathfinderItem[]
-    documents.forEach(item => {
-      if (typeof item.system.source?.value === 'string') uniqueSources.add(item.system.source.value)
-    })
-  }))
-  return ([...uniqueSources].filter(s => s !== undefined)).sort()
-}
-
-export const createSources = async (module: RTLB.ThisModule): Promise<Sources> => {
-  switch (module.system) {
+export const createSources = (mod: RTLB.Main): RTLB.Sources => {
+  switch (mod.system) {
     case 'pf2e': {
-      const uniqueSources = await getPF2eUniqueItemSources()
-      const defaultSources = config.pf2e.DefaultSources
-      return new Sources(uniqueSources, defaultSources)
+      return new PF2eSources()
     }
     /* istanbul ignore next */
     default:
@@ -35,19 +13,24 @@ export const createSources = async (module: RTLB.ThisModule): Promise<Sources> =
   }
 }
 
-class Sources implements RTLB.Sources {
-  constructor (uniqueSources: string[], defaultSources: string[]) {
-    this._uniqueSources = cloneAndFreezeArray(uniqueSources)
-    this._defaultSources = cloneAndFreezeArray(defaultSources)
+class AbstractSources implements RTLB.Sources {
+  constructor () {
+    /* istanbul ignore next */
+    if (this.constructor === AbstractSources) {
+      throw new Error('Can\'t instantiate abstract class!')
+    }
+  }
+
+  async init (): Promise<void> {
     this._registerSettings()
   }
 
-  private readonly _uniqueSources: string[]
+  protected readonly _uniqueSources: string[] = []
   get uniqueSources (): string[] {
     return this._uniqueSources
   }
 
-  private readonly _defaultSources: string[]
+  protected readonly _defaultSources: string[] = []
   get defaultSources (): string[] {
     return this._defaultSources
   }
@@ -69,7 +52,62 @@ class Sources implements RTLB.Sources {
       return { name: source, value: game.settings.get(meta.name, source) }
     }))
     const result = settings.filter(source => source.value).map<string>(source => source.name)
-    Object.freeze(result)
+    deepFreeze(result)
     return result
+  }
+
+  async getItems (): Promise<unknown[]> {
+    throw new Error('this abstract method should be overridden')
+  }
+}
+
+class PF2eSources extends AbstractSources implements RTLB.Sources {
+  private _getPF2eEquipmentPacks (): CompendiumCollection[] {
+    const equipmentPacks: CompendiumCollection[] = []
+    const pack = game?.packs?.get(config.pf2e.packs[0])
+    if (pack === undefined) throw reportError('RTLB.EquipmentCompendiumNotInitialized')
+    equipmentPacks.push(pack)
+    return equipmentPacks
+  }
+
+  private async _getPF2eUniqueItemSources (): Promise<string[]> {
+    const uniqueSources = new Set<string>()
+    const packs = this._getPF2eEquipmentPacks()
+    await Promise.all(packs.map(async (pack) => {
+      const documents = (await pack.getDocuments()) as unknown as PathfinderItem[]
+      documents.forEach(item => {
+        if (typeof item.system.source?.value === 'string') uniqueSources.add(item.system.source.value)
+      })
+    }))
+    return ([...uniqueSources].filter(s => s !== undefined)).sort()
+  }
+
+  async init (): Promise<void> {
+    const uniqueSources = await this._getPF2eUniqueItemSources()
+    for (const us of uniqueSources) {
+      this._uniqueSources.push(us)
+    }
+    deepFreeze(this._uniqueSources)
+    for (const ds of config.pf2e.DefaultSources) {
+      this._defaultSources.push(ds)
+    }
+    deepFreeze(this._defaultSources)
+    await super.init()
+  }
+
+  async getItems (): Promise<PathfinderItem[]> {
+    const packs = this._getPF2eEquipmentPacks()
+    const sources = await this.activeSources()
+    const items = new Set<PathfinderItem>()
+    for (const pack of packs) {
+      const documents = await pack.getDocuments()
+      documents.forEach(i => {
+        const item = (i as unknown as PathfinderItem)
+        if (item.system?.source?.value !== undefined && sources.includes(item.system.source.value)) {
+          items.add(item)
+        }
+      })
+    }
+    return [...items]
   }
 }
