@@ -1,6 +1,6 @@
 import meta from './module.json'
 import config from './config.json'
-import { isValidSystem, isFoundryModule, reportError } from './helpers'
+import { isValidSystem, isFoundryModule, reportError, isArrayOfStringTuples } from './helpers'
 import { createSources } from './sources'
 import { MainInterface } from './interfaces/main'
 import { registerConfigSources } from './interfaces/config-sources'
@@ -27,30 +27,32 @@ class Main implements RTLB.Main {
   get tables (): RTLB.Tables { return this._tables }
   private _status: RTLB.MainStatus
   get status (): RTLB.MainStatus { return this._status }
-  async setStatus (newStatus: RTLB.MainStatus): Promise<void> {
+  async setStatus (newStatus: RTLB.MainStatus, ...args: any[]): Promise<void> {
     const oldStatus = this._status
     this._status = newStatus
     if (oldStatus !== this._status) {
-      if (this._interface !== undefined) await this._interface.close()
+      console.info(`${meta.title}: ${this.status.capitalize()}`)
       switch (this._status) {
         case 'initialized':
           break
         case 'idle':
           break
         case 'running':
-          this.setProgress([])
+          await this.setProgress([])
           await this._interface.render(true)
+          if (!(args.length === 1 && isArrayOfStringTuples(args[0]))) throw reportError('RTLB.Error.InvalidMainStatusArgs')
+          await this.tables.buildAll(args[0])
           break
         case 'canceling':
           this.tables.cancel()
           await this._interface.render(true)
           break
         case 'aborted':
-          this.setProgress([])
+          await this.setProgress([])
           await this._interface.render(true)
           break
         case 'complete':
-          this.setProgress([])
+          await this.setProgress([])
           await this._interface.render(true)
           break
         default:
@@ -73,15 +75,17 @@ class Main implements RTLB.Main {
     return this._progress
   }
 
-  setProgress (progress: RTLB.ProgressItem[]): void {
+  async setProgress (progress: RTLB.ProgressItem[]): Promise<void> {
     this._progress = progress
+    await this._interface.render()
   }
 
   async updateProgress (progressItem: RTLB.ProgressItem): Promise<void> {
     const index = this._progress.findIndex(p => p.group === progressItem.group && p.table === progressItem.table)
     if (index === -1) throw reportError('RTLB.Error.InvalidProgressUpdate')
     this._progress[index].status = progressItem.status
-    // await new Promise(r => setTimeout(r, 10))
+    await this._interface.render()
+    await new Promise(resolve => setTimeout(resolve, 100))
   }
 }
 

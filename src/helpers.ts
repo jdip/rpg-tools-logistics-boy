@@ -53,3 +53,11 @@ export const isPathfinderItem = (obj: object): obj is PathfinderItem => {
 export const isPathfinderItemArray = (obj: object): obj is PathfinderItem[] => {
   return Array.isArray(obj) && isPathfinderItem(obj[0])
 }
+
+export const isArrayOfStringTuples = (obj: unknown): obj is Array<[string, string]> => {
+  return Array.isArray(obj) &&
+    obj.length >= 1 &&
+    obj[0].length === 2 &&
+    typeof obj[0][0] === 'string' &&
+    typeof obj[0][1] === 'string'
+}

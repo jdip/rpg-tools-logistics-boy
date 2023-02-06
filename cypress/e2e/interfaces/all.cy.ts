@@ -1,2 +1,3 @@
 import './config-sources.cy'
-import './ready.cy'
+import './main.cy'
+import './helpers.cy'

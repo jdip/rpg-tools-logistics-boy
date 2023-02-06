@@ -19,7 +19,7 @@ declare namespace RTLB {
     isReady: boolean
     readonly interface: Application
     progress: ProgressItem[]
-    setProgress: (progress: ProgressItem[]) => void
+    setProgress: (progress: ProgressItem[]) => Promise<void>
     updateProgress: (progressItem: ProgressItem) => Promise<void>
   }
   interface Sources {

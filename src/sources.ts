@@ -56,6 +56,7 @@ class AbstractSources implements RTLB.Sources {
     return result
   }
 
+  /* istanbul ignore next */
   async getItems (): Promise<unknown[]> {
     throw new Error('this abstract method should be overridden')
   }

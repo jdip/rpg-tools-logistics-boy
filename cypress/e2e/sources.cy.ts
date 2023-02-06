@@ -1,6 +1,15 @@
 import meta from '../../src/module.json'
 import i18n from '../../assets/lang/en.json'
 import config from '../../src/config.json'
+import { isPathfinderItemArray } from '../../src/helpers'
+
+const getItems = async (main: RTLB.Main): Promise<PathfinderItem[]> => {
+  const items = await main.sources.getItems()
+  if (typeof items === 'object' && items !== null && isPathfinderItemArray(items)) {
+    return items
+  }
+  throw new Error('Couldn\'t get items')
+}
 
 const resetDefaultSettings = (): Cypress.Chainable<void> => {
   return cy.window().its('game').its('settings').then(settings => {
@@ -156,6 +165,31 @@ describe('sources.ts', () => {
                                   .should('have.length', 0)
                               })
                           })
+                      })
+                  })
+              })
+          })
+      })
+      it('gets default sources', () => {
+        cy.waitMainReady()
+          .then(main => {
+            cy.wrap(getItems(main))
+              .then(items => {
+                expect((items as any[]).length).to.eq(1584)
+              })
+          })
+      })
+      it('gets custom sources', () => {
+        cy.waitMainReady()
+          .then(main => {
+            cy.window()
+              .its('game')
+              .then(game => {
+                cy.wrap(game.settings.set(meta.name, 'Pathfinder Gamemastery Guide', false))
+                  .then(() => {
+                    cy.wrap(getItems(main))
+                      .then(items => {
+                        expect((items as any[]).length).to.eq(1395)
                       })
                   })
               })

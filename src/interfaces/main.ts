@@ -7,23 +7,26 @@ export class MainInterface extends Application {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: `${meta.name}-main-interface`,
       title: 'RPG.Tools: LogisticsBoy',
-      template: `modules/${meta.name}/templates/ready.hbs`,
+      template: `modules/${meta.name}/templates/main.hbs`,
       width: 720,
       height: 720
     }) as ApplicationOptions
   }
 
-  constructor (module: RTLB.Main) {
+  constructor (main: RTLB.Main) {
     super()
-    this._module = module
+    this._main = main
   }
 
-  private readonly _module: RTLB.Main
+  private readonly _main: RTLB.Main
 
   async getData (): Promise<GetDataResults & Record<string, any>> {
+    const commonData = getCommonData()
     return {
-      ...getCommonData(),
-      tables: this._module.tables.definitions,
+      ...commonData,
+      progress: this._main.progress,
+      contentPartial: commonData.partials[this._main.status],
+      tables: this._main.tables.definitions,
       buttons: [
         {
           title: 'RTLB.CreateTables',
@@ -52,8 +55,8 @@ export class MainInterface extends Application {
   }
 
   private _updateCreateTablesButton (): void {
-    const button = $<HTMLButtonElement>(`#${meta.name}-ready-content button[data-action=create-tables]`)[0]
-    if ($(`#${meta.name}-ready-content input[type=checkbox]:checked`).length === 0) {
+    const button = $<HTMLButtonElement>(`#${meta.name}-main-content button[data-action=create-tables]`)[0]
+    if ($(`#${meta.name}-main-content input[type=checkbox]:checked`).length === 0) {
       button.disabled = true
       button.classList.add('disabled')
     } else {
@@ -63,7 +66,7 @@ export class MainInterface extends Application {
   }
 
   private async _createTables (): Promise<void> {
-    const tablesToBuild = await Promise.all($(`#${meta.name}-ready-content form.${meta.name}-interface-form input`)
+    const tablesToBuild = await Promise.all($(`#${meta.name}-main-content form.${meta.name}-interface-form input`)
       .toArray()
       .filter(input => input instanceof HTMLInputElement && input.checked)
       .map(input => {
@@ -72,13 +75,13 @@ export class MainInterface extends Application {
       .map(async (table) => {
         return table.split('.')
       }))
-    await this._module.setStatus('running', tablesToBuild)
+    await this._main.setStatus('running', tablesToBuild)
   }
 
   private async _dropDetails (event: JQuery.TriggeredEvent): Promise<void> {
     const a = getClickedWidget(event)
     const group = a.dataset.group
-    if (group === undefined) throw reportError('RTLB.NoDataGroup')
+    if (group === undefined) throw reportError('RTLB.Error.NoDataGroup')
     const $ul = $(`ul.${meta.name}-${group}`)[0]
     const $i = $(a).find('i')[0]
     if ($ul.classList.contains('display-none')) {
@@ -107,7 +110,7 @@ export class MainInterface extends Application {
   }
 
   private async _selectAll (): Promise<void> {
-    const inputs = $(`#${meta.name}-ready-content form.${meta.name}-interface-form input`)
+    const inputs = $(`#${meta.name}-main-content form.${meta.name}-interface-form input`)
     inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(input => {
       (input as HTMLInputElement).checked = true
     })
@@ -116,11 +119,11 @@ export class MainInterface extends Application {
   }
 
   private async _selectDefault (): Promise<void> {
-    const allInputs = $(`#${meta.name}-ready-content form.${meta.name}-interface-form input`)
+    const allInputs = $(`#${meta.name}-main-content form.${meta.name}-interface-form input`)
     allInputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(input => {
       (input as HTMLInputElement).checked = false
     })
-    const headingInputs = $(`#${meta.name}-ready-content form.${meta.name}-interface-form li.${meta.name}-heading input`)
+    const headingInputs = $(`#${meta.name}-main-content form.${meta.name}-interface-form li.${meta.name}-heading input`)
     headingInputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(i => {
       const input = (i as HTMLInputElement)
       input.checked = true
@@ -130,7 +133,7 @@ export class MainInterface extends Application {
   }
 
   private async _selectNone (): Promise<void> {
-    const inputs = $(`#${meta.name}-ready-content form.${meta.name}-interface-form input`)
+    const inputs = $(`#${meta.name}-main-content form.${meta.name}-interface-form input`)
     inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(input => {
       (input as HTMLInputElement).checked = false
     })

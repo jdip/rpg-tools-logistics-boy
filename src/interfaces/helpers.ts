@@ -20,7 +20,7 @@ export type GetDataFormResults =
   GetDataResults
 
 export type ActionMap = Map<string, (...args: any[]) => void | Promise<void>>
-export function getCommonData (): { meta: typeof meta, partials: Record<string, string> } {
+export function getCommonData (): { meta: typeof meta, partials: Record<string, () => string> } {
   return {
     meta,
     partials: config.partials.reduce((acc, partial: string) => {
@@ -44,7 +44,7 @@ export function getClickedWidget (event: JQuery.TriggeredEvent): HTMLButtonEleme
   let button: HTMLElement = event.target
   while (!(button instanceof HTMLButtonElement) && !(button instanceof HTMLAnchorElement)) {
     if (button.parentElement === null) {
-      throw reportError('Couldn\'t find a button or anchor in parent chain')
+      throw reportError('RTLB.Error.NoButtonOrAnchorInParentChain')
     }
     button = button.parentElement
   }

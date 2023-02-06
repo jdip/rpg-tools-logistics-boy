@@ -7,7 +7,7 @@ const webpackOptions = require('./webpack.config.js')
 
 export default defineConfig({
   e2e: {
-    // numTestsKeptInMemory: 0,
+    numTestsKeptInMemory: 0,
     viewportWidth: 1920,
     viewportHeight: 1080,
     baseUrl: 'http://localhost:4000',

@@ -2,7 +2,9 @@
   "partials": [
     "header",
     "footer",
-    "list-widget"
+    "list-widget",
+    "idle",
+    "running"
   ],
   "pf2e": {
     "packs": [

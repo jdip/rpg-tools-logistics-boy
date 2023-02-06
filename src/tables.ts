@@ -68,7 +68,7 @@ class AbstractTables implements RTLB.Tables {
   async buildAll (tables: Array<[string, string]>): Promise<void> {
     const items = await this._main.sources.getItems()
     this._shouldCancel = false
-    this._main.setProgress(tables.map(t => ({
+    await this._main.setProgress(tables.map(t => ({
       group: t[0],
       table: t[1],
       status: 'pending'
@@ -90,7 +90,9 @@ class AbstractTables implements RTLB.Tables {
         table,
         status: 'running'
       })
+      console.log('RUNNING', group, table)
       await this.build(group, table, items)
+      console.log('DONE', group, table)
       await this._main.updateProgress({
         group,
         table,

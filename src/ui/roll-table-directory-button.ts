@@ -9,7 +9,7 @@ export const renderRollTableDirectoryButton = (html: JQuery, main: RTLB.Main): v
      </button>`
   )
   button.on('click', () => {
-    if (!main.isReady) throw reportError('RTLB.ModuleNotReady');
+    if (!main.isReady) throw reportError('RTLB.Error.ModuleNotReady');
     (async () => {
       await main.interface.render(true)
     })().catch(error => {

@@ -1,4 +1,5 @@
 import './main.cy'
 import './sources.cy'
+import './tables.cy'
 import './ui/all.cy'
 import './interfaces/all.cy'
