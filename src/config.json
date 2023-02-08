@@ -3,8 +3,12 @@
     "header",
     "footer",
     "list-widget",
+    "progress-list",
     "idle",
-    "running"
+    "running",
+    "complete",
+    "canceling",
+    "aborted"
   ],
   "pf2e": {
     "packs": [

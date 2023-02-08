@@ -7,10 +7,10 @@ describe('interfaces/config-sources.ts', { testIsolation: false }, () => {
   })
   beforeEach('open interface', () => {
     cy.clickSidebarButton('settings', 'configure')
-      .openConfigMenu(meta.name, `${meta.name}.sourceMenu`)
+      .openConfigMenu(meta.name, 'rtlb.sourceMenu')
   })
   afterEach('close interface', () => {
-    cy.closeFoundryApp(`${meta.name}-config-sources-app`)
+    cy.closeFoundryApp('rtlb-config-sources-app')
       .closeFoundryApp('client-settings')
   })
   afterEach('reset defaults', () => {
@@ -24,7 +24,7 @@ describe('interfaces/config-sources.ts', { testIsolation: false }, () => {
   })
   describe('Renders correctly by', () => {
     it('displaying styles', () => {
-      cy.get(`#${meta.name}-config-sources-content header`)
+      cy.get('#rtlb-config-sources-content header')
         .should('have.css', 'background-color', 'rgb(0, 0, 0)')
     })
     it('listing sources', () => {
@@ -33,7 +33,7 @@ describe('interfaces/config-sources.ts', { testIsolation: false }, () => {
           const sourcesNotFound = [...sources]
           cy.fixture<string[]>('defaultSources')
             .then(defaultSources => {
-              cy.get<HTMLInputElement[]>(`section[id=${meta.name}-config-sources-content] ul.${meta.name}-checkbox-list input`)
+              cy.get<HTMLInputElement[]>('section[id=rtlb-config-sources-content] ul.rtlb-checkbox-list input')
                 .each<HTMLInputElement>($input => {
                   const index = sourcesNotFound.indexOf($input[0].value)
                   expect(index).to.be.gt(-1)
@@ -49,9 +49,9 @@ describe('interfaces/config-sources.ts', { testIsolation: false }, () => {
   })
   describe('Updates checked items when', () => {
     it('select: all is clicked', () => {
-      cy.get(`section[id=${meta.name}-config-sources-content] a[data-action="select-all"]`)
+      cy.get('section[id=rtlb-config-sources-content] a[data-action="select-all"]')
         .click()
-        .get<HTMLInputElement[]>(`section[id=${meta.name}-config-sources-content] ul.${meta.name}-checkbox-list input`)
+        .get<HTMLInputElement[]>('section[id=rtlb-config-sources-content] ul.rtlb-checkbox-list input')
         .each<HTMLInputElement>($input => {
           expect($input[0].checked).to.be.true
         })
@@ -59,18 +59,18 @@ describe('interfaces/config-sources.ts', { testIsolation: false }, () => {
     it('select: default is clicked', () => {
       cy.fixture<string[]>('defaultSources')
         .then(defaultSources => {
-          cy.get(`section[id=${meta.name}-config-sources-content] a[data-action="select-default"]`)
+          cy.get('section[id=rtlb-config-sources-content] a[data-action="select-default"]')
             .click()
-            .get<HTMLInputElement[]>(`section[id=${meta.name}-config-sources-content] ul.${meta.name}-checkbox-list input`)
+            .get<HTMLInputElement[]>('section[id=rtlb-config-sources-content] ul.rtlb-checkbox-list input')
             .each<HTMLInputElement>($input => {
               expect(defaultSources.includes($input[0].value)).to.eq($input[0].checked)
             })
         })
     })
     it('select: none is clicked', () => {
-      cy.get(`section[id=${meta.name}-config-sources-content] a[data-action="select-none"]`)
+      cy.get('section[id=rtlb-config-sources-content] a[data-action="select-none"]')
         .click()
-        .get<HTMLInputElement[]>(`section[id=${meta.name}-config-sources-content] ul.${meta.name}-checkbox-list input`)
+        .get<HTMLInputElement[]>('section[id=rtlb-config-sources-content] ul.rtlb-checkbox-list input')
         .each<HTMLInputElement>($input => {
           expect($input[0].checked).to.be.false
         })
@@ -83,10 +83,10 @@ describe('interfaces/config-sources.ts', { testIsolation: false }, () => {
           const firstDefault = defaultSources[0]
           cy.window().its('game').its('settings').then(settings => {
             expect(settings.get(meta.name, firstDefault)).to.be.true
-            cy.get<HTMLInputElement[]>(`section[id=${meta.name}-config-sources-content] ul.${meta.name}-checkbox-list input[value="${firstDefault}"]`)
+            cy.get<HTMLInputElement[]>(`section[id=rtlb-config-sources-content] ul.rtlb-checkbox-list input[value="${firstDefault}"]`)
               .click()
               .then(() => {
-                cy.get(`section[id=${meta.name}-config-sources-content] button[type=submit]`)
+                cy.get('section[id=rtlb-config-sources-content] button[type=submit]')
                   .click()
                   .then(() => {
                     expect(settings.get(meta.name, firstDefault)).to.be.false
@@ -100,10 +100,10 @@ describe('interfaces/config-sources.ts', { testIsolation: false }, () => {
         const firstDefault = defaultSources[0]
         cy.window().its('game').its('settings').then(settings => {
           expect(settings.get(meta.name, firstDefault)).to.be.true
-          cy.get<HTMLInputElement[]>(`section[id=${meta.name}-config-sources-content] ul.${meta.name}-checkbox-list input[value="${firstDefault}"]`)
+          cy.get<HTMLInputElement[]>(`section[id=rtlb-config-sources-content] ul.rtlb-checkbox-list input[value="${firstDefault}"]`)
             .click()
             .then(() => {
-              cy.get(`section[id=${meta.name}-config-sources-content] button[type=submit]`)
+              cy.get('section[id=rtlb-config-sources-content] button[type=submit]')
                 .click()
                 .then(() => {
                   expect(settings.get(meta.name, firstDefault)).to.be.false
@@ -118,7 +118,7 @@ describe('interfaces/config-sources.ts', { testIsolation: false }, () => {
       cy.try([
         `${meta.title}: ${i18n.RTLB.UnexpectedButtonAction} - bad-action`
       ])
-        .get<HTMLAnchorElement[]>(`section[id=${meta.name}-config-sources-content] a[data-action="select-all"]`)
+        .get<HTMLAnchorElement[]>('section[id=rtlb-config-sources-content] a[data-action="select-all"]')
         .then($link => {
           $link[0].dataset.action = 'bad-action'
           return $link[0]
@@ -130,7 +130,7 @@ describe('interfaces/config-sources.ts', { testIsolation: false }, () => {
       cy.try([
           `${meta.title}: ${i18n.RTLB.UnexpectedButtonAction} - none`
         ])
-        .get<HTMLAnchorElement[]>(`section[id=${meta.name}-config-sources-content] a[data-action="select-all"]`)
+        .get<HTMLAnchorElement[]>('section[id=rtlb-config-sources-content] a[data-action="select-all"]')
         .then($link => {
           delete $link[0].dataset.action
           return $link[0]

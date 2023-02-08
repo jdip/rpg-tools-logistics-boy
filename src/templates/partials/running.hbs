@@ -1,7 +1,2 @@
-<h2>{{localize 'RTLB.Running.Running'}}</h2>
-<ul>
-    {{this.progress.length}}
-    {{#each this.progress}}
-        <li>{{this.group}} {{this.table}} {{this.status}}</li>
-    {{/each}}
-</ul>
+<h2>{{localize 'RTLB.Running'}} ...</h2>
+{{>(this.partials.progress-list)}}

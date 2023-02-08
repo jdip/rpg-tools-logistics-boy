@@ -7,14 +7,14 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
     cy.login({ world: 'PF2e' })
   })
   beforeEach('open interface', () => {
-    cy.clickSidebarButton('tables', `${meta.name}-open-interface`)
+    cy.clickSidebarButton('tables', 'rtlb-open-interface')
   })
   afterEach('close interface', () => {
-    // cy.closeFoundryApp(`${meta.name}-main-interface`)
+    // cy.closeFoundryApp(`rtlb-main-interface`)
   })
   describe('Renders correctly by', () => {
     it('displaying styles', () => {
-      cy.get(`#${meta.name}-main-content header`)
+      cy.get('#rtlb-main-content header')
         .should('have.css', 'background-color', 'rgb(0, 0, 0)')
     })
     it('lists & checks default groups', () => {
@@ -23,7 +23,7 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
           const defs = createTables(main).definitions
           cy.wrap(Object.keys(defs))
             .each((key: keyof typeof defs & string) => {
-              cy.get(`#${meta.name}-main-content input[value="${key}.all"]`)
+              cy.get(`#rtlb-main-content input[value="${key}.all"]`)
                 .should('be.checked')
                 .should('be.visible')
             })
@@ -39,7 +39,7 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
               cy.wrap(Object.keys(subgroup))
                 .each((sKey: keyof typeof subgroup & string) => {
                   if (sKey !== 'all') {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('not.be.checked')
                       .should('not.be.visible')
                   }
@@ -53,14 +53,14 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
       cy.waitMainReady()
         .then(main => {
           const defs = createTables(main).definitions
-          cy.get(`#${meta.name}-main-content a[data-action="select-all"]`)
+          cy.get('#rtlb-main-content a[data-action="select-all"]')
             .click()
             .wrap(Object.keys(defs))
             .each((key: keyof typeof defs & string) => {
               const subgroup = defs[key]
               cy.wrap(Object.keys(subgroup))
                 .each((sKey: keyof typeof subgroup & string) => {
-                  cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                  cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                     .should('be.checked')
                     .should('be.visible')
                 })
@@ -71,9 +71,9 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
       cy.waitMainReady()
         .then(main => {
           const defs = createTables(main).definitions
-          cy.get(`#${meta.name}-main-content a[data-action="select-all"]`)
+          cy.get('#rtlb-main-content a[data-action="select-all"]')
             .click()
-          cy.get(`#${meta.name}-main-content a[data-action="select-default"]`)
+          cy.get('#rtlb-main-content a[data-action="select-default"]')
             .click()
             .wrap(Object.keys(defs))
             .each((key: keyof typeof defs & string) => {
@@ -81,11 +81,11 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
               cy.wrap(Object.keys(subgroup))
                 .each((sKey: keyof typeof subgroup & string) => {
                   if (sKey === 'all') {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('be.checked')
                       .should('be.visible')
                   } else {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('not.be.checked')
                       .should('not.be.visible')
                   }
@@ -97,9 +97,9 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
       cy.waitMainReady()
         .then(main => {
           const defs = createTables(main).definitions
-          cy.get(`#${meta.name}-main-content a[data-action="select-all"]`)
+          cy.get('#rtlb-main-content a[data-action="select-all"]')
             .click()
-          cy.get(`#${meta.name}-main-content a[data-action="select-none"]`)
+          cy.get('#rtlb-main-content a[data-action="select-none"]')
             .click()
             .wrap(Object.keys(defs))
             .each((key: keyof typeof defs & string) => {
@@ -107,11 +107,11 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
               cy.wrap(Object.keys(subgroup))
                 .each((sKey: keyof typeof subgroup & string) => {
                   if (sKey === 'all') {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('not.be.checked')
                       .should('be.visible')
                   } else {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('not.be.checked')
                       .should('not.be.visible')
                   }
@@ -120,37 +120,37 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
         })
     })
     it('enabling/disabling Create Tables button when tables are selected/not selected', () => {
-      cy.get(`#${meta.name}-main-content button[data-action="create-tables"]`)
+      cy.get('#rtlb-main-content button[data-action="create-tables"]')
         .should('not.be.disabled')
-        .get(`#${meta.name}-main-content a[data-action="select-default"]`)
+        .get('#rtlb-main-content a[data-action="select-default"]')
         .click()
-        .get(`#${meta.name}-main-content button[data-action="create-tables"]`)
+        .get('#rtlb-main-content button[data-action="create-tables"]')
         .should('not.be.disabled')
-        .get(`#${meta.name}-main-content a[data-action="select-none"]`)
+        .get('#rtlb-main-content a[data-action="select-none"]')
         .click()
-        .get(`#${meta.name}-main-content button[data-action="create-tables"]`)
+        .get('#rtlb-main-content button[data-action="create-tables"]')
         .should('be.disabled')
-        .get(`#${meta.name}-main-content a[data-action="select-default"]`)
+        .get('#rtlb-main-content a[data-action="select-default"]')
         .click()
-        .get(`#${meta.name}-main-content button[data-action="create-tables"]`)
+        .get('#rtlb-main-content button[data-action="create-tables"]')
         .should('not.be.disabled')
     })
     it('enabling/disabling Create Tables button when individual checkbox is clicked', () => {
-      cy.get(`#${meta.name}-main-content button[data-action="create-tables"]`)
+      cy.get('#rtlb-main-content button[data-action="create-tables"]')
         .should('not.be.disabled')
-        .get(`#${meta.name}-main-content a[data-action="select-none"]`)
+        .get('#rtlb-main-content a[data-action="select-none"]')
         .click()
-        .get(`#${meta.name}-main-content button[data-action="create-tables"]`)
+        .get('#rtlb-main-content button[data-action="create-tables"]')
         .should('be.disabled')
-        .get(`#${meta.name}-main-content input[type="checkbox"]`)
+        .get('#rtlb-main-content input[type="checkbox"]')
         .first()
         .click()
-        .get(`#${meta.name}-main-content button[data-action="create-tables"]`)
+        .get('#rtlb-main-content button[data-action="create-tables"]')
         .should('not.be.disabled')
-        .get(`#${meta.name}-main-content input[type="checkbox"]`)
+        .get('#rtlb-main-content input[type="checkbox"]')
         .first()
         .click()
-        .get(`#${meta.name}-main-content button[data-action="create-tables"]`)
+        .get('#rtlb-main-content button[data-action="create-tables"]')
         .should('be.disabled')
     })
     it('expanding/hiding group when drop-details anchor is clicked', () => {
@@ -163,39 +163,39 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
               cy.wrap(Object.keys(subgroup))
                 .each((sKey: keyof typeof subgroup & string) => {
                   if (sKey === 'all') {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('be.checked')
                       .should('be.visible')
                   } else {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('not.be.checked')
                       .should('not.be.visible')
                   }
                 })
-              cy.get(`#${meta.name}-main-content a[data-group=${key}]`)
+              cy.get(`#rtlb-main-content a[data-group=${key}]`)
                 .click()
                 .wrap(Object.keys(subgroup))
                 .each((sKey: keyof typeof subgroup & string) => {
                   if (sKey === 'all') {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('be.checked')
                       .should('be.visible')
                   } else {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('not.be.checked')
                       .should('be.visible')
                   }
                 })
-              cy.get(`#${meta.name}-main-content a[data-group=${key}]`)
+              cy.get(`#rtlb-main-content a[data-group=${key}]`)
                 .click()
                 .wrap(Object.keys(subgroup))
                 .each((sKey: keyof typeof subgroup & string) => {
                   if (sKey === 'all') {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('be.checked')
                       .should('be.visible')
                   } else {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('not.be.checked')
                       .should('not.be.visible')
                   }
@@ -214,16 +214,16 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
               cy.wrap(Object.keys(subgroup))
                 .each((sKey: keyof typeof subgroup & string) => {
                   if (sKey === 'all') {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('be.checked')
                       .should('be.visible')
                   } else {
-                    cy.get(`#${meta.name}-main-content input[value="${key}.${sKey}"]`)
+                    cy.get(`#rtlb-main-content input[value="${key}.${sKey}"]`)
                       .should('not.be.checked')
                       .should('not.be.visible')
                   }
                 })
-              cy.get<HTMLAnchorElement>(`#${meta.name}-main-content a[data-group=${key}]`)
+              cy.get<HTMLAnchorElement>(`#rtlb-main-content a[data-group=${key}]`)
                 .then($a => {
                   $a.removeData('group')
                   $a.removeAttr('data-group')
@@ -246,9 +246,9 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
             }
           }
           cy.stub(main, 'setStatus').as('stubbedSetStatus')
-          cy.get(`#${meta.name}-main-content a[data-action="select-all"]`)
+          cy.get('#rtlb-main-content a[data-action="select-all"]')
             .click()
-            .get(`#${meta.name}-main-content button[data-action="create-tables"]`)
+            .get('#rtlb-main-content button[data-action="create-tables"]')
             .should('not.be.disabled')
             .click()
             .get('@stubbedSetStatus')
@@ -263,12 +263,12 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
             [Object.keys(defs)[0], 'all']
           ]
           cy.stub(main, 'setStatus').as('stubbedSetStatus')
-          cy.get(`#${meta.name}-main-content a[data-action="select-none"]`)
+          cy.get('#rtlb-main-content a[data-action="select-none"]')
             .click()
-            .get(`#${meta.name}-main-content input[type="checkbox"]`)
+            .get('#rtlb-main-content input[type="checkbox"]')
             .first()
             .click()
-            .get(`#${meta.name}-main-content button[data-action="create-tables"]`)
+            .get('#rtlb-main-content button[data-action="create-tables"]')
             .should('not.be.disabled')
             .click()
             .get('@stubbedSetStatus')
@@ -276,11 +276,29 @@ describe('interfaces/main.ts', { testIsolation: false }, () => {
         })
     })
     it.only('displays running interface after Create Tables is clicked (single)', () => {
-      cy.get(`#${meta.name}-main-content a[data-action="select-default"]`)
+      cy.get('#rtlb-main-content a[data-action="select-none"]')
         .click()
-        .get(`#${meta.name}-main-content button[data-action="create-tables"]`)
+        .get('#rtlb-main-content a[data-group="Weaponsmith"]')
+        .click()
+        .get('#rtlb-main-content ul.rtlb-details-list.rtlb-Weaponsmith input[type="checkbox"]')
+        .click({ multiple: true })
+        .get('#rtlb-main-content button[data-action="create-tables"]')
         .should('not.be.disabled')
         .click()
+    })
+    it('displays running interface after Create Tables is clicked (single)', () => {
+      cy.get('#rtlb-main-content a[data-action="select-all"]')
+        .click()
+        .get('#rtlb-main-content button[data-action="create-tables"]')
+        .should('not.be.disabled')
+        .click()
+        .end()
+        .get('#rtlb-main-content ul.rtlb-progress-list li[data-status="done"]:contains("Wands")', { timeout: 10000 })
+        .get('#rtlb-main-content button[data-action="cancel"]')
+        .click({ force: true })
+        .then(arcanist => {
+          console.log('Clicked', arcanist)
+        })
     })
   })
 })

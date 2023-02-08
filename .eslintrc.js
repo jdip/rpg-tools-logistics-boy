@@ -15,7 +15,7 @@ module.exports = {
       '@typescript-eslint/no-unused-expressions': 'off',
       'chai-friendly/no-unused-expressions': 'error',
       '@typescript-eslint/indent': 'off',
-      '@typescript-eslint/restrict-template-expressions': 'off'
+      '@typescript-eslint/restrict-template-expressions': 'off',
     }
   }],
   parserOptions: {
@@ -24,6 +24,7 @@ module.exports = {
     project: ['./tsconfig.json', './cypress/tsconfig.json']
   },
   rules: {
+    '@typescript-eslint/no-non-null-assertion': 'off'
   },
   plugins: [
     'cypress',

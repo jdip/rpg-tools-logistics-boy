@@ -14,6 +14,7 @@ export const createTables = (mod: RTLB.Main): RTLB.Tables => {
 
 class AbstractTables implements RTLB.Tables {
   readonly definitions = {}
+  availableTables: Record<string, RTLB.TableGroupDefinitions> = {}
 
   constructor (main: RTLB.Main) {
     /* istanbul ignore next */
@@ -40,12 +41,29 @@ class AbstractTables implements RTLB.Tables {
     this._shouldCancel = true
   }
 
+  async updateAvailableTables (): Promise<void> {
+    const originalDefs = this._main.tables.definitions
+    const resultDefs: Record<string, RTLB.TableGroupDefinitions> = {}
+    const items = await this._main.sources.getItems()
+    for (const [groupName, group] of Object.entries(originalDefs) as Array<[string, RTLB.TableGroupDefinitions]>) {
+      const resultGroup: RTLB.TableGroupDefinitions = {}
+      for (const [tableName, table] of Object.entries(group)) {
+        const filteredItems = items.filter(item => table.test(item))
+        if (filteredItems.length > 0) {
+          resultGroup[tableName] = table
+        }
+      }
+      if (Object.keys(resultGroup).length > 0) resultDefs[groupName] = resultGroup
+    }
+    this.availableTables = deepFreeze(resultDefs)
+  }
+
   async build (group: string, table: string, _items: unknown[]): Promise<[RollTable, RTLB.TableGroupDefinition]> {
     if (!isKeyOf(this.definitions, group)) throw reportError('RTLB.Error.InvalidTableGroup')
     if (!isKeyOf(this.definitions[group], table)) throw reportError('RTLB.Error.InvalidTable')
     const folder = await this.getFolder()
-    const definition = this.definitions[group][table]
-    const name = `${String(group)} - ${table}`
+    const definition = this.definitions[group][table] as RTLB.TableGroupDefinition
+    const name = `${game.i18n.localize(definition.group)}: ${game.i18n.localize(definition.title)}`
     const tableCollection = (game.collections.get('RollTable') as RollTables)
     const rollTable: RollTable | undefined = tableCollection
       .find((t: RollTable) => t.name === name && t.folder === folder) ??
@@ -66,13 +84,16 @@ class AbstractTables implements RTLB.Tables {
   }
 
   async buildAll (tables: Array<[string, string]>): Promise<void> {
-    const items = await this._main.sources.getItems()
     this._shouldCancel = false
     await this._main.setProgress(tables.map(t => ({
       group: t[0],
       table: t[1],
+      definition: this.definitions[t[0] as keyof typeof this.definitions]?.[t[1]],
       status: 'pending'
     })))
+    void this._main.interface.render()
+    const items = await this._main.sources.getItems()
+
     for (const [group, table] of tables) {
       if (this._shouldCancel) {
         for (const p of this._main.progress) {
@@ -82,7 +103,10 @@ class AbstractTables implements RTLB.Tables {
               status: 'canceled'
             })
           }
+          void this._main.interface.render()
         }
+        await this._main.setStatus('aborted')
+        void this._main.interface.render()
         return
       }
       await this._main.updateProgress({
@@ -90,14 +114,14 @@ class AbstractTables implements RTLB.Tables {
         table,
         status: 'running'
       })
-      console.log('RUNNING', group, table)
+      void this._main.interface.render()
       await this.build(group, table, items)
-      console.log('DONE', group, table)
       await this._main.updateProgress({
         group,
         table,
         status: 'done'
       })
+      void this._main.interface.render()
     }
   }
 }

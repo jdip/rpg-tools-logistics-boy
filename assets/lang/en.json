@@ -43,10 +43,13 @@
       "Detail5": "Click the <i><strong>Create Rollable Tables</strong></i> button below when you are ready to proceed.",
       "AvailableTables": "Available Tables"
     },
-    "Running": {
-      "Running": "Running"
-    },
+    "Running": "Running",
+    "Complete": "Complete",
+    "Canceling": "Canceling",
+    "Aborted": "Aborted",
     "CreateTables": "Create Tables",
+    "Cancel": "Cancel",
+    "Back": "Back",
     "Misc": "Misc",
     "Miscellaneous": "Miscellaneous",
     "Alchemist": "Alchemist",
@@ -63,6 +66,26 @@
     "Scrolls": "Scrolls",
     "Spellbooks": "Spellbooks",
     "Staves": "Staves",
-    "Wands": "Wands"
+    "Wands": "Wands",
+    "Armorer": "Armorer",
+    "MetalArmorSoftArmorShields": "Metal Armor, Soft Armor & Shields",
+    "Metal": "Metal",
+    "Shield": "Shield",
+    "Soft": "Soft",
+    "Tinkerer": "Tinkerer",
+    "ClockworkGadgets": "Clockworks & Gadgets",
+    "Clockwork": "Clockwork",
+    "Gadget": "Gadget",
+    "Weaponsmith": "Weaponsmith",
+    "MeleeWeapons": "Melee Weapons",
+    "Axe": "Axe",
+    "Club": "Club",
+    "Flail": "Flail",
+    "Hammer": "Hammer",
+    "Knife": "Knife",
+    "Pick": "Pick",
+    "Polearm": "Polearm",
+    "Spear": "Spear",
+    "Sword": "Sword"
   }
 }

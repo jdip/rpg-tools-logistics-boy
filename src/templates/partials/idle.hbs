@@ -9,33 +9,33 @@
 <BR><BR>
 <h3>{{{localize 'RTLB.Idle.AvailableTables'}}}</h3>
 {{>(this.partials.list-widget)}}
-<ul class="{{this.meta.name}}-checkbox-list">
+<ul class="rtlb-checkbox-list">
     {{#each this.tables}}
-        <li class="{{../meta.name}}-heading" >
+        <li class="rtlb-heading" >
             <label>
-                <input type="checkbox" name="{{this.all.title}}" value="{{@key}}.all" checked/>
+                <input type="checkbox" name="{{this.all.group}}" value="{{@key}}.all" checked/>
                 <span>
-                                <span class="{{../meta.name}}-label-title">{{localize this.all.title}}</span>
-                                <span class="{{../meta.name}}-label-description">{{localize this.all.description}}</span>
-                            </span>
+                    <span class="rtlb-label-title">{{localize this.all.group}}</span>
+                    <span class="rtlb-label-description">{{localize this.all.description}}</span>
+                </span>
             </label>
             <a
-                    class="{{../meta.name}}-action right-drop"
+                    class="rtlb-action right-drop"
                     data-group="{{@key}}"
                     data-action="drop-details"
             >
                 <i class="fas fa-fw fa-chevron-left"></i>
             </a>
         </li>
-        <ul class="{{../meta.name}}-details-list {{../meta.name}}-{{@key}} display-none">
+        <ul class="rtlb-details-list rtlb-{{@key}} display-none">
             {{#each this}}
                 {{#if (ne @key 'all')}}
                     <li>
                         <label>
                             <input type="checkbox" name="{{this.title}}" value="{{@../key}}.{{@key}}"/>
                             <span>
-                                            <span class="{{../../meta.name}}-label-title">{{localize this.title}}</span>
-                                        </span>
+                                <span class="{{../../meta.name}}-label-title">{{localize this.title}}</span>
+                            </span>
                         </label>
                     </li>
                 {{/if}}
@@ -47,9 +47,9 @@
             <label>
                 <input type="checkbox" name="{{this.title}}" value="{{this.title}}" checked/>
                 <span>
-                                <span class="{{this.meta.name}}-label-title">{{this.title}}</span>
-                                <span class="{{this.meta.name}}-label-details">{{this.details}}</span>
-                            </span>
+                    <span class="rtlb-label-title">{{this.title}}</span>
+                    <span class="rtlb-label-details">{{this.details}}</span>
+                </span>
             </label>
         </li>
     {{/each}}

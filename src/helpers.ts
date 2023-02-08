@@ -61,3 +61,7 @@ export const isArrayOfStringTuples = (obj: unknown): obj is Array<[string, strin
     typeof obj[0][0] === 'string' &&
     typeof obj[0][1] === 'string'
 }
+
+export const sleep = async (time: number): Promise<void> => {
+  await new Promise(resolve => setTimeout(resolve, time))
+}

@@ -1,5 +1,6 @@
 import meta from '../../src/module.json'
 import i18n from '../../assets/lang/en.json'
+import ProgressItem = RTLB.ProgressItem
 
 describe('main.ts', () => {
   describe('Throws during setup if', () => {
@@ -64,7 +65,7 @@ describe('main.ts', () => {
             'aborted',
             'complete'
           ]).each((app: string) => {
-            const id = `${meta.name}-${app}-interface`
+            const id = `rtlb-${app}-interface`
             if ($(`#${id}`)[0] !== undefined) {
               cy.closeFoundryApp(id)
             }
@@ -199,29 +200,32 @@ describe('main.ts', () => {
       afterEach('reset progress', () => {
         cy.waitMainReady()
           .then(main => {
-            main.setProgress([])
+            cy.wrap(main.setProgress([]))
           })
       })
       it('setting progress', () => {
-        const progress: RTLB.ProgressItem[] = [{ group: 'group', table: 'table', status: 'pending' }]
+        const progress = [{ group: 'group', table: 'table', status: 'pending' }] as ProgressItem[]
         cy.waitMainReady()
           .then(main => {
-            main.setProgress(progress)
-            return cy.wrap(main)
+            return cy.wrap(main.setProgress(progress))
+              .then(() => {
+                return cy.wrap(main)
+              })
           })
           .its('_progress')
           .should('deep.equal', progress)
       })
       it('updating progress', () => {
-        const progress: RTLB.ProgressItem[] = [{ group: 'group', table: 'table', status: 'pending' }]
-        const progressResult: RTLB.ProgressItem[] = [{ group: 'group', table: 'table', status: 'running' }]
+        const progress = [{ group: 'group', table: 'table', status: 'pending' }] as ProgressItem[]
+        const progressResult = [{ group: 'group', table: 'table', status: 'running' }] as ProgressItem[]
         cy.waitMainReady()
           .then(main => {
-            main.setProgress(progress)
-            return cy.wrap(main)
-              .its('_progress')
-              .should('deep.equal', progress)
-              .wrap(main)
+            return cy.wrap(main.setProgress(progress))
+              .then(() => {
+                return cy.wrap(main)
+                  .its('_progress')
+                  .should('deep.equal', progress)
+              })
           })
           .then(main => {
             return cy.wrap(main.updateProgress(progressResult[0]))
@@ -232,15 +236,17 @@ describe('main.ts', () => {
           })
       })
       it('throwing on invalid progress update', done => {
-        const progress: RTLB.ProgressItem[] = [{ group: 'group', table: 'table', status: 'pending' }]
-        const progressResult: RTLB.ProgressItem[] = [{ group: 'group', table: 'BAD', status: 'running' }]
+        const progress = [{ group: 'group', table: 'table', status: 'pending' }] as ProgressItem[]
+        const progressResult = [{ group: 'group', table: 'BAD', status: 'running' }] as ProgressItem[]
         cy.waitMainReady()
           .then(main => {
-            main.setProgress(progress)
-            return cy.wrap(main)
-              .its('_progress')
-              .should('deep.equal', progress)
-              .wrap(main)
+            return cy.wrap(main.setProgress(progress))
+              .then(() => {
+                return cy.wrap(main)
+                  .its('_progress')
+                  .should('deep.equal', progress)
+                  .wrap(main)
+              })
           })
           .then(main => {
             main.updateProgress(progressResult[0])

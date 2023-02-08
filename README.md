@@ -32,8 +32,8 @@ A Foundry VTT Module to automatically create a default set of item roll tables f
 - Currently Available Tables:
     - Alchemist (potions, poisons, bombs, etc.)
     - Arcanist (scrolls, wands, robes, etc.)
-    - Armor: Hard (metal armor)
-    - Armor: Soft (leather & cloth armor)
+    - Armorer: Hard (metal armor)
+    - Armorer: Soft (leather & cloth armor)
     - Clothing (mundane non-protective clothing)
     - Oddities (all magic items not found in other tables)
     - Shields (shields & accessories)

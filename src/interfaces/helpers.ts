@@ -12,6 +12,7 @@ export type GetDataResults =
       icon?: string
       iconAnimation?: string
       action?: string
+      disabled?: boolean
     }>
   }
 
@@ -31,7 +32,7 @@ export function getCommonData (): { meta: typeof meta, partials: Record<string, 
 
 export function activateButtons (actionMap: ActionMap, html: JQuery<HTMLElement>): void {
   html
-    .find(`.${meta.name}-action`)
+    .find('.rtlb-action')
     .on('click', (event: JQuery.TriggeredEvent) => {
       onClickButton(actionMap, event)
         .catch(err => {

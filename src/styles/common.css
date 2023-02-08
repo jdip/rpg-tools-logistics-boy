@@ -7,7 +7,8 @@ button.disabled {
         box-shadow: none;
     }
 }
-.rpg-tools-logistics-boy-interface {
+
+.rtlb-interface {
     --header-height: 75px;
     --icon-size: 40px;
     --border-color: #a60303;
@@ -23,10 +24,10 @@ button.disabled {
             padding-left: 8px;
             padding-right: 16px;
             background-color: black;
-            img.rpg-tools-logistics-boy-logo {
+            img.rtlb-logo {
                 height: var(--header-height);
             }
-            img.rpg-tools-logistics-boy-icon {
+            img.rtlb-icon {
                 height: var(--icon-size);
                 position: absolute;
                 top: calc(((var(--header-height) - var(--icon-size))/2) - 2px);
@@ -49,7 +50,7 @@ button.disabled {
             .list-widget {
                 padding-left: 16px;
             }
-            ul.rpg-tools-logistics-boy-checkbox-list {
+            ul.rtlb-checkbox-list {
                 list-style-type: none;
                 padding-left: 16px;
                 li {
@@ -69,12 +70,12 @@ button.disabled {
                             vertical-align: middle;
                             span {
                                 display: block;
-                                &.rpg-tools-logistics-boy-label-title {
+                                &.rtlb-label-title {
                                     font-size: 18px;
                                     font-weight: 900!important;
                                     font-variant: small-caps;
                                 }
-                                &.rpg-tools-logistics-boy-label-description {
+                                &.rtlb-label-description {
                                     font-size: 12px;
                                     font-style: italic;
                                 }
@@ -84,7 +85,7 @@ button.disabled {
                     input {
                         vertical-align: middle;
                     }
-                    &.rpg-tools-logistics-boy-heading {
+                    &.rtlb-heading {
                         display: grid;
                         position: relative;
                         grid-template-columns: auto 25px;
@@ -99,7 +100,7 @@ button.disabled {
                         span {
                             span {
                                 display: block;
-                                &.rpg-tools-logistics-boy-label-title {
+                                &.rtlb-label-title {
                                     font-size: 16px;
                                     font-weight: 700!important;
                                 }
@@ -108,7 +109,7 @@ button.disabled {
                     }
                 }
             }
-            ul.rpg-tools-logistics-boy-progress-list {
+            ul.rtlb-progress-list {
                 list-style-type: none;
             }
         }

@@ -1,11 +1,11 @@
 import meta from '../../src/module.json'
 import { type GetDataFormResults, getCommonData, activateButtons } from './helpers'
 
-export const registerConfigSources = (mod: RTLB.Main): void => {
+export const registerConfigSources = (main: RTLB.Main): void => {
   const ConfigSources = class extends FormApplication {
     static override get defaultOptions (): FormApplicationOptions {
       return foundry.utils.mergeObject(super.defaultOptions, {
-        id: `${meta.name}-config-sources-app`,
+        id: 'rtlb-config-sources-app',
         title: `${meta.title}: ${game.i18n.localize('RTLB.Sources')}`,
         template: `modules/${meta.name}/templates/config-sources.hbs`,
         width: 880,
@@ -17,17 +17,17 @@ export const registerConfigSources = (mod: RTLB.Main): void => {
 
     constructor (...args: any[]) {
       super(...args)
-      this._module = mod
+      this._main = main
     }
 
-    private readonly _module: RTLB.Main
+    private readonly _main: RTLB.Main
 
     async getData (): Promise<GetDataFormResults> {
-      const activeSources = await this._module.sources.activeSources()
+      const activeSources = await this._main.sources.activeSources()
       return {
         ...getCommonData(),
         object: {
-          sources: this._module.sources.uniqueSources.map(source => {
+          sources: this._main.sources.uniqueSources.map(source => {
             return {
               name: source,
               title: source.replace(/^Pathfinder\s+/, ''),
@@ -47,9 +47,11 @@ export const registerConfigSources = (mod: RTLB.Main): void => {
 
     async _updateObject (_event: Event, formData: Record<string, unknown>): Promise<void> {
       const data = expandObject<Record<'sources', string[]>>(formData)
-      await Promise.all(this._module.sources.uniqueSources.map(async (source) => {
+      await Promise.all(this._main.sources.uniqueSources.map(async (source) => {
         await game.settings.set(meta.name, source, data.sources.includes(source))
       }))
+      await this._main.tables.updateAvailableTables()
+      void this._main.interface.render()
     }
 
     override activateListeners (html: JQuery<HTMLElement>): void {
@@ -62,22 +64,22 @@ export const registerConfigSources = (mod: RTLB.Main): void => {
     }
 
     private async _selectAll (): Promise<void> {
-      const inputs = $(`#${meta.name}-config-sources-content form.${meta.name}-config-sources-form input`)
+      const inputs = $('#rtlb-config-sources-content form.rtlb-config-sources-form input')
       inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(input => {
         (input as HTMLInputElement).checked = true
       })
     }
 
     private async _selectDefault (): Promise<void> {
-      const inputs = $(`#${meta.name}-config-sources-content form.${meta.name}-config-sources-form input`)
+      const inputs = $('#rtlb-config-sources-content form.rtlb-config-sources-form input')
       inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(i => {
         const input = (i as HTMLInputElement)
-        input.checked = this._module.sources.defaultSources.includes(input.value)
+        input.checked = this._main.sources.defaultSources.includes(input.value)
       })
     }
 
     private async _selectNone (): Promise<void> {
-      const inputs = $(`#${meta.name}-config-sources-content form.${meta.name}-config-sources-form input`)
+      const inputs = $('#rtlb-config-sources-content form.rtlb-config-sources-form input')
       inputs.toArray().filter(input => input instanceof HTMLInputElement).forEach(input => {
         (input as HTMLInputElement).checked = false
       })

@@ -1,0 +1,14 @@
+<ul class="rtlb-progress-list">
+    {{#each this.progress}}
+        <li data-status="{{this.status}}">
+            {{#if (eq this.status 'running')}}
+                <img src="{{../icons.running}}">
+            {{else if (eq this.status 'done')}}
+                <img src="{{../icons.done}}">
+            {{else}}
+                <img src="{{../icons.pending}}">
+            {{/if}}
+            {{localize this.definition.group}}: {{localize this.definition.title}}
+        </li>
+    {{/each}}
+</ul>

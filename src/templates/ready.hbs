@@ -1,5 +1,5 @@
-<section id="{{this.meta.name}}-ready-content" class="{{this.meta.name}}-interface">
-    <form class="{{this.meta.name}}-interface-form">
+<section id="rtlb-ready-content" class="rtlb-interface">
+    <form class="rtlb-interface-form">
         {{>(this.partials.header)}}
         <main>
             <h2>{{localize 'RTLB.Ready.CreatingTables'}}</h2>
@@ -13,7 +13,7 @@
             <BR><BR>
             <h3>Available Tables</h3>
             {{>(this.partials.list-widget)}}
-            <ul class="{{this.meta.name}}-checkbox-list">
+            <ul class="rtlb-checkbox-list">
                 {{#each this.tables}}
                     <li class="{{../meta.name}}-heading" >
                         <label>
@@ -51,8 +51,8 @@
                         <label>
                             <input type="checkbox" name="{{this.title}}" value="{{this.title}}" checked/>
                             <span>
-                                <span class="{{this.meta.name}}-label-title">{{this.title}}</span>
-                                <span class="{{this.meta.name}}-label-details">{{this.details}}</span>
+                                <span class="rtlb-label-title">{{this.title}}</span>
+                                <span class="rtlb-label-details">{{this.details}}</span>
                             </span>
                         </label>
                     </li>

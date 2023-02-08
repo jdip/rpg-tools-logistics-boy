@@ -1,5 +1,5 @@
-<section id="{{this.meta.name}}-config-sources-content"  class="{{this.meta.name}}-interface">
-    <form class="{{this.meta.name}}-config-sources-form">
+<section id="rtlb-config-sources-content"  class="rtlb-interface">
+    <form class="rtlb-config-sources-form">
         {{>(this.partials.header)}}
         <main>
             <h2>{{localize 'RTLB.ConfigureCompendiumSources'}}</h2>
@@ -8,7 +8,7 @@
             <br>
             <h3>{{localize 'RTLB.AvailableEquipmentSources'}}</h3>
             {{>(this.partials.list-widget)}}
-            <ul class="{{this.meta.name}}-checkbox-list">
+            <ul class="rtlb-checkbox-list">
                 {{#each this.object.sources}}
                     <li>
                         <label>
